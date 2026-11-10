@@ -4,7 +4,7 @@ Esta carpeta reúne la documentación visual del proyecto para la asignatura **I
 
 ## Manual de identidad visual
 
-**Documento original:** `LOGO A11YPILOT.pdf` (10 páginas). La versión PDF debe adjuntarse en esta misma carpeta para conservar el material de diseño original.
+**Documento original:** [📄 Consultar manual de identidad visual de A11yPilot (PDF, 10 páginas)](./LOGO%20A11YPILOT.pdf). El archivo original ya está disponible en esta carpeta.
 
 El documento contiene:
 
@@ -30,6 +30,6 @@ El documento contiene:
 
 > **Importante:** los ejemplos del manual representan decisiones y propuestas visuales. Las menciones a Playwright y axe-core ilustran la evolución prevista del sistema; la primera entrega de A11yPilot utiliza análisis simulados. El manual no constituye evidencia de que todas sus pantallas estén implementadas exactamente como aparecen.
 
-### Archivo PDF pendiente de adjuntar
+### Acceso al documento
 
-En GitHub, abre esta carpeta y selecciona **Add file → Upload files** para adjuntar el archivo original `LOGO A11YPILOT.pdf` mediante un commit. Una vez agregado, podrá consultarse directamente desde el repositorio.
+**[Abrir el manual completo en PDF](./LOGO%20A11YPILOT.pdf)** desde GitHub. Contiene las 10 páginas del sistema de diseño y la propuesta de interfaz de A11yPilot.
