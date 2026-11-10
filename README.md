@@ -14,7 +14,7 @@
 
 **Universidad Manuela Beltrán · Ingeniería de Software**
 
-[Repositorio](https://github.com/Codeforgeettttt/A11yPilot) · [Documentación API](docs/api/openapi.yaml) · [Registro de evidencias](docs/evidencias/README.md)
+[Repositorio](https://github.com/Codeforgeettttt/A11yPilot) · [Documentación API](docs/api/openapi.yaml) · [Registro de evidencias](docs/evidencias/README.md) · [Sistema de diseño](docs/diseno/README.md)
 
 </div>
 
