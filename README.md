@@ -16,6 +16,20 @@ Para usar **cuentas reales, reportes PDF persistentes y SQL Server**, configura 
 
 # A11yPilot · MVP avanzado con cuentas (Entrega 1)
 
+## Objetivo general de la Entrega 1
+
+Desarrollar un primer prototipo web de A11yPilot que represente la gestión de proyectos, sitios y hallazgos de accesibilidad mediante una interfaz clara, adaptable e interactiva; organizar el código y publicar los avances en GitHub para continuar su desarrollo durante el semestre.
+
+## Alcance inicial del prototipo
+
+La entrega comprende una aplicación React + Vite (HTML5, CSS3 y JavaScript) con navegación, dashboard, gestión de proyectos y sitios, análisis **simulados**, consulta y seguimiento de hallazgos, descarga de reportes PDF de demostración y preferencias de accesibilidad (incluido alto contraste). Se incluye un backend Express con integración local a SQL Server para cuentas y persistencia. **El análisis automatizado real con Playwright y axe-core queda fuera de esta entrega.**
+
+## Evidencias de la Entrega 1
+
+Las capturas y comprobaciones reales deben guardarse en [docs/evidencias](docs/evidencias/) después de probar el programa. Se deben registrar: vista principal en escritorio, visualización móvil y tableta, formulario en funcionamiento, filtros o seguimiento de hallazgos, alto contraste y reporte PDF. Las pruebas no documentadas no se presentan como verificadas.
+
+
+
 Proyecto académico de Ingeniería Web II. A11yPilot reúne proyectos, sitios registrados, análisis de demostración, hallazgos y seguimiento de accesibilidad en una aplicación web.
 
 **Importante:** el motor de análisis real aún no está implementado. Los resultados son predefinidos, están marcados como simulados y no constituyen certificación WCAG.
