@@ -1,0 +1,26 @@
+node_modules/
+**/node_modules/
+**/dist/
+**/coverage/
+**/.env
+.env
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Dependencias y compilaciones
+node_modules/
+dist/
+coverage/
+.vite/
+
+# Configuración privada
+.env
+.env.*
+!.env.example
+
+# Archivos temporales
+*.log
+.DS_Store
+Thumbs.db

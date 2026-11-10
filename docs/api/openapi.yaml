@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: A11yPilot API
+  version: 0.6.0
+  description: API local del MVP. Analisis de accesibilidad simulados.
+servers:
+  - url: http://127.0.0.1:3001/api
+paths:
+  /auth/register:
+    post:
+      summary: Crear cuenta y sesión
+      responses:
+        '201': {description: Cuenta creada}
+  /auth/login:
+    post:
+      summary: Iniciar sesión
+      responses:
+        '200': {description: Sesión iniciada}
+  /auth/me:
+    get:
+      summary: Perfil del usuario
+      responses:
+        '200': {description: Perfil propio}
+    patch:
+      summary: Actualizar nombre de perfil
+      responses:
+        '200': {description: Actualizado}
+  /auth/logout:
+    post:
+      summary: Cerrar sesión
+      responses:
+        '204': {description: Sesión cerrada}
+  /auth/change-password:
+    post:
+      summary: Cambiar contraseña
+      responses:
+        '200': {description: Actualizada}
+  /auth/forgot-password:
+    post:
+      summary: Solicitar recuperación
+      responses:
+        '200': {description: Respuesta genérica}
+  /auth/reset-password:
+    post:
+      summary: Restablecer contraseña
+      responses:
+        '200': {description: Actualizada}
+  /health:
+    get:
+      summary: Estado del servicio
+      responses:
+        '200': { description: Servicio disponible }
+  /health/database:
+    get:
+      summary: Estado de SQL Server
+      responses:
+        '200': { description: Conexion correcta }
+        '500': { description: Error de conexion }
+  /dashboard/summary:
+    get:
+      summary: Indicadores del dashboard
+      responses:
+        '200': { description: Resumen de registros }
+  /projects:
+    get:
+      summary: Listar proyectos
+      responses:
+        '200': { description: Proyectos encontrados }
+    post:
+      summary: Crear proyecto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string, minLength: 3, maxLength: 120 }
+                description: { type: string, maxLength: 700 }
+      responses:
+        '201': { description: Proyecto creado }
+        '400': { description: Validacion fallida }
+  /projects/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    get:
+      summary: Consultar proyecto
+      responses:
+        '200': { description: Proyecto encontrado }
+        '404': { description: No existe }
+    patch:
+      summary: Actualizar proyecto
+      responses:
+        '200': { description: Proyecto actualizado }
+    delete:
+      summary: Eliminar proyecto
+      responses:
+        '204': { description: Eliminado }
+  /projects/{id}/sites:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    get:
+      summary: Listar sitios de un proyecto
+      responses:
+        '200': { description: Sitios encontrados }
+    post:
+      summary: Registrar sitio autorizado
+      responses:
+        '201': { description: Sitio registrado }
+  /sites:
+    get:
+      summary: Listar sitios
+      responses:
+        '200': { description: Sitios registrados }
+  /sites/{id}:
+    delete:
+      summary: Eliminar sitio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Sitio eliminado }
+  /analyses:
+    get:
+      summary: Historial de analisis
+      responses:
+        '200': { description: Analisis registrados }
+  /analyses/demo:
+    post:
+      summary: Crear analisis simulado (sin acceder a la URL)
+      responses:
+        '201': { description: Analisis de demostracion registrado }
+  /analyses/{id}:
+    get:
+      summary: Consultar analisis y hallazgos
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Analisis encontrado }
+  /findings:
+    get:
+      summary: Consultar hallazgos
+      parameters:
+        - { in: query, name: impact, schema: { type: string } }
+        - { in: query, name: status, schema: { type: string } }
+      responses:
+        '200': { description: Hallazgos encontrados }
+  /findings/{id}/status:
+    patch:
+      summary: Actualizar estado y observacion de seguimiento
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Estado actualizado }
+  /findings/{id}/updates:
+    get:
+      summary: Historial de cambios de un hallazgo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Historial encontrado }
+  /reports/{analysisId}:
+    get:
+      summary: Descargar PDF de demostracion
+      parameters:
+        - in: path
+          name: analysisId
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Informe PDF
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
