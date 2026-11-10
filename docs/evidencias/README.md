@@ -1,4 +1,4 @@
-<img width="1912" height="1071" alt="image" src="https://github.com/user-attachments/assets/7f28ae25-e313-44fb-998b-a264789884b6" /># Evidencias de funcionamiento — Entrega 1
+># Evidencias de funcionamiento — Entrega 1
 
 Estas evidencias deben obtenerse de una ejecución real de A11yPilot. No utilizar capturas ficticias ni declarar pruebas que no se hayan realizado.
 
@@ -6,15 +6,24 @@ Estas evidencias deben obtenerse de una ejecución real de A11yPilot. No utiliza
 
 | Archivo sugerido | Qué debe mostrar |
 | --- | --- |
-| `<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/91e8ff3a-8e10-4bba-b06d-ee57fd4617a8" />` | Vista principal completa en un navegador de escritorio |
-| `<img width="1911" height="1078" alt="image" src="https://github.com/user-attachments/assets/18c373a2-b809-441d-9df4-d81641a47592" />` | Listado y creación de un proyecto de prueba |
-| `<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/5092044f-7eb9-40ff-88ef-71134b6a5bd2" />` | Formulario y confirmación de autorización |
-| `<img width="1912" height="1071" alt="image" src="https://github.com/user-attachments/assets/a8167188-51b0-4ecb-b658-945822241e9b" />` | Flujo de análisis marcado como simulado |
-| `<img width="1917" height="1037" alt="image" src="https://github.com/user-attachments/assets/afbb58c2-4179-4cca-bff0-3dad1c24395c" />` | Filtros y actualización de un estado |
-| `<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/af3612ad-d7e1-46ae-b22a-930f83d4976b" />` | PDF descargado con aviso de datos simulados |
-| `<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/c9e8c469-30b7-467a-b7d2-d6d04ecf71c2" />` | La interfaz con modo de alto contraste activado |
-| `<img width="947" height="918" alt="image" src="https://github.com/user-attachments/assets/833e577c-f083-40d6-951e-7d333a996aa0" />` | Vista con ancho aproximado de 768 px |
-| `<img width="731" height="802" alt="image" src="https://github.com/user-attachments/assets/f7b33c68-1709-4d60-b0c9-9cfe68b4cb9c" />` | Vista con ancho aproximado de 375 px |
+| `<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/91e8ff3a-8e10-4bba-b06d-ee57fd4617a8" /> 
+` | Vista principal completa en un navegador de escritorio |
+| `<img width="1911" height="1078" alt="image" src="https://github.com/user-attachments/assets/18c373a2-b809-441d-9df4-d81641a47592" />
+` | Listado y creación de un proyecto de prueba |
+| `<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/5092044f-7eb9-40ff-88ef-71134b6a5bd2" />
+` | Formulario y confirmación de autorización |
+| `<img width="1912" height="1071" alt="image" src="https://github.com/user-attachments/assets/a8167188-51b0-4ecb-b658-945822241e9b" />
+` | Flujo de análisis marcado como simulado |
+| `<img width="1917" height="1037" alt="image" src="https://github.com/user-attachments/assets/afbb58c2-4179-4cca-bff0-3dad1c24395c" />
+` | Filtros y actualización de un estado |
+| `<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/af3612ad-d7e1-46ae-b22a-930f83d4976b" />
+` | PDF descargado con aviso de datos simulados |
+| `<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/c9e8c469-30b7-467a-b7d2-d6d04ecf71c2" />
+` | La interfaz con modo de alto contraste activado |
+| `<img width="947" height="918" alt="image" src="https://github.com/user-attachments/assets/833e577c-f083-40d6-951e-7d333a996aa0" />
+` | Vista con ancho aproximado de 768 px |
+| `<img width="731" height="802" alt="image" src="https://github.com/user-attachments/assets/f7b33c68-1709-4d60-b0c9-9cfe68b4cb9c" />
+` | Vista con ancho aproximado de 375 px |
 
 No subir contraseñas, cookies, tokens, credenciales de SQL Server ni datos privados de cuentas en las capturas de anexo  (al equipo)
 
