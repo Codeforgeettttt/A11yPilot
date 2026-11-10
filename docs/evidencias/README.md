@@ -13,8 +13,8 @@ Estas evidencias deben obtenerse de una ejecución real de A11yPilot. No utiliza
 | <img width="1917" height="1037" alt="image" src="https://github.com/user-attachments/assets/afbb58c2-4179-4cca-bff0-3dad1c24395c" />| Filtros y actualización de un estado |
 | <img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/af3612ad-d7e1-46ae-b22a-930f83d4976b" />| PDF descargado con aviso de datos simulados |
 | <img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/c9e8c469-30b7-467a-b7d2-d6d04ecf71c2" />| La interfaz con modo de alto contraste activado |
-| <img width="947" height="918" alt="image" src="https://github.com/user-attachments/assets/833e577c-f083-40d6-951e-7d333a996aa0" />| Vista con ancho aproximado de 768 px |
-| <img width="731" height="802" alt="image" src="https://github.com/user-attachments/assets/f7b33c68-1709-4d60-b0c9-9cfe68b4cb9c" />| Vista con ancho aproximado de 375 px |
+| <img width="1195" height="1077" alt="image" src="https://github.com/user-attachments/assets/74e62282-4c1e-46e8-b6bd-1c2724286366" />| Vista con ancho aproximado de 768 px |
+| <img width="1200" height="1078" alt="image" src="https://github.com/user-attachments/assets/7ccc6f62-a62d-456e-a8df-54fbe5548fbb"/>| Vista con ancho aproximado de 375 px |
 
 No subir contraseñas, cookies, tokens, credenciales de SQL Server ni datos privados de cuentas en las capturas de anexo  (al equipo)
 
