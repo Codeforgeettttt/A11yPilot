@@ -4,6 +4,18 @@ Este documento resume los avances **verificables en GitHub** y distingue las fun
 
 > **Versión de aplicación actual:** `0.6.2`, según el `package.json` raíz y el frontend. El backend declara `0.6.0`. No se afirma que exista una etiqueta Git o Release oficial para esta versión.
 
+## [En desarrollo] — mejoras posteriores al MVP · 10/11/2026
+
+### Correcciones de formularios y conexión
+
+- Si una operación falla por conexión, permisos o validación, los formularios de proyectos y sitios **conservan el contenido** para permitir corregir o reintentar.
+- El análisis de demostración **no navega al historial si falla su registro**.
+- El botón de reconexión realiza una actualización de los datos y deja de indicar que la conexión se restableció sin comprobarla.
+- Si una operación se guardó pero la actualización de la vista falló, se muestra un mensaje que distingue ambos resultados para evitar duplicar registros.
+- Se añadieron pruebas unitarias para éxito, error de guardado y error de actualización de la vista.
+
+**Verificación:** las pruebas están incluidas en GitHub Actions; confirmar el resultado del workflow correspondiente antes de considerar completada la validación de este cambio.
+
 ## [Sin publicar] — próximas mejoras
 
 *Son tareas previstas, no funcionalidades terminadas.*
