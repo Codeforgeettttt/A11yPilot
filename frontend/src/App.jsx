@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Projects from './pages/Projects.jsx';
+import Sites from './pages/Sites.jsx';
 import { api, downloadReport } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { formatDate } from './utils/format.js';
@@ -48,14 +49,6 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
   </div>
   {accessOpen&&<AccessibilityPanel onClose={closeAccess}/>}
  </div>
-}
-
-
-function Sites({data,run}){
- const [name,setName]=useState(''),[url,setUrl]=useState('https://'),[projectId,setProjectId]=useState(''),[authorized,setAuthorized]=useState(false),[error,setError]=useState('');
- async function submit(e){e.preventDefault();setError('');try{const parsed=new URL(url);if(!['http:','https:'].includes(parsed.protocol)||!parsed.hostname)throw Error();}catch{setError('Ingresa una URL HTTP o HTTPS válida.');return}if(!authorized){setError('Confirma la autorización antes de registrar el sitio.');return}if(!projectId){setError('Selecciona un proyecto.');return}
-  const saved=await run(()=>api(`/projects/${projectId}/sites`,{method:'POST',body:{name:name.trim(),url:url.trim(),authorizationConfirmed:true}}),'Sitio registrado.');if(saved){setName('');setUrl('https://');setAuthorized(false)}}
- return <div className="two-col layout-form"><section className="card"><SectionTitle title="Registrar sitio" description="Registrar una URL no ejecuta ningún escaneo."/><form className="form-stack" onSubmit={submit} noValidate><label htmlFor="site-project">Proyecto</label><select id="site-project" value={projectId} onChange={e=>setProjectId(e.target.value)} required><option value="">Seleccionar proyecto</option>{data.projects.map(p=><option value={p.id} key={p.id}>{p.name}</option>)}</select><label htmlFor="site-name">Nombre del sitio</label><input id="site-name" value={name} onChange={e=>setName(e.target.value)} required minLength="2" maxLength="120" placeholder="Portal principal"/><label htmlFor="site-url">URL pública</label><input id="site-url" value={url} onChange={e=>setUrl(e.target.value)} required type="url" aria-invalid={!!error} aria-describedby={error?'site-form-error':'site-help'}/><small id="site-help">Usa http:// o https://. La conexión real se implementará en otra fase.</small><label className="checkline"><input type="checkbox" checked={authorized} onChange={e=>setAuthorized(e.target.checked)}/><span>Confirmo que cuento con autorización para evaluar este sitio.</span></label>{error&&<div className="field-error" role="alert" id="site-form-error">{error}</div>}<button type="submit" className="btn primary">Registrar sitio</button></form></section><section className="card"><SectionTitle title={`Sitios registrados (${data.sites.length})`} description="Asociados a los proyectos guardados."/>{data.sites.length===0?<Empty>Agrega un proyecto y registra su primer sitio.</Empty>:<div className="record-list">{data.sites.map(site=><div className="record record-stack" key={site.id}><div><strong>{site.name}</strong><p className="break-word">{site.url}</p><small>{site.Project?.name||'Proyecto'} · Autorización declarada</small></div><button className="btn mini danger" onClick={()=>{if(window.confirm(`¿Eliminar «${site.name}» y su historial asociado?`))run(()=>api(`/sites/${site.id}`,{method:'DELETE'}),'Sitio eliminado.')}}>Eliminar</button></div>)}</div>}</section></div>
 }
 function NewAnalysis({data,run,navigate}){
  const [siteId,setSiteId]=useState(''),[authorization,setAuthorization]=useState(false),[err,setErr]=useState(''),[sending,setSending]=useState(false);
