@@ -5,6 +5,7 @@ import AccessibilityPanel from './accessibility/AccessibilityPanel.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Projects from './pages/Projects.jsx';
 import { api, downloadReport } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { formatDate } from './utils/format.js';
@@ -49,12 +50,7 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
  </div>
 }
 
-function Projects({data,run}){
- const [name,setName]=useState(''),[description,setDescription]=useState(''),[q,setQ]=useState(''),[editing,setEditing]=useState(null);
- const shown=data.projects.filter(p=>`${p.name} ${p.description||''}`.toLowerCase().includes(q.toLowerCase()));
- async function submit(e){e.preventDefault();const saved=await run(()=>api(editing?`/projects/${editing}`:'/projects',{method:editing?'PATCH':'POST',body:{name:name.trim(),description:description.trim()}}),editing?'Proyecto actualizado.':'Proyecto creado.');if(saved){setName('');setDescription('');setEditing(null)}}
- return <div className="two-col layout-form"><section className="card"><SectionTitle title={editing?'Editar proyecto':'Nuevo proyecto'} description="La información se guarda en el navegador en modo de prueba; con backend, en SQL Server."/><form onSubmit={submit} className="form-stack"><label htmlFor="project-name">Nombre del proyecto</label><input id="project-name" required minLength="3" maxLength="120" value={name} onChange={e=>setName(e.target.value)} placeholder="Ej. Portal de servicios"/><label htmlFor="project-desc">Descripción (opcional)</label><textarea id="project-desc" maxLength="700" rows="4" value={description} onChange={e=>setDescription(e.target.value)} placeholder="Qué sitio o producto se revisará"/><div className="button-row"><button className="btn primary" type="submit">{editing?'Guardar cambios':'Crear proyecto'}</button>{editing&&<button type="button" className="btn secondary" onClick={()=>{setEditing(null);setName('');setDescription('')}}>Cancelar</button>}</div></form></section><section className="card"><SectionTitle title={`Proyectos (${shown.length})`} description="Selecciona editar o elimina con confirmación."/><label htmlFor="project-search">Buscar proyectos</label><input id="project-search" type="search" value={q} onChange={e=>setQ(e.target.value)} placeholder="Nombre del proyecto"/>{shown.length===0?<Empty>No hay proyectos que coincidan con la búsqueda.</Empty>:<div className="record-list">{shown.map(p=><div className="record record-stack" key={p.id}><div><strong>{p.name}</strong><p>{p.description||'Sin descripción'}</p></div><div className="button-row"><button className="btn mini secondary" onClick={()=>{setEditing(p.id);setName(p.name);setDescription(p.description||'')}}>Editar</button><button className="btn mini danger" onClick={()=>{if(window.confirm(`¿Eliminar «${p.name}»? También se eliminarán sus sitios y análisis asociados.`))run(()=>api(`/projects/${p.id}`,{method:'DELETE'}),'Proyecto eliminado.')}}>Eliminar</button></div></div>)}</div>}</section></div>
-}
+
 function Sites({data,run}){
  const [name,setName]=useState(''),[url,setUrl]=useState('https://'),[projectId,setProjectId]=useState(''),[authorized,setAuthorized]=useState(false),[error,setError]=useState('');
  async function submit(e){e.preventDefault();setError('');try{const parsed=new URL(url);if(!['http:','https:'].includes(parsed.protocol)||!parsed.hostname)throw Error();}catch{setError('Ingresa una URL HTTP o HTTPS válida.');return}if(!authorized){setError('Confirma la autorización antes de registrar el sitio.');return}if(!projectId){setError('Selecciona un proyecto.');return}
