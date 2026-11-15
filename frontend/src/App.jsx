@@ -10,6 +10,7 @@ import Projects from './pages/Projects.jsx';
 import Sites from './pages/Sites.jsx';
 import NewAnalysis from './pages/NewAnalysis.jsx';
 import Findings from './pages/Findings.jsx';
+import HistoryPage from './pages/History.jsx';
 import { api, downloadReport } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { formatDate } from './utils/format.js';
@@ -54,7 +55,6 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
       </main> 
        </Layout>
 }
-function HistoryPage({data,navigate}){return <section className="card"><SectionTitle title="Historial de análisis" description="Cada ejecución queda guardada con fecha, sitio y estado."/>{data.analyses.length===0?<Empty>Aún no hay análisis. Registra un sitio y ejecuta una demostración.</Empty>:<div className="record-list">{data.analyses.map(a=><div className="record" key={a.id}><div><strong>#{a.id} · {a.Site?.name||a.Site?.url}</strong><p>{formatDate(a.createdAt)} · {a.findingCount??0} hallazgos · Datos simulados</p></div><StateTag kind={a.status==='Completado'?'success':'warning'}>{a.status}</StateTag></div>)}</div>}<button className="btn secondary" onClick={()=>navigate('analysis')}>Nuevo análisis <ArrowRight size={16}/></button></section>}
 function Reports({data,run}){const [downloading,setDownloading]=useState(null);async function get(id){setDownloading(id);try{await run(()=>downloadReport(id),'Reporte de demostración descargado.')}finally{setDownloading(null)}}return <section className="card"><SectionTitle title="Informes de demostración" description="Descarga un informe PDF de demostración en ambos modos."/>{data.analyses.length===0?<Empty>Los reportes estarán disponibles después de ejecutar una demostración.</Empty>:<div className="record-list">{data.analyses.map(a=><div className="record" key={a.id}><div><strong>Análisis #{a.id} · {a.Site?.name||'Sitio'}</strong><p>{formatDate(a.createdAt)} · {a.findingCount??0} hallazgos</p></div><button className="btn secondary mini" disabled={downloading===a.id} onClick={()=>get(a.id)}><Download size={16} aria-hidden="true"/> Descargar PDF</button></div>)}</div>}<p className="note">El documento indica expresamente que los hallazgos son simulados y no certifican conformidad WCAG.</p></section>}
 
 function Profile({user,onUserUpdate,onLogout}){
