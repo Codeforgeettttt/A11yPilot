@@ -7,6 +7,7 @@ import Topbar from './components/Topbar.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Projects from './pages/Projects.jsx';
 import Sites from './pages/Sites.jsx';
+import NewAnalysis from './pages/NewAnalysis.jsx';
 import { api, downloadReport } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { formatDate } from './utils/format.js';
@@ -50,14 +51,7 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
   {accessOpen&&<AccessibilityPanel onClose={closeAccess}/>}
  </div>
 }
-function NewAnalysis({data,run,navigate}){
- const [siteId,setSiteId]=useState(''),[authorization,setAuthorization]=useState(false),[err,setErr]=useState(''),[sending,setSending]=useState(false);
- async function submit(e){e.preventDefault();setErr('');if(!siteId){setErr('Selecciona un sitio.');return}if(!authorization){setErr('Confirma la autorización para continuar.');return}setSending(true);
-  try{const saved=await run(()=>api('/analyses/demo',{method:'POST',body:{siteId:Number(siteId),authorizationConfirmed:true}}),'Análisis de demostración guardado correctamente.');if(saved)navigate('history')}
-  finally{setSending(false)}
- }
- return <section className="card narrow"><SectionTitle title="Ejecutar demostración" description="Se guardan hallazgos simulados en el navegador o en SQL Server según el modo."/><form className="form-stack" onSubmit={submit} noValidate><label htmlFor="analysis-site">Sitio web</label><select id="analysis-site" value={siteId} onChange={e=>setSiteId(e.target.value)} required><option value="">Seleccionar sitio registrado</option>{data.sites.map(s=><option key={s.id} value={s.id}>{s.name} — {s.url}</option>)}</select><label className="checkline"><input type="checkbox" checked={authorization} onChange={e=>setAuthorization(e.target.checked)}/><span>Confirmo que tengo autorización para evaluar este sitio.</span></label>{err&&<div className="field-error" role="alert">{err}</div>}<button className="btn primary" type="submit" disabled={sending||data.sites.length===0}><ScanSearch size={18} aria-hidden="true"/>{sending?'Guardando…':'Ejecutar simulación'}</button></form><div className="note">No se conecta al sitio ingresado. El sistema utiliza casos predefinidos para demostrar el seguimiento.</div>{data.sites.length===0&&<Empty>Primero crea un proyecto y registra un sitio en el menú.</Empty>}</section>
-}
+
 function Findings({data,run}){
  const [search,setSearch]=useState(''),[impact,setImpact]=useState('Todos'),[status,setStatus]=useState('Todos'),[expanded,setExpanded]=useState({}),[draftNotes,setDraftNotes]=useState({});
  const filtered=data.findings.filter(f=>(impact==='Todos'||f.impact===impact)&&(status==='Todos'||f.status===status)&&`${f.title} ${f.rule} ${f.wcag||''} ${f.site?.name||''}`.toLowerCase().includes(search.toLowerCase()));
