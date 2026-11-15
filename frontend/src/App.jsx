@@ -4,6 +4,7 @@ import { Activity, Accessibility, ArrowRight, BarChart3, CheckCircle2, ChevronRi
 import AccessibilityPanel from './accessibility/AccessibilityPanel.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
+import Dashboard from './pages/Dashboard.jsx';
 import { api, downloadReport } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { formatDate } from './utils/format.js';
@@ -47,10 +48,7 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
   {accessOpen&&<AccessibilityPanel onClose={closeAccess}/>}
  </div>
 }
-function Dashboard({data,go}){
- const s=data.summary||{};const cards=[['Proyectos',s.projects??0,Folder],['Sitios',s.sites??0,Globe],['Análisis',s.analyses??0,Activity],['Pendientes',s.pendingFindings??0,ClipboardList]];
- return <><div className="stat-grid">{cards.map(([name,num,Icon])=><div className="stat" key={name}><div className="stat-head"><span>{name}</span><Icon size={21} aria-hidden="true"/></div><strong>{num}</strong><p>Registros del entorno de desarrollo</p></div>)}</div><div className="two-col"><section className="card"><SectionTitle title="Comienza una evaluación" description="Registra un sitio y genera un análisis de ejemplo."/><div className="illustration" aria-hidden="true"><span className="window-dots">● ● ●</span><div className="illustration-line"/><div className="illustration-line short"/><ShieldCheck size={35}/></div><p>Los resultados permiten probar el seguimiento sin visitar la página indicada.</p><button className="btn primary" onClick={()=>go('analysis')}>Nuevo análisis <ArrowRight size={17}/></button></section><section className="card"><SectionTitle title="Actividad reciente" description="Últimos análisis guardados."/>{data.analyses.length===0?<Empty>Aún no se han ejecutado análisis. Puedes comenzar con un sitio de prueba.</Empty>:<div className="record-list">{data.analyses.slice(0,5).map(a=><div className="record" key={a.id}><div><strong>{a.Site?.name||a.Site?.url||'Sitio'}</strong><p>{formatDate(a.createdAt)} · {a.demo?'Demostración':'Análisis'}</p></div><StateTag kind={a.status==='Completado'?'success':'info'}>{a.status}</StateTag></div>)}</div>}<button className="btn secondary" onClick={()=>go('history')}>Consultar historial <ArrowRight size={17}/></button></section></div><section className="card"><SectionTitle title="Distribución por impacto" description="Datos de los hallazgos guardados."/><div className="impact-grid">{IMPACTS.map(impact=><div className="impact-count" key={impact}><strong>{data.findings.filter(f=>f.impact===impact).length}</strong><span>{impact}</span></div>)}</div></section></>
-}
+
 function Projects({data,run}){
  const [name,setName]=useState(''),[description,setDescription]=useState(''),[q,setQ]=useState(''),[editing,setEditing]=useState(null);
  const shown=data.projects.filter(p=>`${p.name} ${p.description||''}`.toLowerCase().includes(q.toLowerCase()));
