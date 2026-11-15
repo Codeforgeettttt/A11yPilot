@@ -2,6 +2,7 @@ import {isDemoMode} from './services/demoApi.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Activity, Accessibility, ArrowRight, BarChart3, CheckCircle2, ChevronRight, ClipboardList, Download, FileText, Folder, Globe, History, LayoutDashboard, Menu, Plus, ScanSearch, Search, ShieldCheck, X } from 'lucide-react';
 import AccessibilityPanel from './accessibility/AccessibilityPanel.jsx';
+import Sidebar from './components/Sidebar.jsx';
 import { api, downloadReport } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { formatDate } from './utils/format.js';
@@ -32,11 +33,7 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
  return <div className="shell">
   <a href="#main" className="skip-link">Saltar al contenido principal</a>
   {menuOpen&&<button className="sidebar-backdrop" onClick={()=>{setMenuOpen(false);menuRef.current?.focus()}} aria-label="Cerrar menú" tabIndex={-1}/>}
-  <aside id="primary-sidebar" className={`sidebar ${menuOpen?'open':''}`} aria-label="Menú lateral">
-    <div className="brand"><img src="/assets/logos/a11ypilot-logo.webp" alt="" width="52" height="52"/><span><strong>A11yPilot</strong><small>Panel de accesibilidad</small></span><button className="icon-button mobile-close" aria-label="Cerrar menú" onClick={()=>{setMenuOpen(false);menuRef.current?.focus()}}><X/></button></div>
-    <nav aria-label="Navegación principal">{NAV.map(({id,name,icon:Icon})=><button key={id} className={`nav-link ${page===id?'active':''}`} aria-current={page===id?'page':undefined} onClick={()=>selectPage(id)}><Icon size={19} aria-hidden="true"/><span>{name}</span></button>)}</nav>
-    <div className="sidebar-bottom"><span className="demo-label"><span className="dot"/> MVP académico · 0.6.2</span><p>Los análisis de esta versión son simulados.</p></div>
-  </aside>
+    <Sidebar items={NAV} page={page} open={menuOpen} onClose={()=>{setMenuOpen(false);menuRef.current?.focus()}} onSelect={selectPage}/>
   <div className="main-column">
    <header className="topbar"><button ref={menuRef} className="icon-button menu-toggle" onClick={()=>setMenuOpen(x=>!x)} aria-controls="primary-sidebar" aria-expanded={menuOpen} aria-label={menuOpen?'Cerrar menú':'Abrir menú'}><Menu/></button><div className="breadcrumb">A11yPilot <ChevronRight size={15} aria-hidden="true"/><strong>{selected.name}</strong></div><span className="topbar-user" title={user.email}>Cuenta: {user.name}</span><button ref={accessRef} className="btn access-button" onClick={openAccess}><Accessibility size={19} aria-hidden="true"/><span>Accesibilidad</span></button><button className="btn secondary logout-button" onClick={onLogout}>Salir</button></header>
    <main id="main" tabIndex={-1} ref={mainRef} className="main-content"><div className="page-head"><p className="eyebrow">GESTIÓN DE ACCESIBILIDAD WEB</p><h1>{selected.name}</h1><p className="lede">{page==='dashboard'?'Consulta el estado de tus proyectos y los análisis registrados.':page==='analysis'?'Prueba el proceso de evaluación con hallazgos de demostración.':page==='projects'?'Organiza los sitios que necesitas revisar.':page==='sites'?'Administra las direcciones autorizadas para evaluar.':page==='findings'?'Revisa los problemas detectados y registra el avance de su corrección.':page==='history'?'Consulta las ejecuciones guardadas en el sistema.':page==='profile'?'Consulta y actualiza tu perfil y contraseña.':'Descarga los resultados de tus análisis de demostración.'}</p></div>
