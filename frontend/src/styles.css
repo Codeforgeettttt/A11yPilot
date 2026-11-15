@@ -27,3 +27,4 @@ html[data-spacing="wide"]{letter-spacing:.04em;line-height:1.8;word-spacing:.12e
 html[data-contrast="high"] .auth-side{background:#000;border-right:2px solid #fff}
 html[data-contrast="high"] .auth-side h1,html[data-contrast="high"] .auth-side p{color:#fff}
 @media(max-width:800px){.auth-layout{grid-template-columns:1fr}.auth-side{padding:22px;gap:5px}.auth-side img{width:60px;height:60px}.auth-side h1{font-size:1.8rem}.auth-side p{font-size:.92rem;margin:0}.auth-content{padding:18px}.topbar-user{display:none}}
+a.nav-link{text-decoration:none}
