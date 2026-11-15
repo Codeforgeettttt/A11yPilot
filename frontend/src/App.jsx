@@ -36,6 +36,7 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
  function selectPage(id){navigate(id)}
  useEffect(()=>{if(!menuOpen)return;function onKey(e){if(e.key==='Escape'){setMenuOpen(false);menuRef.current?.focus()}}window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[menuOpen]);
  const selected=NAV.find(n=>n.id===page)||NAV[0];
+  useEffect(()=>{document.title=`${selected.name} · A11yPilot`},[selected]);
   const closeMenu=()=>{setMenuOpen(false);menuRef.current?.focus()};
  return <Layout
    menuOpen={menuOpen}

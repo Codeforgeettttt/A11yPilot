@@ -24,15 +24,21 @@ export default function Sidebar({ items, page, open, onClose, onSelect }) {
 
       <nav aria-label="Navegación principal">
         {items.map(({ id, name, icon: Icon }) => (
-          <button
+          <a
             key={id}
+            href={`?page=${id}`}
             className={`nav-link ${page === id ? 'active' : ''}`}
             aria-current={page === id ? 'page' : undefined}
-            onClick={() => onSelect(id)}
+            onClick={(event) => {
+              // Con Ctrl, Cmd o Shift + clic, o con clic central: dejar que el navegador abra otra pestaña.
+              if (event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0) return;
+              event.preventDefault();
+              onSelect(id);
+            }}
           >
             <Icon size={19} aria-hidden="true" />
             <span>{name}</span>
-          </button>
+          </a>
         ))}
       </nav>
 
