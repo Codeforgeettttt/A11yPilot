@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react';
 import {LockKeyhole,Mail,UserRound,ArrowLeft,ShieldCheck} from 'lucide-react';
-import {api} from './services/api.js';
+import {api} from '../services/api.js';
 export default function Auth({onAuthenticated,onDemo}){
  const token=new URLSearchParams(window.location.search).get('reset');
  const [mode,setMode]=useState(token?'reset':'login');

@@ -1,5 +1,5 @@
 import {useEffect,useState} from 'react';
-import Auth from './Auth.jsx';
+import Auth from './pages/Auth.jsx';
 import {DashboardApp} from './App.jsx';
 import {api} from './services/api.js';
 import {isDemoMode,enableDemoMode,disableDemoMode} from './services/demoApi.js';
