@@ -11,6 +11,7 @@ import Sites from './pages/Sites.jsx';
 import NewAnalysis from './pages/NewAnalysis.jsx';
 import Findings from './pages/Findings.jsx';
 import HistoryPage from './pages/History.jsx';
+import Reports from './pages/Reports.jsx';
 import { api, downloadReport } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { formatDate } from './utils/format.js';
@@ -55,8 +56,6 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
       </main> 
        </Layout>
 }
-function Reports({data,run}){const [downloading,setDownloading]=useState(null);async function get(id){setDownloading(id);try{await run(()=>downloadReport(id),'Reporte de demostración descargado.')}finally{setDownloading(null)}}return <section className="card"><SectionTitle title="Informes de demostración" description="Descarga un informe PDF de demostración en ambos modos."/>{data.analyses.length===0?<Empty>Los reportes estarán disponibles después de ejecutar una demostración.</Empty>:<div className="record-list">{data.analyses.map(a=><div className="record" key={a.id}><div><strong>Análisis #{a.id} · {a.Site?.name||'Sitio'}</strong><p>{formatDate(a.createdAt)} · {a.findingCount??0} hallazgos</p></div><button className="btn secondary mini" disabled={downloading===a.id} onClick={()=>get(a.id)}><Download size={16} aria-hidden="true"/> Descargar PDF</button></div>)}</div>}<p className="note">El documento indica expresamente que los hallazgos son simulados y no certifican conformidad WCAG.</p></section>}
-
 function Profile({user,onUserUpdate,onLogout}){
  const [name,setName]=useState(user.name),[current,setCurrent]=useState(''),[next,setNext]=useState(''),[confirm,setConfirm]=useState(''),[error,setError]=useState(''),[success,setSuccess]=useState(''),[saving,setSaving]=useState(false);
  async function update(event){event.preventDefault();setSaving(true);setError('');setSuccess('');try{const r=await api('/auth/me',{method:'PATCH',body:{name}});onUserUpdate(r.user);setSuccess('Perfil actualizado.')}catch(e){setError(e.message)}finally{setSaving(false)}}
