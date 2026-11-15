@@ -4,6 +4,7 @@ import { Activity, Accessibility, ArrowRight, BarChart3, CheckCircle2, ChevronRi
 import AccessibilityPanel from './accessibility/AccessibilityPanel.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
+import Layout from './components/Layout.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Projects from './pages/Projects.jsx';
 import Sites from './pages/Sites.jsx';
@@ -35,21 +36,21 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
  function selectPage(id){navigate(id)}
  useEffect(()=>{if(!menuOpen)return;function onKey(e){if(e.key==='Escape'){setMenuOpen(false);menuRef.current?.focus()}}window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[menuOpen]);
  const selected=NAV.find(n=>n.id===page)||NAV[0];
- return <div className="shell">
-  <a href="#main" className="skip-link">Saltar al contenido principal</a>
-  {menuOpen&&<button className="sidebar-backdrop" onClick={()=>{setMenuOpen(false);menuRef.current?.focus()}} aria-label="Cerrar menú" tabIndex={-1}/>}
-    <Sidebar items={NAV} page={page} open={menuOpen} onClose={()=>{setMenuOpen(false);menuRef.current?.focus()}} onSelect={selectPage}/>
-  <div className="main-column">
-       <Topbar title={selected.name} user={user} menuOpen={menuOpen} menuButtonRef={menuRef} accessButtonRef={accessRef} onToggleMenu={()=>setMenuOpen(x=>!x)} onOpenAccess={openAccess} onLogout={onLogout}/>
+  const closeMenu=()=>{setMenuOpen(false);menuRef.current?.focus()};
+ return <Layout
+   menuOpen={menuOpen}
+   onCloseMenu={closeMenu}
+   overlay={accessOpen&&<AccessibilityPanel onClose={closeAccess}/>}
+   sidebar={<Sidebar items={NAV} page={page} open={menuOpen} onClose={closeMenu} onSelect={selectPage}/>}
+   topbar={<Topbar title={selected.name} user={user} menuOpen={menuOpen} menuButtonRef={menuRef} accessButtonRef={accessRef} onToggleMenu={()=>setMenuOpen(x=>!x)} onOpenAccess={openAccess} onLogout={onLogout}/>}
+ >
    <main id="main" tabIndex={-1} ref={mainRef} className="main-content"><div className="page-head"><p className="eyebrow">GESTIÓN DE ACCESIBILIDAD WEB</p><h1>{selected.name}</h1><p className="lede">{page==='dashboard'?'Consulta el estado de tus proyectos y los análisis registrados.':page==='analysis'?'Prueba el proceso de evaluación con hallazgos de demostración.':page==='projects'?'Organiza los sitios que necesitas revisar.':page==='sites'?'Administra las direcciones autorizadas para evaluar.':page==='findings'?'Revisa los problemas detectados y registra el avance de su corrección.':page==='history'?'Consulta las ejecuciones guardadas en el sistema.':page==='profile'?'Consulta y actualiza tu perfil y contraseña.':'Descarga los resultados de tus análisis de demostración.'}</p></div>
     <div className="demo-strip"><ShieldCheck size={18} aria-hidden="true"/><span><strong>{isDemoMode()?'Modo de prueba local: los proyectos y seguimientos se guardan en este navegador. No utiliza SQL Server. Ningún sitio se analiza realmente.':'Entorno de desarrollo: los proyectos se guardan en SQL Server, pero los hallazgos son ejemplos. Ningún sitio se analiza realmente.'}</strong></span></div>
     {error&&<Banner kind="error" onClose={()=>setError('')}>{error} <button className="inline-link" onClick={()=>run(async()=>{},'Datos actualizados correctamente.')}>Reintentar conexión</button></Banner>}
     {notice&&<Banner kind="success" onClose={()=>setNotice('')}>{notice}</Banner>}
     {busy?<Loading/>:page==='dashboard'?<Dashboard data={data} go={navigate}/>:page==='projects'?<Projects data={data} run={run}/>:page==='sites'?<Sites data={data} run={run}/>:page==='analysis'?<NewAnalysis data={data} run={run} navigate={navigate}/>:page==='findings'?<Findings data={data} run={run}/>:page==='history'?<HistoryPage data={data} navigate={navigate}/>:page==='profile'?<Profile user={user} onUserUpdate={onUserUpdate} onLogout={onLogout}/>:<Reports data={data} run={run}/>}
-   </main><footer className="footer">A11yPilot · Ingeniería Web II <span>Versión de desarrollo · Sin certificación WCAG</span></footer>
-  </div>
-  {accessOpen&&<AccessibilityPanel onClose={closeAccess}/>}
- </div>
+      </main> 
+       </Layout>
 }
 
 function Findings({data,run}){
