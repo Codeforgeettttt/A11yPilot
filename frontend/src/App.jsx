@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Activity, Accessibility, ArrowRight, BarChart3, CheckCircle2, ChevronRight, ClipboardList, Download, FileText, Folder, Globe, History, LayoutDashboard, Menu, Plus, ScanSearch, Search, ShieldCheck, X } from 'lucide-react';
 import AccessibilityPanel from './accessibility/AccessibilityPanel.jsx';
 import Sidebar from './components/Sidebar.jsx';
+import Topbar from './components/Topbar.jsx';
 import { api, downloadReport } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { formatDate } from './utils/format.js';
@@ -35,7 +36,7 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
   {menuOpen&&<button className="sidebar-backdrop" onClick={()=>{setMenuOpen(false);menuRef.current?.focus()}} aria-label="Cerrar menú" tabIndex={-1}/>}
     <Sidebar items={NAV} page={page} open={menuOpen} onClose={()=>{setMenuOpen(false);menuRef.current?.focus()}} onSelect={selectPage}/>
   <div className="main-column">
-   <header className="topbar"><button ref={menuRef} className="icon-button menu-toggle" onClick={()=>setMenuOpen(x=>!x)} aria-controls="primary-sidebar" aria-expanded={menuOpen} aria-label={menuOpen?'Cerrar menú':'Abrir menú'}><Menu/></button><div className="breadcrumb">A11yPilot <ChevronRight size={15} aria-hidden="true"/><strong>{selected.name}</strong></div><span className="topbar-user" title={user.email}>Cuenta: {user.name}</span><button ref={accessRef} className="btn access-button" onClick={openAccess}><Accessibility size={19} aria-hidden="true"/><span>Accesibilidad</span></button><button className="btn secondary logout-button" onClick={onLogout}>Salir</button></header>
+       <Topbar title={selected.name} user={user} menuOpen={menuOpen} menuButtonRef={menuRef} accessButtonRef={accessRef} onToggleMenu={()=>setMenuOpen(x=>!x)} onOpenAccess={openAccess} onLogout={onLogout}/>
    <main id="main" tabIndex={-1} ref={mainRef} className="main-content"><div className="page-head"><p className="eyebrow">GESTIÓN DE ACCESIBILIDAD WEB</p><h1>{selected.name}</h1><p className="lede">{page==='dashboard'?'Consulta el estado de tus proyectos y los análisis registrados.':page==='analysis'?'Prueba el proceso de evaluación con hallazgos de demostración.':page==='projects'?'Organiza los sitios que necesitas revisar.':page==='sites'?'Administra las direcciones autorizadas para evaluar.':page==='findings'?'Revisa los problemas detectados y registra el avance de su corrección.':page==='history'?'Consulta las ejecuciones guardadas en el sistema.':page==='profile'?'Consulta y actualiza tu perfil y contraseña.':'Descarga los resultados de tus análisis de demostración.'}</p></div>
     <div className="demo-strip"><ShieldCheck size={18} aria-hidden="true"/><span><strong>{isDemoMode()?'Modo de prueba local: los proyectos y seguimientos se guardan en este navegador. No utiliza SQL Server. Ningún sitio se analiza realmente.':'Entorno de desarrollo: los proyectos se guardan en SQL Server, pero los hallazgos son ejemplos. Ningún sitio se analiza realmente.'}</strong></span></div>
     {error&&<Banner kind="error" onClose={()=>setError('')}>{error} <button className="inline-link" onClick={()=>run(async()=>{},'Datos actualizados correctamente.')}>Reintentar conexión</button></Banner>}
