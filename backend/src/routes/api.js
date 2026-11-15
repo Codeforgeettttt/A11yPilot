@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { sequelize } from '../config/database.js';
-import { Project,Site,Analysis,Finding,FindingUpdate } from '../models/index.js';
+import { Project,Site,Analysis,Finding,FindingUpdate,AnalysisEvent } from '../models/index.js';
 import { allowedStatuses, bad, intId, textField, validUrl } from '../utils/validate.js';
 import { createDemoAnalysis } from '../services/analysis.js';
 import { sendPdf } from '../services/reports.js';
@@ -48,6 +48,28 @@ router.post('/analyses/demo',go(async(req,res)=>{
  const analysis=await createDemoAnalysis(site.id);res.status(201).json({id:analysis.id,status:analysis.status,demo:true,message:'Se guardaron datos de demostración. No se ha visitado el sitio.'});
 }));
 router.get('/analyses/:id',go(async(req,res)=>res.json(await ownAnalysis(req,req.params.id))));
+// Estado de un análisis: el frontend lo consulta cada pocos segundos mientras se analiza.
+router.get('/analyses/:id/status', go(async (req, res) => {
+  const analysis = await Analysis.findByPk(requiredId(req.params.id), {
+    include: [
+      // Solo se encuentra si el análisis pertenece a un proyecto del usuario conectado.
+      { model: Site, required: true, attributes: [], include: [{ model: Project, where: { userId: req.user.id }, required: true, attributes: [] }] },
+      { model: AnalysisEvent, attributes: ['state', 'note', 'createdAt'] },
+    ],
+    order: [[AnalysisEvent, 'id', 'ASC']],
+  });
+  if (!analysis) throw bad('Análisis no encontrado.', 404);
+  const findingCount = await Finding.count({ where: { analysisId: analysis.id } });
+  res.json({
+    id: analysis.id,
+    status: analysis.status,
+    demo: analysis.demo,
+    startedAt: analysis.startedAt,
+    finishedAt: analysis.finishedAt,
+    findingCount,
+    events: analysis.AnalysisEvents.map(({ state, note, createdAt }) => ({ state, note, createdAt })),
+  });
+}));
 router.get('/findings',go(async(req,res)=>{
  const where={};if(req.query.impact)where.impact=String(req.query.impact);if(req.query.status)where.status=String(req.query.status);
  const projects=await Project.findAll({where:{userId:req.user.id},attributes:['id']});
