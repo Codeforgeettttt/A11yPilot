@@ -66,6 +66,8 @@ jobs:
         run: docker compose -f docker-compose.yml config --quiet
 
       - name: Build application images
+        env:
+          MSSQL_SA_PASSWORD: 'CiOnly_Example123!'
         run: docker compose -f docker-compose.yml build backend frontend
 
       - name: Start demo frontend
