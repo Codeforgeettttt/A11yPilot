@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ArrowRight, RotateCcw, ScanSearch } from 'lucide-react';
 import AnalysisProgress from '../components/AnalysisProgress.jsx';
 import { Empty, SectionTitle } from '../components/Ui.jsx';
@@ -15,22 +15,33 @@ export default function NewAnalysis({ data, run, navigate }) {
   const [siteId, setSiteId] = useState('');
   const [authorization, setAuthorization] = useState(false);
   const [error, setError] = useState('');
+  const [errorField, setErrorField] = useState(null); // 'site', 'authorization' o null
   const [sending, setSending] = useState(false);
+  const siteRef = useRef(null);
+  const authorizationRef = useRef(null);
   const [analysisId, setAnalysisId] = useState(null); // análisis que se está siguiendo
   const [result, setResult] = useState(null); // estado final (Completado o Fallido)
 
   const demo = isDemoMode();
   const noSites = data.sites.length === 0;
 
+  /** Muestra un error asociado a un campo y lleva el foco del teclado a ese campo. */
+  function fieldError(field, message, ref) {
+    setError(message);
+    setErrorField(field);
+    ref.current?.focus();
+  }
+
   async function submit(event) {
     event.preventDefault();
     setError('');
+    setErrorField(null);
     if (!siteId) {
-      setError('Selecciona un sitio.');
+      fieldError('site', 'Selecciona un sitio.', siteRef);
       return;
     }
     if (!authorization) {
-      setError('Confirma la autorización para continuar.');
+      fieldError('authorization', 'Confirma la autorización para continuar.', authorizationRef);
       return;
     }
     setSending(true);
@@ -89,7 +100,15 @@ export default function NewAnalysis({ data, run, navigate }) {
       />
       <form className="form-stack" onSubmit={submit} noValidate>
         <label htmlFor="analysis-site">Sitio web</label>
-        <select id="analysis-site" value={siteId} onChange={(e) => setSiteId(e.target.value)} required>
+        <select
+          id="analysis-site"
+          ref={siteRef}
+          value={siteId}
+          onChange={(e) => setSiteId(e.target.value)}
+          required
+          aria-invalid={errorField === 'site'}
+          aria-describedby={errorField === 'site' ? 'analysis-error' : undefined}
+        >
           <option value="">Seleccionar sitio registrado</option>
           {data.sites.map((site) => (
             <option key={site.id} value={site.id}>
@@ -99,12 +118,19 @@ export default function NewAnalysis({ data, run, navigate }) {
         </select>
 
         <label className="checkline">
-          <input type="checkbox" checked={authorization} onChange={(e) => setAuthorization(e.target.checked)} />
+          <input
+            type="checkbox"
+            ref={authorizationRef}
+            checked={authorization}
+            onChange={(e) => setAuthorization(e.target.checked)}
+            aria-invalid={errorField === 'authorization'}
+            aria-describedby={errorField === 'authorization' ? 'analysis-error' : undefined}
+          />
           <span>Confirmo que tengo autorización para evaluar este sitio.</span>
         </label>
 
         {error && (
-          <div className="field-error" role="alert">
+          <div className="field-error" role="alert" id="analysis-error">
             {error}
           </div>
         )}
