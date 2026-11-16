@@ -27,4 +27,6 @@ Las comprobaciones de calidad pueden marcar problemas de formato o advertencias 
 3. Abre la ejecución correspondiente a la rama `Docker`.
 4. Entra al trabajo que falló y despliega el paso indicado.
 
+La comprobación de Prettier recorre el repositorio, pero es **informativa** mediante `continue-on-error: true`: sus diferencias quedan en el registro y no bloquean los otros trabajos de CI. No se modifica el formato del código del equipo. Antes de publicar una versión debe acordarse cómo resolver la deuda de estilo.
+
 El flujo también permite ejecución manual mediante **Run workflow**, siempre que GitHub Actions exponga la opción para esa rama.

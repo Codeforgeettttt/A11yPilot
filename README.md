@@ -236,7 +236,7 @@ La instancia `SQLEXPRESS` puede usar puertos dinámicos; confirmar el puerto TCP
 
 En el modo completo, las cuentas utilizan hash de contraseña con `scrypt` y sesiones revocables en SQL Server con cookies `HttpOnly`. Las operaciones sobre recursos se asocian al usuario autenticado. Hay controles básicos de validación, cabeceras y límites de solicitudes.
 
-**Este entorno se diseñó para ejecución local:** faltan revisión integral de seguridad, controles CSRF adicionales según despliegue, HTTPS de producción, migraciones versionadas y un motor de análisis aislado con protección SSRF. No se debe exponer la API directamente a Internet con la configuración de desarrollo. Los parámetros `DB_ENCRYPT=false`, `DB_TRUST_CERT=true` y `DEV_SHOW_RESET_LINK=true` son únicamente de laboratorio.
+**Este entorno se diseñó para ejecución local:** faltan revisión integral de seguridad, controles CSRF adicionales según despliegue, HTTPS de producción, migraciones versionadas y un motor de análisis aislado con protección SSRF. No se debe exponer la API directamente a Internet con la configuración de desarrollo. La rama actual incluye un control de URL y proxy para el escáner, pero necesita validación de seguridad adicional. Los parámetros `DB_ENCRYPT=false`, `DB_TRUST_CERT=true` y `DEV_SHOW_RESET_LINK=true` son únicamente de laboratorio.
 
 ## 12. Estado de avance, pruebas y evidencias
 
@@ -276,7 +276,7 @@ npm.cmd run test
 
 **A11yPilot · Universidad Manuela Beltrán · Ingeniería Web II**
 
-*El proyecto se desarrolla por fases. Los análisis de esta entrega son demostrativos y no representan auditorías reales de accesibilidad.*
+*El proyecto se desarrolla por fases. El modo completo incorpora análisis automatizados; el modo de prueba utiliza resultados simulados. Ninguna modalidad certifica conformidad WCAG.*
 
 </div>
 
