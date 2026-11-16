@@ -4,6 +4,7 @@ import { sequelize } from '../config/database.js';
 import { Analysis, AnalysisEvent, Finding, Project, Site } from '../models/index.js';
 import { violationsToFindings } from './findings-mapper.js';
 import { scanPage } from './scanner.js';
+import { assertPageLoaded, friendlyError } from './analysis-errors.js';
 import { bad } from '../utils/validate.js';
 
 const IN_PROGRESS = ['En cola', 'Ejecutándose'];
@@ -28,6 +29,7 @@ async function runAnalysis(analysisId, url) {
   await addEvent(analysisId, 'Ejecutándose', 'Abriendo la página y revisándola con axe-core');
   try {
     const result = await scanPage(url);
+        assertPageLoaded(result.status);
     const findings = violationsToFindings(result.violations);
     await sequelize.transaction(async (transaction) => {
       await Finding.bulkCreate(
@@ -39,7 +41,9 @@ async function runAnalysis(analysisId, url) {
     });
   } catch (error) {
     await analysis.update({ status: 'Fallido', finishedAt: new Date() });
-    await addEvent(analysisId, 'Fallido', error.message.slice(0, 300));
+        // En la consola del servidor queda el error técnico; al usuario le mostramos uno claro.
+    console.error(`[Análisis ${analysisId}]`, error.message);
+    await addEvent(analysisId, 'Fallido', friendlyError(error));
   }
 }
 
