@@ -9,6 +9,9 @@ export async function api(path, {method='GET', body, ...options}={}) {
   const contentType=response.headers.get('content-type')||'';
   const result=contentType.includes('json') ? await response.json() : await response.text();
   if(response.status===401)window.dispatchEvent(new Event('a11y-session-ended'));
+  // Sin backend (por ejemplo, con "npm run dev:demo" o en la versión publicada), el servidor responde
+  // 500/502/503/504 sin JSON. En lugar de "Error HTTP 500", explicamos qué pasa y qué hacer.
+  if(!response.ok && !contentType.includes('json') && response.status>=500) throw new Error('El servidor de A11yPilot no está disponible. Inicia el backend y SQL Server, o usa «Entrar en modo de prueba».');
   if(!response.ok) throw new Error(result?.error?.message || result?.message || `Error HTTP ${response.status}`);
   return result;
 }
