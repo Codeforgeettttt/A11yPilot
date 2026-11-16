@@ -21,7 +21,7 @@
 ---
 
 > [!IMPORTANT]
-> **Estado actual:** MVP académico en desarrollo. Los hallazgos de accesibilidad provienen de **análisis simulados**, no de un escaneo real de la URL. El proyecto no certifica conformidad WCAG y no está preparado para despliegue público.
+> **Estado actual:** MVP académico en desarrollo. En modo completo se ha incorporado el análisis real con Playwright + axe-core sobre sitios públicos autorizados; el modo de prueba conserva los hallazgos **simulados**. El proyecto no certifica conformidad WCAG ni está preparado para despliegue público.
 
 ## 1. Descripción general
 
@@ -56,11 +56,11 @@ Desarrollar una aplicación web que permita gestionar proyectos y sitios, presen
 
 | Incluido | Próximas fases |
 | :--- | :--- |
-| Dashboard, proyectos, sitios, análisis, hallazgos, historial y reportes | Escaneo real mediante Playwright + axe-core |
+| Dashboard, proyectos, sitios, análisis, hallazgos, historial y reportes | Mejoras de cobertura de análisis |
 | Registro e inicio de sesión con persistencia en modo completo | Administración avanzada de roles |
 | Simulador de hallazgos y seguimiento | Comparación automática de revisiones reales |
-| API REST y SQL Server para ejecución local | Cola de trabajos y navegador aislado |
-| PDF de demostración en los dos modos | Análisis automático de URLs públicas autorizadas |
+| API REST, SQL Server y cola simple de análisis | Aislamiento reforzado y escalamiento del navegador |
+| PDF de análisis y modo de prueba simulado | Auditoría integral y comparaciones entre revisiones |
 | Alto contraste, texto, espaciado y reducción de movimiento | Auditoría integral WCAG y despliegue público |
 | Pruebas básicas y documentación | Migraciones versionadas del esquema |
 
@@ -74,13 +74,13 @@ Desarrollar una aplicación web que permita gestionar proyectos y sitios, presen
 | **Dashboard** | Indicadores, resumen y actividad de proyectos |
 | **Proyectos** | Creación y administración de proyectos |
 | **Sitios** | Registro de URLs con confirmación de autorización |
-| **Nuevo análisis** | Ejecución de un flujo de evaluación **simulado** |
+| **Nuevo análisis** | Análisis real en modo completo y resultados simulados en modo de prueba |
 | **Hallazgos** | Búsqueda, filtros, clasificación y seguimiento |
 | **Historial** | Consulta de análisis anteriores registrados |
 | **Reportes** | PDF con resultados explícitamente demostrativos |
 | **Accesibilidad** | Panel de contraste alto y preferencias de lectura |
 
-**Flujo de uso:** entrar → crear proyecto → registrar sitio → confirmar autorización → ejecutar simulación → revisar hallazgos → actualizar seguimiento → descargar PDF.
+**Flujo de uso:** entrar → crear proyecto → registrar sitio → confirmar autorización → ejecutar análisis (real en modo completo o simulado en modo de prueba) → revisar hallazgos → actualizar seguimiento → descargar PDF.
 
 ## 6. Accesibilidad y diseño de interfaz
 
@@ -115,7 +115,7 @@ flowchart TD
 | `PasswordResets` | Solicitudes de restablecimiento |
 | `Projects` | Proyectos vinculados a sus propietarios |
 | `Sites` | Sitios asociados a proyectos |
-| `Analyses` | Análisis de demostración |
+| `Analyses` | Análisis reales o de demostración |
 | `Findings` | Hallazgos asociados a los análisis |
 | `FindingUpdates` | Registro de seguimiento |
 | `AnalysisEvents` | Eventos de ejecución |
@@ -250,7 +250,7 @@ En el modo completo, las cuentas utilizan hash de contraseña con `scrypt` y ses
 | Pruebas automatizadas | Incluidas; resultados pendientes de registrar |
 | Capturas responsive | Pendientes de documentar |
 | Pruebas manuales con lectores de pantalla | Pendientes |
-| Análisis reales de sitios | No implementados |
+| Análisis reales de sitios | Implementados en código; pendiente validación integral en Docker |
 | Certificación de conformidad WCAG | No disponible |
 
 Las capturas reales y resultados se documentarán en **[docs/evidencias](docs/evidencias/README.md)**. Se requieren vistas de escritorio, móvil y tableta, interacciones principales, alto contraste y un PDF generado. No incluir credenciales ni datos privados en esas capturas.
@@ -265,7 +265,7 @@ npm.cmd run test
 ## 13. Siguientes fases
 
 1. **Cierre de Entrega 1:** registrar pruebas, ajustar responsive y revisar accesibilidad.
-2. **Motor real:** integrar Playwright y axe-core para URLs públicas autorizadas.
+2. **Motor real:** validar integralmente Playwright y axe-core con SQL Server y contenedores.
 3. **Seguridad del análisis:** validación contra SSRF, aislamiento del navegador y límites de ejecución.
 4. **Seguimiento avanzado:** comparar revisiones y mejorar informes.
 5. **Evolución del sistema:** migraciones versionadas, roles, despliegue y pruebas de producción.
@@ -279,3 +279,37 @@ npm.cmd run test
 *El proyecto se desarrolla por fases. Los análisis de esta entrega son demostrativos y no representan auditorías reales de accesibilidad.*
 
 </div>
+
+
+## Preparación Docker, calidad y manuales (rama `Docker`)
+
+En esta rama se encuentran los archivos para construir los contenedores, ejecutar SQL Server con Compose y usar el modo de prueba independiente. **La preparación no constituye una publicación de `v1.0.0`**.
+
+- [Instalación con Docker](docs/manuales/INSTALACION.md)
+- [Manual de usuario](docs/manuales/USUARIO.md)
+- [Arquitectura de contenedores](docs/arquitectura/DESPLIEGUE_DOCKER.md)
+- [Matriz de pruebas y evidencias](docs/pruebas/PLAN_PRUEBAS.md)
+- [Preparación de la versión v1.0.0](docs/entrega/RELEASE_1.0.0.md)
+- [Verificaciones de GitHub Actions](docs/despliegue/PRUEBAS_CI.md)
+
+```powershell
+# Desde la raíz del repositorio, en la rama Docker
+Copy-Item .env.docker.example .env
+notepad .env
+# Configura una contraseña privada MSSQL_SA_PASSWORD
+docker compose config --quiet
+docker compose up --build -d
+docker compose ps -a
+```
+
+Abre http://localhost:5173 para el modo completo. Para el modo demo sin SQL Server:
+
+```powershell
+docker compose -f compose.demo.yaml up --build -d
+```
+
+Abre http://localhost:5174.
+
+**Estado de comprobaciones:** compilación, pruebas unitarias y construcción de imágenes comprobadas mediante GitHub Actions. La prueba integral de SQL Server y del escáner real dentro de Compose sigue pendiente. El repositorio conserva diferencias de estilo Prettier preexistentes sin reformatear el código del equipo. Consulta [el registro de pruebas](docs/pruebas/PLAN_PRUEBAS.md) para el detalle.
+
+**Nota de vigencia:** los apartados históricos de la Entrega 1 describen la versión demostrativa 0.6.2; este apartado registra las funcionalidades posteriores y los cambios en preparación de la rama `Docker`. No se ha publicado una versión 1.0.0.
