@@ -15,6 +15,41 @@ const id=()=>Number.parseInt(String(Math.random()*1e8),10);
 function publicProjects(db){return [...db.projects].reverse()}
 function getSite(db,siteId){return db.sites.find(s=>s.id===Number(siteId))}
 function reportRows(db,analysis){const site=getSite(db,analysis.siteId);return {site,findings:db.findings.filter(f=>f.analysisId===analysis.id)}}
+// Tiempo simulado de cada fase del análisis de prueba (en milisegundos).
+const QUEUE_MS = 1000;
+const RUN_MS = 3000;
+
+/** Hace avanzar un análisis de prueba según el tiempo que pasó desde que se pidió. */
+function advanceDemoAnalysis(db, analysis) {
+  const elapsed = Date.now() - new Date(analysis.createdAt).getTime();
+  if (analysis.status === 'En cola' && elapsed >= QUEUE_MS) {
+    analysis.status = 'Ejecutándose';
+    analysis.startedAt = now();
+  }
+  if (analysis.status === 'Ejecutándose' && elapsed >= QUEUE_MS + RUN_MS) {
+    analysis.status = 'Completado';
+    analysis.finishedAt = now();
+    for (const sample of samples) {
+      db.findings.push({ ...sample, id: ++db.nextId, analysisId: analysis.id, status: 'Pendiente', createdAt: now() });
+    }
+  }
+}
+
+/** Devuelve el estado del análisis con el mismo formato que el backend real. */
+function demoStatus(db, analysis) {
+  const events = [{ state: 'En cola', note: 'Solicitud recibida (modo de prueba)', createdAt: analysis.createdAt }];
+  if (analysis.startedAt) events.push({ state: 'Ejecutándose', note: 'Simulando la revisión de la página', createdAt: analysis.startedAt });
+  if (analysis.finishedAt) events.push({ state: 'Completado', note: `${samples.length} hallazgos simulados guardados`, createdAt: analysis.finishedAt });
+  return {
+    id: analysis.id,
+    status: analysis.status,
+    demo: true,
+    startedAt: analysis.startedAt,
+    finishedAt: analysis.finishedAt,
+    findingCount: db.findings.filter((f) => f.analysisId === analysis.id).length,
+    events,
+  };
+}
 export function isDemoMode(){return sessionStorage.getItem('a11ypilot-demo-mode')==='yes'}
 export function enableDemoMode(){sessionStorage.setItem('a11ypilot-demo-mode','yes')}
 export function disableDemoMode(){sessionStorage.removeItem('a11ypilot-demo-mode')}
@@ -59,6 +94,22 @@ export async function demoApi(path,{method='GET',body={}}={}){
   const analysis={id:++db.nextId,siteId:site.id,status:'Completado',demo:true,createdAt:now()};db.analyses.push(analysis);
   for(const sample of samples)db.findings.push({...sample,id:++db.nextId,analysisId:analysis.id,status:'Pendiente',createdAt:now()});
   return saveAnd({id:analysis.id,status:analysis.status,demo:true,message:'Resultados locales simulados; no se visitó el sitio.'});
+ }
+  // Pedir un análisis: queda "En cola" y avanza solo con el tiempo, como el análisis real.
+ if (path === '/analyses' && method === 'POST') {
+  const site = getSite(db, body.siteId);
+  if (!site) error('Selecciona un sitio válido.');
+  if (body.authorizationConfirmed !== true) error('Debes confirmar la autorización.');
+  const analysis = { id: ++db.nextId, siteId: site.id, status: 'En cola', demo: true, createdAt: now(), startedAt: null, finishedAt: null };
+  db.analyses.push(analysis);
+  return saveAnd({ id: analysis.id, status: analysis.status, demo: true });
+ }
+ // Consultar cómo va un análisis (mismo formato que GET /api/analyses/:id/status del backend).
+ if (chunks[0] === 'analyses' && chunks[2] === 'status' && method === 'GET') {
+  const analysis = db.analyses.find((a) => a.id === Number(chunks[1]));
+  if (!analysis) error('Análisis no encontrado.');
+  advanceDemoAnalysis(db, analysis);
+  return saveAnd(demoStatus(db, analysis));
  }
  if(path==='/analyses'&&method==='GET')return [...db.analyses].reverse().map(a=>({...a,Site:getSite(db,a.siteId),findingCount:db.findings.filter(f=>f.analysisId===a.id).length}));
  if(chunks[0]==='analyses'&&chunks[1]){const a=db.analyses.find(a=>a.id===Number(chunks[1]));if(!a)error('Análisis no encontrado.');return {...a,Site:getSite(db,a.siteId),Findings:db.findings.filter(f=>f.analysisId===a.id)}}
