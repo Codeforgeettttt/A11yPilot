@@ -12,6 +12,10 @@ export default function Findings({ data, run }) {
   const [search, setSearch] = useState('');
   const [impact, setImpact] = useState('Todos');
   const [status, setStatus] = useState('Todos');
+    // Si la URL trae ?analysis=8, empezamos mostrando solo ese análisis.
+  const [analysisFilter, setAnalysisFilter] = useState(
+    () => new URLSearchParams(window.location.search).get('analysis') ?? 'Todos',
+  );
   const [expanded, setExpanded] = useState({});
   const [draftNotes, setDraftNotes] = useState({});
 
@@ -20,6 +24,7 @@ export default function Findings({ data, run }) {
     (finding) =>
       (impact === 'Todos' || finding.impact === impact) &&
       (status === 'Todos' || finding.status === status) &&
+      (analysisFilter === 'Todos' || String(finding.analysisId) === analysisFilter) &&
       `${finding.title} ${finding.rule} ${finding.wcag || ''} ${finding.site?.name || ''}`
         .toLowerCase()
         .includes(search.toLowerCase()),
@@ -44,6 +49,17 @@ export default function Findings({ data, run }) {
       />
 
       <div className="filters">
+                <label className="filter">
+          <span>Análisis</span>
+          <select value={analysisFilter} onChange={(e) => setAnalysisFilter(e.target.value)}>
+            <option value="Todos">Todos</option>
+            {data.analyses.map((analysis) => (
+              <option key={analysis.id} value={String(analysis.id)}>
+                #{analysis.id} · {analysis.Site?.name || 'Sitio'}
+              </option>
+            ))}
+          </select>
+        </label>
         <label className="filter">
           <span>Buscar</span>
           <input

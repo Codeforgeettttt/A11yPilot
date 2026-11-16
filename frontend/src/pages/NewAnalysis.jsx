@@ -68,7 +68,7 @@ export default function NewAnalysis({ data, run, navigate }) {
         {result && (
           <div className="button-row">
             {result.status === 'Completado' && (
-              <button className="btn primary" onClick={() => navigate('findings')}>
+              <button className="btn primary" onClick={() => navigate('findings', { analysis: analysisId })}>
                 Ver hallazgos <ArrowRight size={16} aria-hidden="true" />
               </button>
             )}

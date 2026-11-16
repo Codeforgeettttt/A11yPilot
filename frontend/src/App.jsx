@@ -23,8 +23,8 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
  const [data,setData]=useState({projects:[],sites:[],analyses:[],findings:[],summary:null}),[busy,setBusy]=useState(true);
  const [error,setError]=useState(''),[notice,setNotice]=useState('');
  const mainRef=useRef(null),menuRef=useRef(null),accessRef=useRef(null),previousFocus=useRef(null);
- const navigate=useCallback(id=>{setPage(id);setMenuOpen(false);const p=new URLSearchParams(location.search);p.set('page',id);history.pushState(null,'',`?${p.toString()}`);requestAnimationFrame(()=>mainRef.current?.focus());},[]);
- useEffect(()=>{const fn=()=>{setPage( getPageFromUrl());requestAnimationFrame(()=>mainRef.current?.focus())};window.addEventListener('popstate',fn);return()=>window.removeEventListener('popstate',fn)},[]);
+ const navigate=useCallback((id,params={})=>{setPage(id);setMenuOpen(false);const p=new URLSearchParams({page:id,...params});history.pushState(null,'',`?${p.toString()}`);requestAnimationFrame(()=>mainRef.current?.focus());},[]);
+ useEffect(()=>{const fn=()=>{setPage(getPageFromUrl());requestAnimationFrame(()=>mainRef.current?.focus())};window.addEventListener('popstate',fn);return()=>window.removeEventListener('popstate',fn)},[]);
  const refresh=useCallback(async()=>{
    const results=await Promise.allSettled([api('/dashboard/summary'),api('/projects'),api('/sites'),api('/analyses'),api('/findings')]);
    if(results.some(r=>r.status==='rejected'))throw new Error(results.find(r=>r.status==='rejected').reason.message);
