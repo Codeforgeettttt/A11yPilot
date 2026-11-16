@@ -18,7 +18,7 @@ class FindingUpdate extends Model{};
 FindingUpdate.init({previousStatus:{type:DataTypes.STRING(50),allowNull:false},newStatus:{type:DataTypes.STRING(50),allowNull:false},note:{type:DataTypes.STRING(500),allowNull:false,defaultValue:''}}, {sequelize,modelName:'FindingUpdate',tableName:'FindingUpdates'});
 class AnalysisEvent extends Model{};
 AnalysisEvent.init({state:{type:DataTypes.STRING(30),allowNull:false},note:{type:DataTypes.STRING(300),allowNull:false,defaultValue:''}}, {sequelize,modelName:'AnalysisEvent',tableName:'AnalysisEvents'});
-User.hasMany(Project,{foreignKey:{name:'userId',allowNull:true}});Project.belongsTo(User,{foreignKey:'userId'});
+User.hasMany(Project,{foreignKey:{name:'userId',allowNull:false}});Project.belongsTo(User,{foreignKey:'userId'});
 User.hasMany(Session,{foreignKey:{name:'userId',allowNull:false},onDelete:'CASCADE'});Session.belongsTo(User,{foreignKey:'userId'});
 User.hasMany(PasswordReset,{foreignKey:{name:'userId',allowNull:false},onDelete:'CASCADE'});PasswordReset.belongsTo(User,{foreignKey:'userId'});
 Project.hasMany(Site,{foreignKey:{name:'projectId',allowNull:false},onDelete:'CASCADE'});Site.belongsTo(Project,{foreignKey:'projectId'});
