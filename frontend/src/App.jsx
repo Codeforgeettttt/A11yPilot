@@ -1,6 +1,6 @@
 import {isDemoMode} from './services/demoApi.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Activity, Accessibility, ArrowRight, BarChart3, CheckCircle2, ChevronRight, ClipboardList, Download, FileText, Folder, Globe, History, LayoutDashboard, Menu, Plus, ScanSearch, Search, ShieldCheck, X } from 'lucide-react';
+import { ClipboardList, FileText, Folder, Globe, History, LayoutDashboard, ScanSearch, ShieldCheck } from 'lucide-react';
 import AccessibilityPanel from './accessibility/AccessibilityPanel.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
@@ -13,10 +13,9 @@ import Findings from './pages/Findings.jsx';
 import HistoryPage from './pages/History.jsx';
 import Reports from './pages/Reports.jsx';
 import Profile from './pages/Profile.jsx';
-import { api, downloadReport } from './services/api.js';
+import { api } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
-import { formatDate } from './utils/format.js';
-import { Banner, Empty, IMPACTS, Loading, SectionTitle, StateTag, STATUSES, impactKind } from './components/Ui.jsx';
+import { Banner, Loading } from './components/Ui.jsx';
 
 const NAV=[{id:'dashboard',name:'Resumen',icon:LayoutDashboard},{id:'projects',name:'Proyectos',icon:Folder},{id:'sites',name:'Sitios web',icon:Globe},{id:'analysis',name:'Nuevo análisis',icon:ScanSearch},{id:'findings',name:'Hallazgos',icon:ClipboardList},{id:'history',name:'Historial',icon:History},{id:'reports',name:'Reportes',icon:FileText},{id:'profile',name:'Mi cuenta',icon:ShieldCheck}];
 function getIds(){const p=new URLSearchParams(location.search);return {page:NAV.some(x=>x.id===p.get('page'))?p.get('page'):'dashboard'}}
