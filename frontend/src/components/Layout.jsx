@@ -13,7 +13,7 @@ export default function Layout({ sidebar, topbar, menuOpen, onCloseMenu, overlay
         {topbar}
         {children}
         <footer className="footer">
-          A11yPilot · Ingeniería Web II <span>Versión de desarrollo · Sin certificación WCAG</span>
+          A11yPilot · Ingeniería Web II · Universidad Manuela Beltrán <span>Los resultados no certifican conformidad WCAG</span>
         </footer>
       </div>
       {overlay}

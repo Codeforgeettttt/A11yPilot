@@ -1,6 +1,5 @@
-import {useEffect,useState} from 'react';
-import {LockKeyhole,Mail,UserRound,ArrowLeft,ShieldCheck} from 'lucide-react';
-import {api} from './services/api.js';
+import {useEffect,useState} from 'react';import {LockKeyhole,Mail,UserRound,ArrowLeft,ShieldCheck} from 'lucide-react';
+import {api} from '../services/api.js';
 export default function Auth({onAuthenticated,onDemo}){
  const token=new URLSearchParams(window.location.search).get('reset');
  const [mode,setMode]=useState(token?'reset':'login');
@@ -23,7 +22,7 @@ export default function Auth({onAuthenticated,onDemo}){
    }
   }catch(e){setError(e.message)}finally{setBusy(false)}
  }
- return <div className="auth-layout"><a className="skip-link" href="#auth-main">Saltar al formulario</a><div className="auth-side"><img alt="A11yPilot" src="/assets/logos/a11ypilot-logo.webp" width="110" height="110"/><h1>A11yPilot</h1><p>Organiza tus proyectos, revisa hallazgos y conserva tus informes de demostración en tu propia cuenta.</p><p className="auth-side-note"><ShieldCheck aria-hidden="true"/> Primera fase académica. Los análisis son simulados.</p></div><main id="auth-main" className="auth-content"><div className="auth-card"><h2>{mode==='login'?'Iniciar sesión':mode==='register'?'Crear cuenta':mode==='forgot'?'Recuperar acceso':'Nueva contraseña'}</h2><p>{mode==='login'?'Accede a tus proyectos y reportes.':mode==='register'?'Crea tu espacio de trabajo.':mode==='forgot'?'Te enviaremos instrucciones si el correo está registrado.':'El enlace solo se puede utilizar una vez y vence en 15 minutos.'}</p>
+ return <div className="auth-layout"><a className="skip-link" href="#auth-main">Saltar al formulario</a><div className="auth-side"><img alt="A11yPilot" src="/assets/logos/a11ypilot-logo.webp" width="110" height="110"/><h1>A11yPilot</h1><p>Organiza tus proyectos, revisa hallazgos y conserva tus informes en tu propia cuenta.</p><p className="auth-side-note"><ShieldCheck aria-hidden="true"/> Con una cuenta, tus proyectos se guardan en SQL Server. El modo de prueba usa datos simulados.</p></div><main id="auth-main" className="auth-content"><div className="auth-card"><h2>{mode==='login'?'Iniciar sesión':mode==='register'?'Crear cuenta':mode==='forgot'?'Recuperar acceso':'Nueva contraseña'}</h2><p>{mode==='login'?'Accede a tus proyectos y reportes.':mode==='register'?'Crea tu espacio de trabajo.':mode==='forgot'?'Te enviaremos instrucciones si el correo está registrado.':'El enlace solo se puede utilizar una vez y vence en 15 minutos.'}</p>
  {error&&<p role="alert" className="field-error">{error}</p>}{notice&&<p role="status" className="notice-text">{notice}</p>}
  {devLink&&<p className="notice-text"><strong>Solo desarrollo local:</strong> <a href={devLink}>Abrir enlace de recuperación</a>. No habilitar esta opción en producción.</p>}
  <form className="form-stack" onSubmit={submit}>

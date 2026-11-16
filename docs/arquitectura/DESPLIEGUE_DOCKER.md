@@ -1,49 +1,54 @@
 # Arquitectura de contenedores — A11yPilot
 
-## Requisitos del entorno
+## Requisitos y componentes
 
-| Elemento | Requisito |
-| --- | --- |
-| Motor | Docker Desktop / Docker Engine con Compose V2 |
-| Plataforma | Contenedores Linux; SQL Server 2022 |
-| Servicios | `frontend`, `backend`, `db-init`, `db` |
-| Credenciales | `MSSQL_SA_PASSWORD` en `.env` local no versionado |
-| Red | `internal` de Docker; SQL Server no expuesto |
-| Persistencia | Volumen `sqlserver_data` para datos de SQL Server |
-| Alcance | Desarrollo y demostración locales, sin acceso público |
+| Componente | Tecnología | Función |
+| --- | --- | --- |
+| `frontend` | React + Vite | Interfaz web y proxy HTTP de `/api` |
+| `backend` | Node.js + Express | Cuentas, proyectos, análisis y reportes |
+| Escáner en `backend` | Playwright + Chromium + axe-core | Evaluación real de URLs públicas autorizadas |
+| `db-init` | Node.js + Sequelize | Crea la base y prepara tablas si faltan |
+| `db` | SQL Server 2022 Express | Persistencia de datos |
+| `sqlserver_data` | Volumen Docker | Conserva la información entre reinicios |
 
-## Arquitectura del modo completo
+Los servicios operan en la red `internal` de Compose. La base no publica el puerto 1433, y el frontend y la API se publican solo en la interfaz de loopback del equipo.
 
-```mermaid
-flowchart LR
-    U[Usuario en navegador] -->|localhost:5173| F[Frontend React + Vite]
-    F -->|Proxy /api| B[API Express backend:3001]
-    B -->|Sequelize / Tedious| D[(SQL Server db:1433)]
-    I[Inicialización db-init] -->|Crea base y tablas| D
-    I -.->|Debe completar primero| B
-    D --- V[(Volumen sqlserver_data)]
-```
-
-El servicio `db` arranca primero. `db-init` espera que SQL Server esté listo, crea la base `A11yPilot` si no existe e inicializa tablas mediante el script de proyecto. Después arranca el backend, y finalmente el frontend.
-
-## Arquitectura del modo demo
+## Diagrama: modo completo
 
 ```mermaid
 flowchart LR
-    U[Usuario en navegador] -->|localhost:5174| F[Frontend demo]
-    F --> L[(localStorage / sessionStorage)]
-    F --> P[Generación de PDF con jsPDF]
+  U[Usuario] -->|localhost:5173| F[React + Vite]
+  F -->|Proxy /api| B[API Express backend:3001]
+  B -->|Sequelize y Tedious| DB[(SQL Server db:1433)]
+  B -->|Análisis de URL autorizada| SC[Playwright + Chromium + axe-core]
+  SC -->|Proxy de red restrictivo| WEB[Web pública]
+  I[db-init] -->|Base y tablas| DB
+  I -.->|Inicio previo| B
+  DB --- V[(Volumen sqlserver_data)]
 ```
 
-El modo demo es independiente y no consulta la base de datos ni la API; se activa seleccionando el acceso de demostración de la interfaz.
+La base `db` inicia primero y se verifica mediante una comprobación de disponibilidad. `db-init` prepara la base y las tablas; solo al completarse con éxito comienza `backend`. El frontend redirige las llamadas a la API.
 
-## Decisiones técnicas
+La imagen del backend instala Chromium y las dependencias de sistema con `npx playwright install --with-deps chromium`, usando la versión de Playwright fijada por `backend/package-lock.json`.
 
-1. Un archivo `docker-compose.yml` integra los servicios para uso local, y `compose.demo.yaml` simplifica la demostración sin dependencias.
-2. `db-init` separa la inicialización del esquema del arranque habitual del backend y permite conservar el volumen entre ejecuciones.
-3. Las credenciales se leen del archivo `.env` local, nunca de los Dockerfile ni del código versionado.
-4. La API conserva `127.0.0.1` cuando se ejecuta fuera de Docker; dentro del contenedor recibe `HOST=0.0.0.0`.
-5. Vite permite configurar `API_PROXY_TARGET` para resolver el backend por nombre de servicio.
-6. Se mantienen hallazgos simulados; la configuración no incorpora Playwright, axe-core ni análisis reales de sitios.
+## Diagrama: modo demostración (F30)
 
-Consulta la [guía de ejecución](../despliegue/README.md) para comandos y verificaciones.
+```mermaid
+flowchart LR
+  U[Usuario] -->|localhost:5174| F[Frontend demo]
+  F --> L[(localStorage y sessionStorage)]
+  F --> PDF[PDF de ejemplo con jsPDF]
+```
+
+Este modo es independiente de SQL Server y Express. Sus hallazgos son simulados; no ejecuta Playwright.
+
+## Decisiones y límites
+
+1. `docker-compose.yml` integra el modo completo; `compose.demo.yaml` permite levantar únicamente el frontend.
+2. Las contraseñas se cargan desde `.env` privado, no se escriben en los Dockerfile.
+3. `HOST=0.0.0.0` habilita la API dentro del contenedor, mientras la publicación del puerto está restringida a `127.0.0.1` en el equipo.
+4. `API_PROXY_TARGET=http://backend:3001` comunica Vite con la API.
+5. La integración del escáner real requiere un navegador Chromium y librerías del sistema en la imagen del backend.
+6. La configuración sigue siendo de desarrollo: requiere pruebas integrales de seguridad, HTTPS, revisión de infraestructura y servidor web de producción antes de desplegarse públicamente.
+
+Consulta la [guía de despliegue](../despliegue/README.md) para instalación y comprobaciones.
