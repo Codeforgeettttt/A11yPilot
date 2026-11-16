@@ -44,3 +44,4 @@ a.nav-link{text-decoration:none}
 .step.current{border:2px solid var(--teal-dark)}
 .step.current .step-mark{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff}
 @media(max-width:540px){.step{flex-wrap:wrap}.step .btn{width:100%}}
+.analysis-progress{margin-bottom:16px}
