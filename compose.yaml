@@ -1,0 +1,78 @@
+name: a11ypilot
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Express
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in the root .env file}
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q 'SQL Server is now ready for client connections' /var/opt/mssql/log/errorlog"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - internal
+
+  db-init:
+    build:
+      context: ./backend
+    command: ["node", "scripts/bootstrap-db.js"]
+    environment: &db-env
+      DB_HOST: db
+      DB_PORT: "1433"
+      DB_NAME: A11yPilot
+      DB_USER: sa
+      DB_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in the root .env file}
+      DB_ENCRYPT: "false"
+      DB_TRUST_CERT: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - internal
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      <<: *db-env
+      HOST: 0.0.0.0
+      PORT: "3001"
+      NODE_ENV: development
+      FRONTEND_ORIGIN: http://localhost:5173
+      DEV_SHOW_RESET_LINK: "true"
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:3001:3001"
+    restart: unless-stopped
+    networks:
+      - internal
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      VITE_API_URL: /api
+      API_PROXY_TARGET: http://backend:3001
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:5173:5173"
+    networks:
+      - internal
+
+volumes:
+  sqlserver_data:
+
+networks:
+  internal:
+    driver: bridge
