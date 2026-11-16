@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: A11yPilot API
-  version: 0.6.0
-  description: API local del MVP. Analisis de accesibilidad simulados.
+  version: 1.0.0
+  description: API de A11yPilot. Análisis de accesibilidad reales con Playwright y axe-core (WCAG 2.2 A y AA), y análisis simulados para el modo de prueba.
 servers:
   - url: http://127.0.0.1:3001/api
 paths:
@@ -129,11 +129,50 @@ paths:
           schema: { type: integer }
       responses:
         '204': { description: Sitio eliminado }
+    patch:
+      summary: Editar nombre y URL de un sitio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, minLength: 2, maxLength: 120 }
+                url: { type: string, format: uri }
+                authorizationConfirmed:
+                  type: boolean
+                  description: Obligatorio (true) si cambia la URL
+      responses:
+        '200': { description: Sitio actualizado }
+        '400': { description: Datos no válidos o falta confirmar la autorización de la nueva URL }
+        '404': { description: El sitio no existe o no pertenece al usuario }
   /analyses:
     get:
-      summary: Historial de analisis
+      summary: Historial de análisis
       responses:
-        '200': { description: Analisis registrados }
+        '200': { description: Análisis registrados }
+    post:
+      summary: Pedir un análisis real con Playwright y axe-core (se ejecuta en segundo plano)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [siteId, authorizationConfirmed]
+              properties:
+                siteId: { type: integer }
+                authorizationConfirmed: { type: boolean, enum: [true] }
+      responses:
+        '202': { description: 'Análisis aceptado en estado En cola; consultar /analyses/{id}/status' }
+        '400': { description: Falta confirmar la autorización }
+        '404': { description: El sitio no existe o no pertenece al usuario }
+        '409': { description: El usuario ya tiene un análisis en curso }
   /analyses/demo:
     post:
       summary: Crear analisis simulado (sin acceder a la URL)
@@ -149,6 +188,18 @@ paths:
           schema: { type: integer }
       responses:
         '200': { description: Analisis encontrado }
+  /analyses/{id}/status:
+    get:
+      summary: Estado de un análisis (el frontend lo consulta cada pocos segundos)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Estado, número de hallazgos y eventos (En cola → Ejecutándose → Completado o Fallido)
+        '404': { description: El análisis no existe o no pertenece al usuario }
   /findings:
     get:
       summary: Consultar hallazgos
@@ -179,7 +230,7 @@ paths:
         '200': { description: Historial encontrado }
   /reports/{analysisId}:
     get:
-      summary: Descargar PDF de demostracion
+      summary: Descargar el informe PDF de un análisis (indica si es simulado)
       parameters:
         - in: path
           name: analysisId
