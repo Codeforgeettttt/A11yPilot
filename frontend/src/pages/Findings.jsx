@@ -117,6 +117,11 @@ export default function Findings({ data, run }) {
         </label>
       </div>
 
+      {/* Anuncia al lector de pantalla cuántos resultados quedan cada vez que cambia un filtro. */}
+      <p className="sr-only" role="status" aria-live="polite">
+        {filtered.length === 1 ? '1 hallazgo coincide' : `${filtered.length} hallazgos coinciden`} con los filtros.
+      </p>
+
       {filtered.length === 0 ? (
         <Empty>No hay hallazgos con esos filtros. Prueba otra búsqueda.</Empty>
       ) : (
