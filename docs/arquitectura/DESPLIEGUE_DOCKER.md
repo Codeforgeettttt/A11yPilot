@@ -39,7 +39,7 @@ El modo demo es independiente y no consulta la base de datos ni la API; se activ
 
 ## Decisiones técnicas
 
-1. Un archivo `compose.yaml` integra los servicios para uso local, y `compose.demo.yaml` simplifica la demostración sin dependencias.
+1. Un archivo `docker-compose.yml` integra los servicios para uso local, y `compose.demo.yaml` simplifica la demostración sin dependencias.
 2. `db-init` separa la inicialización del esquema del arranque habitual del backend y permite conservar el volumen entre ejecuciones.
 3. Las credenciales se leen del archivo `.env` local, nunca de los Dockerfile ni del código versionado.
 4. La API conserva `127.0.0.1` cuando se ejecuta fuera de Docker; dentro del contenedor recibe `HOST=0.0.0.0`.
