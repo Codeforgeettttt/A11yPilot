@@ -41,7 +41,14 @@ export default function Topbar({
         Cuenta: {user.name}
       </span>
 
-      <button ref={accessButtonRef} className="btn access-button" onClick={onOpenAccess}>
+      {/* aria-label: en móviles el texto se oculta y solo queda el icono; así el botón conserva su nombre. */}
+      <button
+        ref={accessButtonRef}
+        className="btn access-button"
+        onClick={onOpenAccess}
+        aria-label="Preferencias de accesibilidad"
+        aria-haspopup="dialog"
+      >
         <Accessibility size={19} aria-hidden="true" />
         <span>Accesibilidad</span>
       </button>
