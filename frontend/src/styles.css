@@ -28,3 +28,19 @@ html[data-contrast="high"] .auth-side{background:#000;border-right:2px solid #ff
 html[data-contrast="high"] .auth-side h1,html[data-contrast="high"] .auth-side p{color:#fff}
 @media(max-width:800px){.auth-layout{grid-template-columns:1fr}.auth-side{padding:22px;gap:5px}.auth-side img{width:60px;height:60px}.auth-side h1{font-size:1.8rem}.auth-side p{font-size:.92rem;margin:0}.auth-content{padding:18px}.topbar-user{display:none}}
 a.nav-link{text-decoration:none}
+/* Texto solo para lectores de pantalla: no se ve, pero se lee. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* Guía de primeros pasos */
+.getting-started{padding:22px;margin-bottom:20px}
+.getting-started h2{margin:0 0 4px}
+.getting-started>p{margin:0 0 14px;color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.step{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--stroke);border-radius:12px;background:var(--panel)}
+.step p{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+.step>div{flex:1}
+.step-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--stroke);font-weight:800;flex:none}
+.step.done{background:var(--success-bg)}
+.step.done .step-mark{border-color:var(--success-text);color:var(--success-text)}
+.step.current{border:2px solid var(--teal-dark)}
+.step.current .step-mark{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff}
+@media(max-width:540px){.step{flex-wrap:wrap}.step .btn{width:100%}}

@@ -1,6 +1,7 @@
 import { Activity, ArrowRight, ClipboardList, Folder, Globe, ShieldCheck } from 'lucide-react';
 import { Empty, IMPACTS, SectionTitle, StateTag } from '../components/Ui.jsx';
 import { formatDate } from '../utils/format.js';
+import GettingStarted from '../components/GettingStarted.jsx';
 
 /**
  * Página de Resumen: indicadores, actividad reciente y distribución por impacto.
@@ -18,6 +19,7 @@ export default function Dashboard({ data, go }) {
 
   return (
     <>
+          <GettingStarted data={data} go={go} />
       <div className="stat-grid">
         {cards.map(([name, value, Icon]) => (
           <div className="stat" key={name}>
