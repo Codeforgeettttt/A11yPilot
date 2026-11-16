@@ -16,7 +16,7 @@ export default function Reports({ data, run }) {
   async function download(id) {
     setDownloading(id);
     try {
-      await run(() => downloadReport(id), 'Reporte de demostración descargado.');
+      await run(() => downloadReport(id), 'Informe descargado.');
     } finally {
       setDownloading(null);
     }
@@ -24,9 +24,9 @@ export default function Reports({ data, run }) {
 
   return (
     <section className="card">
-      <SectionTitle title="Informes de demostración" description="Descarga un informe PDF de demostración en ambos modos." />
+      <SectionTitle title="Informes" description="Descarga el informe PDF de cada análisis." />
       {data.analyses.length === 0 ? (
-        <Empty>Los reportes estarán disponibles después de ejecutar una demostración.</Empty>
+        <Empty>Los informes estarán disponibles después de ejecutar un análisis.</Empty>
       ) : (
         <div className="record-list">
           {data.analyses.map((analysis) => (
@@ -51,7 +51,7 @@ export default function Reports({ data, run }) {
         </div>
       )}
       <p className="note">
-        El documento indica expresamente que los hallazgos son simulados y no certifican conformidad WCAG.
+        Los informes de análisis simulados lo indican expresamente. Ningún informe certifica conformidad WCAG.
       </p>
     </section>
   );

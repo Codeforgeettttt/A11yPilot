@@ -49,7 +49,7 @@ export default function Sidebar({ items, page, open, demo, onClose, onSelect }) 
         <p>
           {demo
             ? 'Los datos se guardan solo en este navegador y los análisis son simulados.'
-            : 'Tus proyectos y hallazgos se guardan en SQL Server.'}
+            : 'Análisis reales con axe-core. Tus datos se guardan en SQL Server.'}
         </p> </div>
     </aside>
   );

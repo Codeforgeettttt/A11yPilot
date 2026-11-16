@@ -12,7 +12,7 @@ export default function History({ data, navigate }) {
     <section className="card">
       <SectionTitle title="Historial de análisis" description="Cada ejecución queda guardada con fecha, sitio y estado." />
       {data.analyses.length === 0 ? (
-        <Empty>Aún no hay análisis. Registra un sitio y ejecuta una demostración.</Empty>
+        <Empty>Aún no hay análisis. Registra un sitio y ejecuta tu primer análisis.</Empty>
       ) : (
         <div className="record-list">
           {data.analyses.map((analysis) => (
@@ -22,7 +22,7 @@ export default function History({ data, navigate }) {
                   #{analysis.id} · {analysis.Site?.name || analysis.Site?.url}
                 </strong>
                 <p>
-                  {formatDate(analysis.createdAt)} · {analysis.findingCount ?? 0} hallazgos · Datos simulados
+                  {formatDate(analysis.createdAt)} · {analysis.findingCount ?? 0} hallazgos · {analysis.demo ? 'Datos simulados' : 'Análisis real'}
                 </p>
               </div>
               <StateTag kind={analysis.status === 'Completado' ? 'success' : 'warning'}>{analysis.status}</StateTag>

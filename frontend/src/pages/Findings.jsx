@@ -40,7 +40,7 @@ export default function Findings({ data, run }) {
     <section className="card">
       <SectionTitle
         title={`Hallazgos (${filtered.length})`}
-        description="Los ejemplos pueden filtrarse y sus estados se guardan según el modo seleccionado."
+        description="Filtra los hallazgos y registra el avance de su corrección."
       />
 
       <div className="filters">
@@ -108,7 +108,7 @@ export default function Findings({ data, run }) {
                     <strong>Recomendación:</strong> {finding.recommendation}
                   </p>
                   <p>
-                    <strong>Selector de ejemplo:</strong> <code>{finding.selector || 'No disponible'}</code>
+                    <strong>Elemento afectado:</strong> <code>{finding.selector || 'No disponible'}</code>
                   </p>
                   <div className="finding-editor">
                     <label htmlFor={`finding-state-${finding.id}`}>Estado</label>
