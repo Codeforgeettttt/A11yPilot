@@ -1,6 +1,7 @@
 import {isDemoMode} from './services/demoApi.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ClipboardList, FileText, Folder, Globe, History, LayoutDashboard, ScanSearch, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
+import { NAV, getPageFromUrl } from './config/navigation.js';
 import AccessibilityPanel from './accessibility/AccessibilityPanel.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Topbar from './components/Topbar.jsx';
@@ -17,15 +18,13 @@ import { api } from './services/api.js';
 import { submitAndRefresh } from './services/submitAndRefresh.js';
 import { Banner, Loading } from './components/Ui.jsx';
 
-const NAV=[{id:'dashboard',name:'Resumen',icon:LayoutDashboard},{id:'projects',name:'Proyectos',icon:Folder},{id:'sites',name:'Sitios web',icon:Globe},{id:'analysis',name:'Nuevo análisis',icon:ScanSearch},{id:'findings',name:'Hallazgos',icon:ClipboardList},{id:'history',name:'Historial',icon:History},{id:'reports',name:'Reportes',icon:FileText},{id:'profile',name:'Mi cuenta',icon:ShieldCheck}];
-function getIds(){const p=new URLSearchParams(location.search);return {page:NAV.some(x=>x.id===p.get('page'))?p.get('page'):'dashboard'}}
 export function DashboardApp({user,onLogout,onUserUpdate}){
- const [page,setPage]=useState(getIds().page),[menuOpen,setMenuOpen]=useState(false),[accessOpen,setAccessOpen]=useState(false);
+ const [page,setPage]=useState( getPageFromUrl()),[menuOpen,setMenuOpen]=useState(false),[accessOpen,setAccessOpen]=useState(false);
  const [data,setData]=useState({projects:[],sites:[],analyses:[],findings:[],summary:null}),[busy,setBusy]=useState(true);
  const [error,setError]=useState(''),[notice,setNotice]=useState('');
  const mainRef=useRef(null),menuRef=useRef(null),accessRef=useRef(null),previousFocus=useRef(null);
  const navigate=useCallback(id=>{setPage(id);setMenuOpen(false);const p=new URLSearchParams(location.search);p.set('page',id);history.pushState(null,'',`?${p.toString()}`);requestAnimationFrame(()=>mainRef.current?.focus());},[]);
- useEffect(()=>{const fn=()=>{setPage(getIds().page);requestAnimationFrame(()=>mainRef.current?.focus())};window.addEventListener('popstate',fn);return()=>window.removeEventListener('popstate',fn)},[]);
+ useEffect(()=>{const fn=()=>{setPage( getPageFromUrl());requestAnimationFrame(()=>mainRef.current?.focus())};window.addEventListener('popstate',fn);return()=>window.removeEventListener('popstate',fn)},[]);
  const refresh=useCallback(async()=>{
    const results=await Promise.allSettled([api('/dashboard/summary'),api('/projects'),api('/sites'),api('/analyses'),api('/findings')]);
    if(results.some(r=>r.status==='rejected'))throw new Error(results.find(r=>r.status==='rejected').reason.message);
@@ -48,7 +47,7 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
    sidebar={<Sidebar items={NAV} page={page} open={menuOpen} onClose={closeMenu} onSelect={selectPage}/>}
    topbar={<Topbar title={selected.name} user={user} menuOpen={menuOpen} menuButtonRef={menuRef} accessButtonRef={accessRef} onToggleMenu={()=>setMenuOpen(x=>!x)} onOpenAccess={openAccess} onLogout={onLogout}/>}
  >
-   <main id="main" tabIndex={-1} ref={mainRef} className="main-content"><div className="page-head"><p className="eyebrow">GESTIÓN DE ACCESIBILIDAD WEB</p><h1>{selected.name}</h1><p className="lede">{page==='dashboard'?'Consulta el estado de tus proyectos y los análisis registrados.':page==='analysis'?'Prueba el proceso de evaluación con hallazgos de demostración.':page==='projects'?'Organiza los sitios que necesitas revisar.':page==='sites'?'Administra las direcciones autorizadas para evaluar.':page==='findings'?'Revisa los problemas detectados y registra el avance de su corrección.':page==='history'?'Consulta las ejecuciones guardadas en el sistema.':page==='profile'?'Consulta y actualiza tu perfil y contraseña.':'Descarga los resultados de tus análisis de demostración.'}</p></div>
+   <main id="main" tabIndex={-1} ref={mainRef} className="main-content"><div className="page-head"><p className="eyebrow">GESTIÓN DE ACCESIBILIDAD WEB</p><h1>{selected.name}</h1><p className="lede">{selected.lede}</p></div>
     <div className="demo-strip"><ShieldCheck size={18} aria-hidden="true"/><span><strong>{isDemoMode()?'Modo de prueba local: los proyectos y seguimientos se guardan en este navegador. No utiliza SQL Server. Ningún sitio se analiza realmente.':'Entorno de desarrollo: los proyectos se guardan en SQL Server, pero los hallazgos son ejemplos. Ningún sitio se analiza realmente.'}</strong></span></div>
     {error&&<Banner kind="error" onClose={()=>setError('')}>{error} <button className="inline-link" onClick={()=>run(async()=>{},'Datos actualizados correctamente.')}>Reintentar conexión</button></Banner>}
     {notice&&<Banner kind="success" onClose={()=>setNotice('')}>{notice}</Banner>}
