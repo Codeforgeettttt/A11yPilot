@@ -4,6 +4,21 @@ Este documento resume los avances **verificables en GitHub** y distingue las fun
 
 > **Versión de aplicación actual:** `0.6.2`, según el `package.json` raíz y el frontend. El backend declara `0.6.0`. No se afirma que exista una etiqueta Git o Release oficial para esta versión.
 
+## [Preparación de v1.0.0 — sin publicar] — 16/11/2026
+
+**No es un lanzamiento oficial.** Se conservan las versiones declaradas en los `package.json` y no se ha creado etiqueta `v1.0.0`.
+
+- Integración en `Docker` de las funcionalidades recientes de `main`, incluido análisis real de sitios públicos autorizados con Playwright y axe-core. El modo demo continúa siendo simulado.
+- Dockerfiles para frontend/backend, instalación de Chromium, Compose con SQL Server y preparación de tablas.
+- Variables de entorno de ejemplo, archivos ignorados y configuración básica de ESLint y Prettier.
+- GitHub Actions para instalación, análisis estático, pruebas automatizadas, compilación, construcción Docker y prueba HTTP del demo.
+- Manual de instalación, manual de usuario, arquitectura, matriz de pruebas y lista de aprobación de release.
+- CI de Node (ESLint, pruebas y build) aprobado en la [ejecución 43935071262](https://github.com/Codeforgeettttt/A11yPilot/actions/runs/43935071262); Docker build y demo aprobados en [43934019852](https://github.com/Codeforgeettttt/A11yPilot/actions/runs/43934019852). El formato Prettier completo detectó 66 archivos pendientes y no se reformatearon.
+
+**Pendiente:** comprobar SQL Server y el escáner real dentro de Compose; revisar resultados de CI del último commit y vulnerabilidades de dependencias; definir licencia; aprobar Pull Request y publicación.
+
+El histórico anterior describe los estados de las entregas previas y no debe interpretarse como el estado más reciente del desarrollo.
+
 ## [En desarrollo] — mejoras posteriores al MVP · 10/11/2026
 
 ### Correcciones de formularios y conexión

@@ -9,7 +9,10 @@
     "test": "npm --prefix backend test && npm --prefix frontend test",
     "db:setup": "npm --prefix backend run db:setup",
     "db:seed": "npm --prefix backend run db:seed",
-    "dev:demo": "npm --prefix frontend run dev"
+    "dev:demo": "npm --prefix frontend run dev",
+    "lint": "npx --yes eslint@9 .",
+    "format:check": "npx --yes prettier@3 --check .",
+    "format": "npx --yes prettier@3 --write ."
   },
   "devDependencies": {
     "concurrently": "^9.2.0"

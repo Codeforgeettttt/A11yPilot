@@ -1,26 +1,25 @@
+# Dependencias
 node_modules/
 **/node_modules/
+
+# Compilaciones y pruebas
+dist/
 **/dist/
+coverage/
 **/coverage/
-**/.env
+.vite/
+**/.vite/
+
+# Variables privadas (se mantienen los ejemplos pÃºblicos)
 .env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Archivos temporales y de editor
 *.log
 .DS_Store
 Thumbs.db
 .vscode/
-
-# Dependencias y compilaciones
-node_modules/
-dist/
-coverage/
-.vite/
-
-# Configuración privada
-.env
-.env.*
-!.env.example
-
-# Archivos temporales
-*.log
-.DS_Store
-Thumbs.db
