@@ -85,6 +85,20 @@ export async function demoApi(path,{method='GET',body={}}={}){
   }
  }
  if(path==='/sites'&&method==='GET')return [...db.sites].reverse().map(s=>({...s,Project:db.projects.find(p=>p.id===s.projectId)}));
+ // Editar un sitio (mismas reglas que PATCH /api/sites/:id del backend).
+ if (chunks[0] === 'sites' && chunks[1] && method === 'PATCH') {
+  const site = getSite(db, chunks[1]);
+  if (!site) error('Sitio no encontrado.');
+  const name = (body.name ?? site.name).trim();
+  const url = body.url ?? site.url;
+  if (name.length < 2 || name.length > 120) error('El nombre del sitio debe tener entre 2 y 120 caracteres.');
+  let parsed;
+  try { parsed = new URL(url); } catch { error('Ingresa una URL HTTP o HTTPS válida sin credenciales.'); }
+  if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) error('Ingresa una URL HTTP o HTTPS válida sin credenciales.');
+  if (url !== site.url && body.authorizationConfirmed !== true) error('Si cambias la URL, debes confirmar de nuevo que tienes autorización para evaluarla.');
+  Object.assign(site, { name, url });
+  return saveAnd(site);
+ }
  if(chunks[0]==='sites'&&method==='DELETE'){
   const siteId=Number(chunks[1]),analyses=db.analyses.filter(a=>a.siteId===siteId).map(a=>a.id);
   db.sites=db.sites.filter(s=>s.id!==siteId);db.analyses=db.analyses.filter(a=>a.siteId!==siteId);db.findings=db.findings.filter(f=>!analyses.includes(f.analysisId));return saveAnd(null);
