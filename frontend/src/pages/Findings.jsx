@@ -1,6 +1,27 @@
 import { useState } from 'react';
+import FindingHistory from '../components/FindingHistory.jsx';
 import { Empty, IMPACTS, SectionTitle, StateTag, STATUSES, impactKind } from '../components/Ui.jsx';
 import { api } from '../services/api.js';
+
+/**
+ * Muestra la recomendación de un hallazgo. Los hallazgos reales terminan con
+ * "Más información: <enlace>"; ese enlace se muestra aparte, como enlace de verdad.
+ */
+function Recommendation({ text = '' }) {
+  const match = /\n?Más información: (https?:\/\/\S+)\s*$/.exec(text);
+  const steps = match ? text.slice(0, match.index) : text;
+  return (
+    <div className="recommendation">
+      <strong>Cómo corregirlo:</strong>
+      <p className="pre-line">{steps}</p>
+      {match && (
+        <a href={match[1]} target="_blank" rel="noopener noreferrer">
+          Más información sobre esta regla<span className="sr-only"> (se abre en otra pestaña)</span>
+        </a>
+      )}
+    </div>
+  );
+}
 
 /**
  * Página de Hallazgos: buscar, filtrar por impacto y estado, ver el detalle
@@ -12,12 +33,14 @@ export default function Findings({ data, run }) {
   const [search, setSearch] = useState('');
   const [impact, setImpact] = useState('Todos');
   const [status, setStatus] = useState('Todos');
-    // Si la URL trae ?analysis=8, empezamos mostrando solo ese análisis.
+  // Si la URL trae ?analysis=8, empezamos mostrando solo ese análisis.
   const [analysisFilter, setAnalysisFilter] = useState(
     () => new URLSearchParams(window.location.search).get('analysis') ?? 'Todos',
   );
   const [expanded, setExpanded] = useState({});
   const [draftNotes, setDraftNotes] = useState({});
+  // Sube cada vez que se guarda un cambio, para que el historial de seguimiento se recargue.
+  const [historyVersion, setHistoryVersion] = useState(0);
 
   // Hallazgos que cumplen los tres filtros a la vez.
   const filtered = data.findings.filter(
@@ -34,11 +57,16 @@ export default function Findings({ data, run }) {
     setExpanded((current) => ({ ...current, [id]: !current[id] }));
   }
 
-  function updateStatus(finding, newStatus, note = '') {
-    return run(
+  async function updateStatus(finding, newStatus, note = '') {
+    const saved = await run(
       () => api(`/findings/${finding.id}/status`, { method: 'PATCH', body: { status: newStatus, note } }),
       note ? 'Observación guardada.' : 'Seguimiento actualizado.',
     );
+    if (saved) {
+      // Recargar el historial de seguimiento y vaciar la observación ya guardada.
+      setHistoryVersion((current) => current + 1);
+      if (note) setDraftNotes((current) => ({ ...current, [finding.id]: '' }));
+    }
   }
 
   return (
@@ -49,7 +77,7 @@ export default function Findings({ data, run }) {
       />
 
       <div className="filters">
-                <label className="filter">
+        <label className="filter">
           <span>Análisis</span>
           <select value={analysisFilter} onChange={(e) => setAnalysisFilter(e.target.value)}>
             <option value="Todos">Todos</option>
@@ -120,9 +148,7 @@ export default function Findings({ data, run }) {
 
               {expanded[finding.id] && (
                 <div id={`finding-extra-${finding.id}`} className="finding-extra">
-                  <p>
-                    <strong>Recomendación:</strong> {finding.recommendation}
-                  </p>
+                  <Recommendation text={finding.recommendation} />
                   <p>
                     <strong>Elemento afectado:</strong> <code>{finding.selector || 'No disponible'}</code>
                   </p>
@@ -153,6 +179,7 @@ export default function Findings({ data, run }) {
                       Guardar observación
                     </button>
                   </div>
+                  <FindingHistory findingId={finding.id} version={historyVersion} />
                 </div>
               )}
             </article>
