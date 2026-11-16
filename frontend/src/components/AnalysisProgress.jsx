@@ -39,7 +39,6 @@ export default function AnalysisProgress({ analysisId, onFinished }) {
       clearTimeout(timer);
     };
     // Solo debe reiniciarse si cambia el análisis.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [analysisId]);
 
   const current = status?.status ?? 'En cola';
