@@ -38,6 +38,19 @@ router.post('/projects/:id/sites',go(async(req,res)=>{
  const site=await Site.create({projectId:p.id,name:req.body.name.trim(),url:req.body.url,authorizationConfirmed:true});res.status(201).json(site)
 }));
 router.delete('/sites/:id',go(async(req,res)=>{const site=await ownSite(req,req.params.id);await site.destroy();res.status(204).end()}));
+// Editar un sitio (nombre y URL). Si cambia la URL, hay que volver a confirmar la autorización.
+router.patch('/sites/:id', go(async (req, res) => {
+  const site = await ownSite(req, req.params.id);
+  const name = req.body?.name ?? site.name;
+  const url = req.body?.url ?? site.url;
+  if (!textField(name, 2, 120)) throw bad('El nombre del sitio debe tener entre 2 y 120 caracteres.');
+  if (!validUrl(url)) throw bad('Ingresa una URL HTTP o HTTPS válida sin credenciales.');
+  if (url !== site.url && req.body.authorizationConfirmed !== true) {
+    throw bad('Si cambias la URL, debes confirmar de nuevo que tienes autorización para evaluarla.');
+  }
+  await site.update({ name: name.trim(), url });
+  res.json(site);
+}));
 router.get('/analyses',go(async(req,res)=>{
  const sites=await Site.findAll({include:[{model:Project,where:{userId:req.user.id},required:true,attributes:[]}],attributes:['id']});
  const analyses=await Analysis.findAll({where:{siteId:sites.map(s=>s.id)},include:[{model:Site,attributes:['id','name','url']}],order:[['createdAt','DESC']]});
