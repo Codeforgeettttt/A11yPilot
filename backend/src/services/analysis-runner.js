@@ -22,14 +22,16 @@ function addEvent(analysisId, state, note, transaction) {
   return AnalysisEvent.create({ analysisId, state, note }, { transaction });
 }
 
-/** Ejecuta el scanner sobre la URL y guarda el resultado (hallazgos o error). */
 async function runAnalysis(analysisId, url) {
   const analysis = await Analysis.findByPk(analysisId);
-  await analysis.update({ status: 'Ejecutándose', startedAt: new Date() });
-  await addEvent(analysisId, 'Ejecutándose', 'Abriendo la página y revisándola con axe-core');
+  // El estado y su evento se guardan juntos (transacción) para que nadie vea uno sin el otro.
+  await sequelize.transaction(async (transaction) => {
+    await analysis.update({ status: 'Ejecutándose', startedAt: new Date() }, { transaction });
+    await addEvent(analysisId, 'Ejecutándose', 'Abriendo la página y revisándola con axe-core', transaction);
+  });
   try {
     const result = await scanPage(url);
-        assertPageLoaded(result.status);
+    assertPageLoaded(result.status);
     const findings = violationsToFindings(result.violations);
     await sequelize.transaction(async (transaction) => {
       await Finding.bulkCreate(
@@ -40,10 +42,12 @@ async function runAnalysis(analysisId, url) {
       await addEvent(analysisId, 'Completado', `${findings.length} hallazgos guardados`, transaction);
     });
   } catch (error) {
-    await analysis.update({ status: 'Fallido', finishedAt: new Date() });
-        // En la consola del servidor queda el error técnico; al usuario le mostramos uno claro.
+    // En la consola del servidor queda el error técnico; al usuario le mostramos uno claro.
     console.error(`[Análisis ${analysisId}]`, error.message);
-    await addEvent(analysisId, 'Fallido', friendlyError(error));
+    await sequelize.transaction(async (transaction) => {
+      await analysis.update({ status: 'Fallido', finishedAt: new Date() }, { transaction });
+      await addEvent(analysisId, 'Fallido', friendlyError(error), transaction);
+    });
   }
 }
 
