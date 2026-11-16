@@ -6,7 +6,8 @@ import { createDemoAnalysis } from '../services/analysis.js';
 import { startRealAnalysis } from '../services/analysis-runner.js';
 import { sendPdf } from '../services/reports.js';
 import { requireUser } from '../services/auth.js';
-const router=Router();const go=fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next);
+import { asyncHandler as go } from '../utils/asyncHandler.js';
+const router=Router();
 function requiredId(raw){const id=intId(raw);if(!id)throw bad('Identificador no válido.');return id}
 function projectBody(body){if(!textField(body?.name,3,120))throw bad('El nombre del proyecto debe tener de 3 a 120 caracteres.');if(body.description!==undefined&&!textField(body.description,0,700))throw bad('La descripción no debe superar 700 caracteres.');return {name:body.name.trim(),description:(body.description||'').trim()}}
 async function ownProject(req,id){const p=await Project.findOne({where:{id:requiredId(id),userId:req.user.id}});if(!p)throw bad('Proyecto no encontrado.',404);return p}
