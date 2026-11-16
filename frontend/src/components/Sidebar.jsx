@@ -8,7 +8,7 @@ import { X } from 'lucide-react';
  * - onClose: qué hacer al cerrar el menú.
  * - onSelect: qué hacer al elegir una sección.
  */
-export default function Sidebar({ items, page, open, onClose, onSelect }) {
+export default function Sidebar({ items, page, open, demo, onClose, onSelect }) {
   return (
     <aside id="primary-sidebar" className={`sidebar ${open ? 'open' : ''}`} aria-label="Menú lateral">
       <div className="brand">
@@ -43,11 +43,14 @@ export default function Sidebar({ items, page, open, onClose, onSelect }) {
       </nav>
 
       <div className="sidebar-bottom">
-        <span className="demo-label">
-          <span className="dot" /> MVP académico · 0.6.2
+                <span className="demo-label">
+          <span className="dot" /> {demo ? 'Modo de prueba' : 'Modo completo'}
         </span>
-        <p>Los análisis de esta versión son simulados.</p>
-      </div>
+        <p>
+          {demo
+            ? 'Los datos se guardan solo en este navegador y los análisis son simulados.'
+            : 'Análisis reales con axe-core. Tus datos se guardan en SQL Server.'}
+        </p> </div>
     </aside>
   );
 }

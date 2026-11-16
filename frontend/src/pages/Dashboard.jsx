@@ -1,6 +1,7 @@
 import { Activity, ArrowRight, ClipboardList, Folder, Globe, ShieldCheck } from 'lucide-react';
 import { Empty, IMPACTS, SectionTitle, StateTag } from '../components/Ui.jsx';
 import { formatDate } from '../utils/format.js';
+import GettingStarted from '../components/GettingStarted.jsx';
 
 /**
  * Página de Resumen: indicadores, actividad reciente y distribución por impacto.
@@ -18,6 +19,7 @@ export default function Dashboard({ data, go }) {
 
   return (
     <>
+          <GettingStarted data={data} go={go} />
       <div className="stat-grid">
         {cards.map(([name, value, Icon]) => (
           <div className="stat" key={name}>
@@ -26,21 +28,21 @@ export default function Dashboard({ data, go }) {
               <Icon size={21} aria-hidden="true" />
             </div>
             <strong>{value}</strong>
-            <p>Registros del entorno de desarrollo</p>
+            <p>Registros guardados</p>
           </div>
         ))}
       </div>
 
       <div className="two-col">
         <section className="card">
-          <SectionTitle title="Comienza una evaluación" description="Registra un sitio y genera un análisis de ejemplo." />
+          <SectionTitle title="Comienza una evaluación" description="Registra un sitio y analiza su accesibilidad." />
           <div className="illustration" aria-hidden="true">
             <span className="window-dots">● ● ●</span>
             <div className="illustration-line" />
             <div className="illustration-line short" />
             <ShieldCheck size={35} />
           </div>
-          <p>Los resultados permiten probar el seguimiento sin visitar la página indicada.</p>
+          <p>Encuentra problemas de accesibilidad y registra su corrección.</p>
           <button className="btn primary" onClick={() => go('analysis')}>
             Nuevo análisis <ArrowRight size={17} />
           </button>

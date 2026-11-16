@@ -1,19 +1,26 @@
 import { useState } from 'react';
-import { ScanSearch } from 'lucide-react';
+import { ArrowRight, RotateCcw, ScanSearch } from 'lucide-react';
+import AnalysisProgress from '../components/AnalysisProgress.jsx';
 import { Empty, SectionTitle } from '../components/Ui.jsx';
 import { api } from '../services/api.js';
+import { isDemoMode } from '../services/demoApi.js';
 
 /**
- * Página de Nuevo análisis: elegir un sitio registrado y lanzar el análisis.
+ * Página de Nuevo análisis: elegir un sitio, lanzar el análisis y seguir su progreso.
  * - data: datos de la app (aquí se usa data.sites).
- * - run: ejecuta una acción y luego actualiza los datos.
- * - navigate: función para ir a otra sección al terminar.
+ * - run: actualiza los datos de la app y muestra un aviso.
+ * - navigate: función para ir a otra sección.
  */
 export default function NewAnalysis({ data, run, navigate }) {
   const [siteId, setSiteId] = useState('');
   const [authorization, setAuthorization] = useState(false);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [analysisId, setAnalysisId] = useState(null); // análisis que se está siguiendo
+  const [result, setResult] = useState(null); // estado final (Completado o Fallido)
+
+  const demo = isDemoMode();
+  const noSites = data.sites.length === 0;
 
   async function submit(event) {
     event.preventDefault();
@@ -28,27 +35,57 @@ export default function NewAnalysis({ data, run, navigate }) {
     }
     setSending(true);
     try {
-      const saved = await run(
-        () =>
-          api('/analyses/demo', {
-            method: 'POST',
-            body: { siteId: Number(siteId), authorizationConfirmed: true },
-          }),
-        'Análisis de demostración guardado correctamente.',
-      );
-      if (saved) navigate('history');
+      const created = await api('/analyses', {
+        method: 'POST',
+        body: { siteId: Number(siteId), authorizationConfirmed: true },
+      });
+      setResult(null);
+      setAnalysisId(created.id);
+    } catch (e) {
+      setError(e.message);
     } finally {
       setSending(false);
     }
   }
 
-  const noSites = data.sites.length === 0;
+  /** Cuando el análisis termina: guardamos el resultado y actualizamos los datos de la app. */
+  function handleFinished(final) {
+    setResult(final);
+    run(async () => {}, final.status === 'Completado' ? 'Análisis guardado en el historial.' : '');
+  }
+
+  function startAgain() {
+    setAnalysisId(null);
+    setResult(null);
+    setAuthorization(false);
+  }
+
+  // Mientras hay un análisis: mostramos su progreso en lugar del formulario.
+  if (analysisId) {
+    return (
+      <div className="narrow">
+        <AnalysisProgress analysisId={analysisId} onFinished={handleFinished} />
+        {result && (
+          <div className="button-row">
+            {result.status === 'Completado' && (
+              <button className="btn primary" onClick={() => navigate('findings', { analysis: analysisId })}>
+                Ver hallazgos <ArrowRight size={16} aria-hidden="true" />
+              </button>
+            )}
+            <button className="btn secondary" onClick={startAgain}>
+              <RotateCcw size={16} aria-hidden="true" /> Analizar otro sitio
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <section className="card narrow">
       <SectionTitle
-        title="Ejecutar demostración"
-        description="Se guardan hallazgos simulados en el navegador o en SQL Server según el modo."
+        title="Analizar un sitio"
+        description="Elige un sitio registrado y confirma que tienes autorización para evaluarlo."
       />
       <form className="form-stack" onSubmit={submit} noValidate>
         <label htmlFor="analysis-site">Sitio web</label>
@@ -73,11 +110,13 @@ export default function NewAnalysis({ data, run, navigate }) {
         )}
         <button className="btn primary" type="submit" disabled={sending || noSites}>
           <ScanSearch size={18} aria-hidden="true" />
-          {sending ? 'Guardando…' : 'Ejecutar simulación'}
+          {sending ? 'Enviando…' : 'Analizar sitio'}
         </button>
       </form>
       <div className="note">
-        No se conecta al sitio ingresado. El sistema utiliza casos predefinidos para demostrar el seguimiento.
+        {demo
+          ? 'Modo de prueba: no se visita el sitio. El análisis se simula con hallazgos de ejemplo.'
+          : 'Se abrirá la página en un navegador sin ventana y se revisará con axe-core (WCAG 2.2, niveles A y AA). Puede tardar hasta un minuto.'}
       </div>
       {noSites && <Empty>Primero crea un proyecto y registra un sitio en el menú.</Empty>}
     </section>
