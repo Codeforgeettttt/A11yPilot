@@ -3,6 +3,7 @@ import { sequelize } from '../config/database.js';
 import { Project,Site,Analysis,Finding,FindingUpdate,AnalysisEvent } from '../models/index.js';
 import { allowedStatuses, bad, intId, textField, validUrl } from '../utils/validate.js';
 import { createDemoAnalysis } from '../services/analysis.js';
+import { startRealAnalysis } from '../services/analysis-runner.js';
 import { sendPdf } from '../services/reports.js';
 import { requireUser } from '../services/auth.js';
 const router=Router();const go=fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next);
@@ -41,6 +42,15 @@ router.get('/analyses',go(async(req,res)=>{
  const sites=await Site.findAll({include:[{model:Project,where:{userId:req.user.id},required:true,attributes:[]}],attributes:['id']});
  const analyses=await Analysis.findAll({where:{siteId:sites.map(s=>s.id)},include:[{model:Site,attributes:['id','name','url']}],order:[['createdAt','DESC']]});
  res.json(await Promise.all(analyses.map(async a=>({...a.toJSON(),findingCount:await Finding.count({where:{analysisId:a.id}})}))));
+}));
+// Análisis real: lo deja "En cola", responde enseguida (202) y el scanner sigue en segundo plano.
+router.post('/analyses', go(async (req, res) => {
+  const site = await ownSite(req, req.body?.siteId);
+  if (!site.authorizationConfirmed || req.body.authorizationConfirmed !== true) {
+    throw bad('Debes confirmar que tienes autorización para evaluar el sitio.');
+  }
+  const analysis = await startRealAnalysis(site, req.user.id);
+  res.status(202).json({ id: analysis.id, status: analysis.status, demo: false });
 }));
 router.post('/analyses/demo',go(async(req,res)=>{
  const site=await ownSite(req,req.body?.siteId);
