@@ -44,7 +44,7 @@ export function DashboardApp({user,onLogout,onUserUpdate}){
    menuOpen={menuOpen}
    onCloseMenu={closeMenu}
    overlay={accessOpen&&<AccessibilityPanel onClose={closeAccess}/>}
-   sidebar={<Sidebar items={NAV} page={page} open={menuOpen} onClose={closeMenu} onSelect={selectPage}/>}
+   sidebar={<Sidebar items={NAV} page={page} open={menuOpen} demo={isDemoMode()} onClose={closeMenu} onSelect={selectPage}/>}
    topbar={<Topbar title={selected.name} user={user} menuOpen={menuOpen} menuButtonRef={menuRef} accessButtonRef={accessRef} onToggleMenu={()=>setMenuOpen(x=>!x)} onOpenAccess={openAccess} onLogout={onLogout}/>}
  >
    <main id="main" tabIndex={-1} ref={mainRef} className="main-content"><div className="page-head"><p className="eyebrow">GESTIÓN DE ACCESIBILIDAD WEB</p><h1>{selected.name}</h1><p className="lede">{selected.lede}</p></div>
