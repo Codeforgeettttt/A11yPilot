@@ -4,7 +4,8 @@ import { User,Session } from '../models/index.js';
 import { bad, textField } from '../utils/validate.js';
 import {cleanEmail,publicUser,hashPassword,checkPassword,validatePassword,createSession,requireUser,revokeSession,clearSessionCookie,createReset,sendResetEmail,resetPassword} from '../services/auth.js';
 import {env} from '../config/env.js';
-const router=Router();const go=fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next);
+import { asyncHandler as go } from '../utils/asyncHandler.js';
+const router=Router();
 const authLimit=rateLimit({windowMs:15*60*1000,limit:10,standardHeaders:'draft-7',legacyHeaders:false,message:{error:{message:'Demasiados intentos. Inténtalo más tarde.'}}});
 const emailOk=value=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)&&value.length<=254;
 router.post('/register',authLimit,go(async(req,res)=>{

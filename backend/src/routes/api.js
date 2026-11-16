@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import { sequelize } from '../config/database.js';
-import { Project,Site,Analysis,Finding,FindingUpdate } from '../models/index.js';
+import { Project,Site,Analysis,Finding,FindingUpdate,AnalysisEvent } from '../models/index.js';
 import { allowedStatuses, bad, intId, textField, validUrl } from '../utils/validate.js';
 import { createDemoAnalysis } from '../services/analysis.js';
+import { startRealAnalysis } from '../services/analysis-runner.js';
 import { sendPdf } from '../services/reports.js';
 import { requireUser } from '../services/auth.js';
-const router=Router();const go=fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next);
+import { asyncHandler as go } from '../utils/asyncHandler.js';
+const router=Router();
 function requiredId(raw){const id=intId(raw);if(!id)throw bad('Identificador no válido.');return id}
 function projectBody(body){if(!textField(body?.name,3,120))throw bad('El nombre del proyecto debe tener de 3 a 120 caracteres.');if(body.description!==undefined&&!textField(body.description,0,700))throw bad('La descripción no debe superar 700 caracteres.');return {name:body.name.trim(),description:(body.description||'').trim()}}
 async function ownProject(req,id){const p=await Project.findOne({where:{id:requiredId(id),userId:req.user.id}});if(!p)throw bad('Proyecto no encontrado.',404);return p}
@@ -37,10 +39,32 @@ router.post('/projects/:id/sites',go(async(req,res)=>{
  const site=await Site.create({projectId:p.id,name:req.body.name.trim(),url:req.body.url,authorizationConfirmed:true});res.status(201).json(site)
 }));
 router.delete('/sites/:id',go(async(req,res)=>{const site=await ownSite(req,req.params.id);await site.destroy();res.status(204).end()}));
+// Editar un sitio (nombre y URL). Si cambia la URL, hay que volver a confirmar la autorización.
+router.patch('/sites/:id', go(async (req, res) => {
+  const site = await ownSite(req, req.params.id);
+  const name = req.body?.name ?? site.name;
+  const url = req.body?.url ?? site.url;
+  if (!textField(name, 2, 120)) throw bad('El nombre del sitio debe tener entre 2 y 120 caracteres.');
+  if (!validUrl(url)) throw bad('Ingresa una URL HTTP o HTTPS válida sin credenciales.');
+  if (url !== site.url && req.body.authorizationConfirmed !== true) {
+    throw bad('Si cambias la URL, debes confirmar de nuevo que tienes autorización para evaluarla.');
+  }
+  await site.update({ name: name.trim(), url });
+  res.json(site);
+}));
 router.get('/analyses',go(async(req,res)=>{
  const sites=await Site.findAll({include:[{model:Project,where:{userId:req.user.id},required:true,attributes:[]}],attributes:['id']});
  const analyses=await Analysis.findAll({where:{siteId:sites.map(s=>s.id)},include:[{model:Site,attributes:['id','name','url']}],order:[['createdAt','DESC']]});
  res.json(await Promise.all(analyses.map(async a=>({...a.toJSON(),findingCount:await Finding.count({where:{analysisId:a.id}})}))));
+}));
+// Análisis real: lo deja "En cola", responde enseguida (202) y el scanner sigue en segundo plano.
+router.post('/analyses', go(async (req, res) => {
+  const site = await ownSite(req, req.body?.siteId);
+  if (!site.authorizationConfirmed || req.body.authorizationConfirmed !== true) {
+    throw bad('Debes confirmar que tienes autorización para evaluar el sitio.');
+  }
+  const analysis = await startRealAnalysis(site, req.user.id);
+  res.status(202).json({ id: analysis.id, status: analysis.status, demo: false });
 }));
 router.post('/analyses/demo',go(async(req,res)=>{
  const site=await ownSite(req,req.body?.siteId);
@@ -48,6 +72,28 @@ router.post('/analyses/demo',go(async(req,res)=>{
  const analysis=await createDemoAnalysis(site.id);res.status(201).json({id:analysis.id,status:analysis.status,demo:true,message:'Se guardaron datos de demostración. No se ha visitado el sitio.'});
 }));
 router.get('/analyses/:id',go(async(req,res)=>res.json(await ownAnalysis(req,req.params.id))));
+// Estado de un análisis: el frontend lo consulta cada pocos segundos mientras se analiza.
+router.get('/analyses/:id/status', go(async (req, res) => {
+  const analysis = await Analysis.findByPk(requiredId(req.params.id), {
+    include: [
+      // Solo se encuentra si el análisis pertenece a un proyecto del usuario conectado.
+      { model: Site, required: true, attributes: [], include: [{ model: Project, where: { userId: req.user.id }, required: true, attributes: [] }] },
+      { model: AnalysisEvent, attributes: ['state', 'note', 'createdAt'] },
+    ],
+    order: [[AnalysisEvent, 'id', 'ASC']],
+  });
+  if (!analysis) throw bad('Análisis no encontrado.', 404);
+  const findingCount = await Finding.count({ where: { analysisId: analysis.id } });
+  res.json({
+    id: analysis.id,
+    status: analysis.status,
+    demo: analysis.demo,
+    startedAt: analysis.startedAt,
+    finishedAt: analysis.finishedAt,
+    findingCount,
+    events: analysis.AnalysisEvents.map(({ state, note, createdAt }) => ({ state, note, createdAt })),
+  });
+}));
 router.get('/findings',go(async(req,res)=>{
  const where={};if(req.query.impact)where.impact=String(req.query.impact);if(req.query.status)where.status=String(req.query.status);
  const projects=await Project.findAll({where:{userId:req.user.id},attributes:['id']});
