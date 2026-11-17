@@ -16,7 +16,8 @@ function Recommendation({ text = '' }) {
       <p className="pre-line">{steps}</p>
       {match && (
         <a href={match[1]} target="_blank" rel="noopener noreferrer">
-          Más información sobre esta regla<span className="sr-only"> (se abre en otra pestaña)</span>
+          Más información sobre esta regla
+          <span className="sr-only"> (se abre en otra pestaña)</span>
         </a>
       )}
     </div>
@@ -59,7 +60,11 @@ export default function Findings({ data, run }) {
 
   async function updateStatus(finding, newStatus, note = '') {
     const saved = await run(
-      () => api(`/findings/${finding.id}/status`, { method: 'PATCH', body: { status: newStatus, note } }),
+      () =>
+        api(`/findings/${finding.id}/status`, {
+          method: 'PATCH',
+          body: { status: newStatus, note },
+        }),
       note ? 'Observación guardada.' : 'Seguimiento actualizado.',
     );
     if (saved) {
@@ -119,7 +124,8 @@ export default function Findings({ data, run }) {
 
       {/* Anuncia al lector de pantalla cuántos resultados quedan cada vez que cambia un filtro. */}
       <p className="sr-only" role="status" aria-live="polite">
-        {filtered.length === 1 ? '1 hallazgo coincide' : `${filtered.length} hallazgos coinciden`} con los filtros.
+        {filtered.length === 1 ? '1 hallazgo coincide' : `${filtered.length} hallazgos coinciden`}{' '}
+        con los filtros.
       </p>
 
       {filtered.length === 0 ? (
@@ -155,7 +161,8 @@ export default function Findings({ data, run }) {
                 <div id={`finding-extra-${finding.id}`} className="finding-extra">
                   <Recommendation text={finding.recommendation} />
                   <p>
-                    <strong>Elemento afectado:</strong> <code>{finding.selector || 'No disponible'}</code>
+                    <strong>Elemento afectado:</strong>{' '}
+                    <code>{finding.selector || 'No disponible'}</code>
                   </p>
                   <div className="finding-editor">
                     <label htmlFor={`finding-state-${finding.id}`}>Estado</label>
@@ -174,12 +181,16 @@ export default function Findings({ data, run }) {
                       maxLength="500"
                       rows="2"
                       value={draftNotes[finding.id] ?? ''}
-                      onChange={(e) => setDraftNotes((current) => ({ ...current, [finding.id]: e.target.value }))}
+                      onChange={(e) =>
+                        setDraftNotes((current) => ({ ...current, [finding.id]: e.target.value }))
+                      }
                       placeholder="Ej. Se revisó el componente de navegación"
                     />
                     <button
                       className="btn mini secondary"
-                      onClick={() => updateStatus(finding, finding.status, draftNotes[finding.id] || '')}
+                      onClick={() =>
+                        updateStatus(finding, finding.status, draftNotes[finding.id] || '')
+                      }
                     >
                       Guardar observación
                     </button>

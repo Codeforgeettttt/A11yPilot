@@ -56,7 +56,11 @@ export default function AnalysisProgress({ analysisId, onFinished }) {
   return (
     <section className="card analysis-progress" aria-labelledby="analysis-progress-title">
       <h2 id="analysis-progress-title">Análisis #{analysisId}</h2>
-      <p role="status" aria-live="polite" className={failed || error ? 'field-error' : 'notice-text'}>
+      <p
+        role="status"
+        aria-live="polite"
+        className={failed || error ? 'field-error' : 'notice-text'}
+      >
         {message}
       </p>
       <ol className="steps">

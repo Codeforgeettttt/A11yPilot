@@ -51,7 +51,8 @@ export default function Reports({ data, run }) {
         </div>
       )}
       <p className="note">
-        Los informes de análisis simulados lo indican expresamente. Ningún informe certifica conformidad WCAG.
+        Los informes de análisis simulados lo indican expresamente. Ningún informe certifica
+        conformidad WCAG.
       </p>
     </section>
   );

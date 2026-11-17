@@ -4,10 +4,21 @@ import { AnalysisError, assertPageLoaded, friendlyError } from '../src/services/
 import { UrlNotAllowedError } from '../src/services/url-guard.js';
 
 test('traduce los errores de red de Chromium a mensajes claros', () => {
-  assert.match(friendlyError(new Error('page.goto: net::ERR_CONNECTION_REFUSED at https://x.com')), /No se pudo conectar/);
+  assert.match(
+    friendlyError(new Error('page.goto: net::ERR_CONNECTION_REFUSED at https://x.com')),
+    /No se pudo conectar/,
+  );
   assert.match(friendlyError(new Error('page.goto: net::ERR_CERT_DATE_INVALID')), /certificado/);
-  assert.match(friendlyError(new Error('page.goto: net::ERR_NAME_NOT_RESOLVED')), /No se encontró el sitio/);
-  assert.match(friendlyError(Object.assign(new Error('page.goto: Timeout 30000ms exceeded.'), { name: 'TimeoutError' })), /tardó demasiado/);
+  assert.match(
+    friendlyError(new Error('page.goto: net::ERR_NAME_NOT_RESOLVED')),
+    /No se encontró el sitio/,
+  );
+  assert.match(
+    friendlyError(
+      Object.assign(new Error('page.goto: Timeout 30000ms exceeded.'), { name: 'TimeoutError' }),
+    ),
+    /tardó demasiado/,
+  );
 });
 
 test('conserva los mensajes que ya son claros', () => {
@@ -16,7 +27,9 @@ test('conserva los mensajes que ya son claros', () => {
 });
 
 test('usa un mensaje genérico para errores desconocidos (sin mostrar detalles técnicos)', () => {
-  const message = friendlyError(new Error('TypeError: cannot read properties of undefined (secret path C:/server)'));
+  const message = friendlyError(
+    new Error('TypeError: cannot read properties of undefined (secret path C:/server)'),
+  );
   assert.match(message, /error inesperado/);
   assert.doesNotMatch(message, /C:\//);
 });

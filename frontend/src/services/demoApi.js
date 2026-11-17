@@ -1,20 +1,71 @@
 // Datos locales para recorrer el MVP sin SQL Server. Nunca representan un análisis real.
-const KEY='a11ypilot-demo-browser-v1';
-const now=()=>new Date().toISOString();
-const samples=[
- {rule:'color-contrast',wcag:'1.4.3 Contraste (mínimo)',title:'Contraste insuficiente',description:'Ejemplo de texto con contraste insuficiente.',recommendation:'Revisar combinaciones de primer plano y fondo.',selector:'.hero__description',impact:'Serio'},
- {rule:'image-alt',wcag:'1.1.1 Contenido no textual',title:'Imagen sin texto alternativo',description:'Ejemplo de imagen informativa sin descripción.',recommendation:'Proporcionar un texto alternativo que transmita su función.',selector:'img.feature-image',impact:'Crítico'},
- {rule:'label',wcag:'1.3.1 Información y relaciones',title:'Campo sin etiqueta asociada',description:'Ejemplo de control sin nombre accesible.',recommendation:'Asociar una etiqueta visible al campo.',selector:'input#email',impact:'Serio'},
- {rule:'link-name',wcag:'2.4.4 Propósito de los enlaces',title:'Enlace ambiguo',description:'Ejemplo de enlace cuyo destino no resulta claro.',recommendation:'Utilizar un texto de enlace descriptivo.',selector:'a.read-more',impact:'Moderado'}
+const KEY = 'a11ypilot-demo-browser-v1';
+const now = () => new Date().toISOString();
+const samples = [
+  {
+    rule: 'color-contrast',
+    wcag: '1.4.3 Contraste (mínimo)',
+    title: 'Contraste insuficiente',
+    description: 'Ejemplo de texto con contraste insuficiente.',
+    recommendation: 'Revisar combinaciones de primer plano y fondo.',
+    selector: '.hero__description',
+    impact: 'Serio',
+  },
+  {
+    rule: 'image-alt',
+    wcag: '1.1.1 Contenido no textual',
+    title: 'Imagen sin texto alternativo',
+    description: 'Ejemplo de imagen informativa sin descripción.',
+    recommendation: 'Proporcionar un texto alternativo que transmita su función.',
+    selector: 'img.feature-image',
+    impact: 'Crítico',
+  },
+  {
+    rule: 'label',
+    wcag: '1.3.1 Información y relaciones',
+    title: 'Campo sin etiqueta asociada',
+    description: 'Ejemplo de control sin nombre accesible.',
+    recommendation: 'Asociar una etiqueta visible al campo.',
+    selector: 'input#email',
+    impact: 'Serio',
+  },
+  {
+    rule: 'link-name',
+    wcag: '2.4.4 Propósito de los enlaces',
+    title: 'Enlace ambiguo',
+    description: 'Ejemplo de enlace cuyo destino no resulta claro.',
+    recommendation: 'Utilizar un texto de enlace descriptivo.',
+    selector: 'a.read-more',
+    impact: 'Moderado',
+  },
 ];
-function fresh(){return {nextId:1,projects:[],sites:[],analyses:[],findings:[],updates:[]}}
-function load(){try{const parsed=JSON.parse(localStorage.getItem(KEY));if(parsed&&Array.isArray(parsed.projects))return parsed}catch{}return fresh()}
-function save(db){localStorage.setItem(KEY,JSON.stringify(db))}
-function error(message){throw new Error(message)}
-const id=()=>Number.parseInt(String(Math.random()*1e8),10);
-function publicProjects(db){return [...db.projects].reverse()}
-function getSite(db,siteId){return db.sites.find(s=>s.id===Number(siteId))}
-function reportRows(db,analysis){const site=getSite(db,analysis.siteId);return {site,findings:db.findings.filter(f=>f.analysisId===analysis.id)}}
+function fresh() {
+  return { nextId: 1, projects: [], sites: [], analyses: [], findings: [], updates: [] };
+}
+function load() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(KEY));
+    if (parsed && Array.isArray(parsed.projects)) return parsed;
+  } catch {}
+  return fresh();
+}
+function save(db) {
+  localStorage.setItem(KEY, JSON.stringify(db));
+}
+function error(message) {
+  throw new Error(message);
+}
+const id = () => Number.parseInt(String(Math.random() * 1e8), 10);
+function publicProjects(db) {
+  return [...db.projects].reverse();
+}
+function getSite(db, siteId) {
+  return db.sites.find((s) => s.id === Number(siteId));
+}
+function reportRows(db, analysis) {
+  const site = getSite(db, analysis.siteId);
+  return { site, findings: db.findings.filter((f) => f.analysisId === analysis.id) };
+}
 // Tiempo simulado de cada fase del análisis de prueba (en milisegundos).
 const QUEUE_MS = 1000;
 const RUN_MS = 3000;
@@ -30,16 +81,38 @@ function advanceDemoAnalysis(db, analysis) {
     analysis.status = 'Completado';
     analysis.finishedAt = now();
     for (const sample of samples) {
-      db.findings.push({ ...sample, id: ++db.nextId, analysisId: analysis.id, status: 'Pendiente', createdAt: now() });
+      db.findings.push({
+        ...sample,
+        id: ++db.nextId,
+        analysisId: analysis.id,
+        status: 'Pendiente',
+        createdAt: now(),
+      });
     }
   }
 }
 
 /** Devuelve el estado del análisis con el mismo formato que el backend real. */
 function demoStatus(db, analysis) {
-  const events = [{ state: 'En cola', note: 'Solicitud recibida (modo de prueba)', createdAt: analysis.createdAt }];
-  if (analysis.startedAt) events.push({ state: 'Ejecutándose', note: 'Simulando la revisión de la página', createdAt: analysis.startedAt });
-  if (analysis.finishedAt) events.push({ state: 'Completado', note: `${samples.length} hallazgos simulados guardados`, createdAt: analysis.finishedAt });
+  const events = [
+    {
+      state: 'En cola',
+      note: 'Solicitud recibida (modo de prueba)',
+      createdAt: analysis.createdAt,
+    },
+  ];
+  if (analysis.startedAt)
+    events.push({
+      state: 'Ejecutándose',
+      note: 'Simulando la revisión de la página',
+      createdAt: analysis.startedAt,
+    });
+  if (analysis.finishedAt)
+    events.push({
+      state: 'Completado',
+      note: `${samples.length} hallazgos simulados guardados`,
+      createdAt: analysis.finishedAt,
+    });
   return {
     id: analysis.id,
     status: analysis.status,
@@ -50,90 +123,243 @@ function demoStatus(db, analysis) {
     events,
   };
 }
-export function isDemoMode(){return sessionStorage.getItem('a11ypilot-demo-mode')==='yes'}
-export function enableDemoMode(){sessionStorage.setItem('a11ypilot-demo-mode','yes')}
-export function disableDemoMode(){sessionStorage.removeItem('a11ypilot-demo-mode')}
-export async function demoApi(path,{method='GET',body={}}={}){
- const db=load(),chunks=path.split('/').filter(Boolean),saveAnd=(value)=>{save(db);return value};
- if(path==='/auth/me'&&method==='GET')return {user:{id:'demo',name:'Visitante de prueba',email:'demo@local.invalid'}};
- if(path==='/auth/me'&&method==='PATCH')return {user:{id:'demo',name:body.name||'Visitante de prueba',email:'demo@local.invalid'}};
- if(path==='/auth/logout'&&method==='POST'){disableDemoMode();return {message:'Sesión de demostración finalizada.'}}
- if(path==='/auth/change-password')error('La cuenta de demostración no tiene contraseña. Para probar esa función, conecta SQL Server y crea una cuenta real.');
- if(path==='/dashboard/summary')return {projects:db.projects.length,sites:db.sites.length,analyses:db.analyses.length,pendingFindings:db.findings.filter(f=>f.status==='Pendiente').length,demo:true};
- if(path==='/projects'&&method==='GET')return publicProjects(db);
- if(path==='/projects'&&method==='POST'){
-  if(!body.name?.trim()||body.name.trim().length<3)error('El nombre del proyecto debe tener al menos tres caracteres.');
-  return saveAnd(db.projects.push({id:++db.nextId,name:body.name.trim(),description:body.description||'',createdAt:now()})&&db.projects.at(-1));
- }
- if(chunks[0]==='projects'&&chunks[1]&&chunks.length===2){
-  const project=db.projects.find(p=>p.id===Number(chunks[1]));if(!project)error('Proyecto no encontrado.');
-  if(method==='GET')return {...project,Sites:db.sites.filter(s=>s.projectId===project.id)};
-  if(method==='PATCH'){Object.assign(project,{name:body.name.trim(),description:body.description||''});return saveAnd(project)}
-  if(method==='DELETE'){
-   const siteIds=db.sites.filter(s=>s.projectId===project.id).map(s=>s.id);
-   const analysisIds=db.analyses.filter(a=>siteIds.includes(a.siteId)).map(a=>a.id);
-   db.projects=db.projects.filter(p=>p.id!==project.id);db.sites=db.sites.filter(s=>!siteIds.includes(s.id));db.analyses=db.analyses.filter(a=>!analysisIds.includes(a.id));db.findings=db.findings.filter(f=>!analysisIds.includes(f.analysisId));save(db);return null;
-  }
- }
- if(chunks[0]==='projects'&&chunks[2]==='sites'){
-  const project=db.projects.find(p=>p.id===Number(chunks[1]));if(!project)error('Proyecto no encontrado.');
-  if(method==='GET')return db.sites.filter(s=>s.projectId===project.id);
-  if(method==='POST'){
-   if(body.authorizationConfirmed!==true)error('Confirma que tienes autorización.');
-   let u;try{u=new URL(body.url)}catch{error('Ingresa una URL válida.')}if(!['http:','https:'].includes(u.protocol)||u.username||u.password)error('La URL debe utilizar HTTP o HTTPS y no contener credenciales.');
-   const s={id:++db.nextId,projectId:project.id,name:body.name?.trim()||u.hostname,url:u.toString(),authorizationConfirmed:true,createdAt:now()};db.sites.push(s);return saveAnd(s);
-  }
- }
- if(path==='/sites'&&method==='GET')return [...db.sites].reverse().map(s=>({...s,Project:db.projects.find(p=>p.id===s.projectId)}));
- // Editar un sitio (mismas reglas que PATCH /api/sites/:id del backend).
- if (chunks[0] === 'sites' && chunks[1] && method === 'PATCH') {
-  const site = getSite(db, chunks[1]);
-  if (!site) error('Sitio no encontrado.');
-  const name = (body.name ?? site.name).trim();
-  const url = body.url ?? site.url;
-  if (name.length < 2 || name.length > 120) error('El nombre del sitio debe tener entre 2 y 120 caracteres.');
-  let parsed;
-  try { parsed = new URL(url); } catch { error('Ingresa una URL HTTP o HTTPS válida sin credenciales.'); }
-  if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) error('Ingresa una URL HTTP o HTTPS válida sin credenciales.');
-  if (url !== site.url && body.authorizationConfirmed !== true) error('Si cambias la URL, debes confirmar de nuevo que tienes autorización para evaluarla.');
-  Object.assign(site, { name, url });
-  return saveAnd(site);
- }
- if(chunks[0]==='sites'&&method==='DELETE'){
-  const siteId=Number(chunks[1]),analyses=db.analyses.filter(a=>a.siteId===siteId).map(a=>a.id);
-  db.sites=db.sites.filter(s=>s.id!==siteId);db.analyses=db.analyses.filter(a=>a.siteId!==siteId);db.findings=db.findings.filter(f=>!analyses.includes(f.analysisId));return saveAnd(null);
- }
- if(path==='/analyses/demo'&&method==='POST'){
-  const site=getSite(db,body.siteId);if(!site)error('Selecciona un sitio válido.');if(body.authorizationConfirmed!==true)error('Debes confirmar la autorización.');
-  const analysis={id:++db.nextId,siteId:site.id,status:'Completado',demo:true,createdAt:now()};db.analyses.push(analysis);
-  for(const sample of samples)db.findings.push({...sample,id:++db.nextId,analysisId:analysis.id,status:'Pendiente',createdAt:now()});
-  return saveAnd({id:analysis.id,status:analysis.status,demo:true,message:'Resultados locales simulados; no se visitó el sitio.'});
- }
-  // Pedir un análisis: queda "En cola" y avanza solo con el tiempo, como el análisis real.
- if (path === '/analyses' && method === 'POST') {
-  const site = getSite(db, body.siteId);
-  if (!site) error('Selecciona un sitio válido.');
-  if (body.authorizationConfirmed !== true) error('Debes confirmar la autorización.');
-  const analysis = { id: ++db.nextId, siteId: site.id, status: 'En cola', demo: true, createdAt: now(), startedAt: null, finishedAt: null };
-  db.analyses.push(analysis);
-  return saveAnd({ id: analysis.id, status: analysis.status, demo: true });
- }
- // Consultar cómo va un análisis (mismo formato que GET /api/analyses/:id/status del backend).
- if (chunks[0] === 'analyses' && chunks[2] === 'status' && method === 'GET') {
-  const analysis = db.analyses.find((a) => a.id === Number(chunks[1]));
-  if (!analysis) error('Análisis no encontrado.');
-  advanceDemoAnalysis(db, analysis);
-  return saveAnd(demoStatus(db, analysis));
- }
- if(path==='/analyses'&&method==='GET')return [...db.analyses].reverse().map(a=>({...a,Site:getSite(db,a.siteId),findingCount:db.findings.filter(f=>f.analysisId===a.id).length}));
- if(chunks[0]==='analyses'&&chunks[1]){const a=db.analyses.find(a=>a.id===Number(chunks[1]));if(!a)error('Análisis no encontrado.');return {...a,Site:getSite(db,a.siteId),Findings:db.findings.filter(f=>f.analysisId===a.id)}}
- if(path==='/findings'&&method==='GET')return [...db.findings].reverse().map(f=>({...f,Analysis:{id:f.analysisId,siteId:db.analyses.find(a=>a.id===f.analysisId)?.siteId,Site:getSite(db,db.analyses.find(a=>a.id===f.analysisId)?.siteId)}}));
- if(chunks[0]==='findings'&&chunks[2]==='status'&&method==='PATCH'){
-  const finding=db.findings.find(f=>f.id===Number(chunks[1]));if(!finding)error('Hallazgo no encontrado.');
-  if(!['Pendiente','En revisión','Corregido por verificar','Verificado','No aplicable'].includes(body.status))error('Estado no válido.');
-  const prev=finding.status;finding.status=body.status;db.updates.push({id:++db.nextId,findingId:finding.id,previousStatus:prev,newStatus:body.status,note:body.note||'',createdAt:now()});return saveAnd(finding);
- }
- if(chunks[0]==='findings'&&chunks[2]==='updates')return [...db.updates.filter(u=>u.findingId===Number(chunks[1]))].reverse();
- error('Esta operación no está disponible en el modo de demostración.');
+export function isDemoMode() {
+  return sessionStorage.getItem('a11ypilot-demo-mode') === 'yes';
 }
-export function demoReport(id){const db=load(),analysis=db.analyses.find(a=>a.id===Number(id));if(!analysis)error('No se encontró el análisis.');return {...analysis,...reportRows(db,analysis)}}
+export function enableDemoMode() {
+  sessionStorage.setItem('a11ypilot-demo-mode', 'yes');
+}
+export function disableDemoMode() {
+  sessionStorage.removeItem('a11ypilot-demo-mode');
+}
+export async function demoApi(path, { method = 'GET', body = {} } = {}) {
+  const db = load(),
+    chunks = path.split('/').filter(Boolean),
+    saveAnd = (value) => {
+      save(db);
+      return value;
+    };
+  if (path === '/auth/me' && method === 'GET')
+    return { user: { id: 'demo', name: 'Visitante de prueba', email: 'demo@local.invalid' } };
+  if (path === '/auth/me' && method === 'PATCH')
+    return {
+      user: { id: 'demo', name: body.name || 'Visitante de prueba', email: 'demo@local.invalid' },
+    };
+  if (path === '/auth/logout' && method === 'POST') {
+    disableDemoMode();
+    return { message: 'Sesión de demostración finalizada.' };
+  }
+  if (path === '/auth/change-password')
+    error(
+      'La cuenta de demostración no tiene contraseña. Para probar esa función, conecta SQL Server y crea una cuenta real.',
+    );
+  if (path === '/dashboard/summary')
+    return {
+      projects: db.projects.length,
+      sites: db.sites.length,
+      analyses: db.analyses.length,
+      pendingFindings: db.findings.filter((f) => f.status === 'Pendiente').length,
+      demo: true,
+    };
+  if (path === '/projects' && method === 'GET') return publicProjects(db);
+  if (path === '/projects' && method === 'POST') {
+    if (!body.name?.trim() || body.name.trim().length < 3)
+      error('El nombre del proyecto debe tener al menos tres caracteres.');
+    return saveAnd(
+      db.projects.push({
+        id: ++db.nextId,
+        name: body.name.trim(),
+        description: body.description || '',
+        createdAt: now(),
+      }) && db.projects.at(-1),
+    );
+  }
+  if (chunks[0] === 'projects' && chunks[1] && chunks.length === 2) {
+    const project = db.projects.find((p) => p.id === Number(chunks[1]));
+    if (!project) error('Proyecto no encontrado.');
+    if (method === 'GET')
+      return { ...project, Sites: db.sites.filter((s) => s.projectId === project.id) };
+    if (method === 'PATCH') {
+      Object.assign(project, { name: body.name.trim(), description: body.description || '' });
+      return saveAnd(project);
+    }
+    if (method === 'DELETE') {
+      const siteIds = db.sites.filter((s) => s.projectId === project.id).map((s) => s.id);
+      const analysisIds = db.analyses.filter((a) => siteIds.includes(a.siteId)).map((a) => a.id);
+      db.projects = db.projects.filter((p) => p.id !== project.id);
+      db.sites = db.sites.filter((s) => !siteIds.includes(s.id));
+      db.analyses = db.analyses.filter((a) => !analysisIds.includes(a.id));
+      db.findings = db.findings.filter((f) => !analysisIds.includes(f.analysisId));
+      save(db);
+      return null;
+    }
+  }
+  if (chunks[0] === 'projects' && chunks[2] === 'sites') {
+    const project = db.projects.find((p) => p.id === Number(chunks[1]));
+    if (!project) error('Proyecto no encontrado.');
+    if (method === 'GET') return db.sites.filter((s) => s.projectId === project.id);
+    if (method === 'POST') {
+      if (body.authorizationConfirmed !== true) error('Confirma que tienes autorización.');
+      let u;
+      try {
+        u = new URL(body.url);
+      } catch {
+        error('Ingresa una URL válida.');
+      }
+      if (!['http:', 'https:'].includes(u.protocol) || u.username || u.password)
+        error('La URL debe utilizar HTTP o HTTPS y no contener credenciales.');
+      const s = {
+        id: ++db.nextId,
+        projectId: project.id,
+        name: body.name?.trim() || u.hostname,
+        url: u.toString(),
+        authorizationConfirmed: true,
+        createdAt: now(),
+      };
+      db.sites.push(s);
+      return saveAnd(s);
+    }
+  }
+  if (path === '/sites' && method === 'GET')
+    return [...db.sites]
+      .reverse()
+      .map((s) => ({ ...s, Project: db.projects.find((p) => p.id === s.projectId) }));
+  // Editar un sitio (mismas reglas que PATCH /api/sites/:id del backend).
+  if (chunks[0] === 'sites' && chunks[1] && method === 'PATCH') {
+    const site = getSite(db, chunks[1]);
+    if (!site) error('Sitio no encontrado.');
+    const name = (body.name ?? site.name).trim();
+    const url = body.url ?? site.url;
+    if (name.length < 2 || name.length > 120)
+      error('El nombre del sitio debe tener entre 2 y 120 caracteres.');
+    let parsed;
+    try {
+      parsed = new URL(url);
+    } catch {
+      error('Ingresa una URL HTTP o HTTPS válida sin credenciales.');
+    }
+    if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password)
+      error('Ingresa una URL HTTP o HTTPS válida sin credenciales.');
+    if (url !== site.url && body.authorizationConfirmed !== true)
+      error('Si cambias la URL, debes confirmar de nuevo que tienes autorización para evaluarla.');
+    Object.assign(site, { name, url });
+    return saveAnd(site);
+  }
+  if (chunks[0] === 'sites' && method === 'DELETE') {
+    const siteId = Number(chunks[1]),
+      analyses = db.analyses.filter((a) => a.siteId === siteId).map((a) => a.id);
+    db.sites = db.sites.filter((s) => s.id !== siteId);
+    db.analyses = db.analyses.filter((a) => a.siteId !== siteId);
+    db.findings = db.findings.filter((f) => !analyses.includes(f.analysisId));
+    return saveAnd(null);
+  }
+  if (path === '/analyses/demo' && method === 'POST') {
+    const site = getSite(db, body.siteId);
+    if (!site) error('Selecciona un sitio válido.');
+    if (body.authorizationConfirmed !== true) error('Debes confirmar la autorización.');
+    const analysis = {
+      id: ++db.nextId,
+      siteId: site.id,
+      status: 'Completado',
+      demo: true,
+      createdAt: now(),
+    };
+    db.analyses.push(analysis);
+    for (const sample of samples)
+      db.findings.push({
+        ...sample,
+        id: ++db.nextId,
+        analysisId: analysis.id,
+        status: 'Pendiente',
+        createdAt: now(),
+      });
+    return saveAnd({
+      id: analysis.id,
+      status: analysis.status,
+      demo: true,
+      message: 'Resultados locales simulados; no se visitó el sitio.',
+    });
+  }
+  // Pedir un análisis: queda "En cola" y avanza solo con el tiempo, como el análisis real.
+  if (path === '/analyses' && method === 'POST') {
+    const site = getSite(db, body.siteId);
+    if (!site) error('Selecciona un sitio válido.');
+    if (body.authorizationConfirmed !== true) error('Debes confirmar la autorización.');
+    const analysis = {
+      id: ++db.nextId,
+      siteId: site.id,
+      status: 'En cola',
+      demo: true,
+      createdAt: now(),
+      startedAt: null,
+      finishedAt: null,
+    };
+    db.analyses.push(analysis);
+    return saveAnd({ id: analysis.id, status: analysis.status, demo: true });
+  }
+  // Consultar cómo va un análisis (mismo formato que GET /api/analyses/:id/status del backend).
+  if (chunks[0] === 'analyses' && chunks[2] === 'status' && method === 'GET') {
+    const analysis = db.analyses.find((a) => a.id === Number(chunks[1]));
+    if (!analysis) error('Análisis no encontrado.');
+    advanceDemoAnalysis(db, analysis);
+    return saveAnd(demoStatus(db, analysis));
+  }
+  if (path === '/analyses' && method === 'GET')
+    return [...db.analyses].reverse().map((a) => ({
+      ...a,
+      Site: getSite(db, a.siteId),
+      findingCount: db.findings.filter((f) => f.analysisId === a.id).length,
+    }));
+  if (chunks[0] === 'analyses' && chunks[1]) {
+    const a = db.analyses.find((a) => a.id === Number(chunks[1]));
+    if (!a) error('Análisis no encontrado.');
+    return {
+      ...a,
+      Site: getSite(db, a.siteId),
+      Findings: db.findings.filter((f) => f.analysisId === a.id),
+    };
+  }
+  if (path === '/findings' && method === 'GET')
+    return [...db.findings].reverse().map((f) => ({
+      ...f,
+      Analysis: {
+        id: f.analysisId,
+        siteId: db.analyses.find((a) => a.id === f.analysisId)?.siteId,
+        Site: getSite(db, db.analyses.find((a) => a.id === f.analysisId)?.siteId),
+      },
+    }));
+  if (chunks[0] === 'findings' && chunks[2] === 'status' && method === 'PATCH') {
+    const finding = db.findings.find((f) => f.id === Number(chunks[1]));
+    if (!finding) error('Hallazgo no encontrado.');
+    if (
+      ![
+        'Pendiente',
+        'En revisión',
+        'Corregido por verificar',
+        'Verificado',
+        'No aplicable',
+      ].includes(body.status)
+    )
+      error('Estado no válido.');
+    const prev = finding.status;
+    finding.status = body.status;
+    db.updates.push({
+      id: ++db.nextId,
+      findingId: finding.id,
+      previousStatus: prev,
+      newStatus: body.status,
+      note: body.note || '',
+      createdAt: now(),
+    });
+    return saveAnd(finding);
+  }
+  if (chunks[0] === 'findings' && chunks[2] === 'updates')
+    return [...db.updates.filter((u) => u.findingId === Number(chunks[1]))].reverse();
+  error('Esta operación no está disponible en el modo de demostración.');
+}
+export function demoReport(id) {
+  const db = load(),
+    analysis = db.analyses.find((a) => a.id === Number(id));
+  if (!analysis) error('No se encontró el análisis.');
+  return { ...analysis, ...reportRows(db, analysis) };
+}

@@ -59,7 +59,12 @@ export function isBlockedAddress(address) {
  */
 export async function resolvePublicHost(hostname, { lookup = dnsLookup } = {}) {
   const host = hostname.replace(/^\[|\]$/g, '').toLowerCase();
-  if (host === 'localhost' || host.endsWith('.localhost') || host.endsWith('.local') || host.endsWith('.internal')) {
+  if (
+    host === 'localhost' ||
+    host.endsWith('.localhost') ||
+    host.endsWith('.local') ||
+    host.endsWith('.internal')
+  ) {
     throw new UrlNotAllowedError('No se pueden analizar direcciones locales o internas.');
   }
   let addresses;
@@ -69,11 +74,15 @@ export async function resolvePublicHost(hostname, { lookup = dnsLookup } = {}) {
     try {
       addresses = (await lookup(host, { all: true })).map((entry) => entry.address);
     } catch {
-      throw new UrlNotAllowedError('No se encontró el sitio. Revisa que la dirección esté bien escrita.');
+      throw new UrlNotAllowedError(
+        'No se encontró el sitio. Revisa que la dirección esté bien escrita.',
+      );
     }
   }
   if (addresses.length === 0 || addresses.some(isBlockedAddress)) {
-    throw new UrlNotAllowedError('No se pueden analizar direcciones privadas, locales o reservadas.');
+    throw new UrlNotAllowedError(
+      'No se pueden analizar direcciones privadas, locales o reservadas.',
+    );
   }
   return addresses[0];
 }

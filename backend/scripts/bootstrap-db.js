@@ -21,10 +21,9 @@ const admin = new Sequelize('master', env.db.user, env.db.password, {
 
 try {
   await admin.authenticate();
-  const [rows] = await admin.query(
-    'SELECT DB_ID(:name) AS dbId',
-    { replacements: { name: dbName } },
-  );
+  const [rows] = await admin.query('SELECT DB_ID(:name) AS dbId', {
+    replacements: { name: dbName },
+  });
   if (rows[0]?.dbId == null) {
     await admin.query(`CREATE DATABASE [${dbName}]`);
     console.log('Base de datos creada para el entorno local.');

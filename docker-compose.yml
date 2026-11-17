@@ -4,13 +4,17 @@ services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      ACCEPT_EULA: "Y"
+      ACCEPT_EULA: 'Y'
       MSSQL_PID: Express
       MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in the root .env file}
     volumes:
       - sqlserver_data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "grep -q 'SQL Server is now ready for client connections' /var/opt/mssql/log/errorlog"]
+      test:
+        [
+          'CMD-SHELL',
+          "grep -q 'SQL Server is now ready for client connections' /var/opt/mssql/log/errorlog",
+        ]
       interval: 10s
       timeout: 5s
       retries: 30
@@ -22,19 +26,19 @@ services:
   db-init:
     build:
       context: ./backend
-    command: ["node", "scripts/bootstrap-db.js"]
+    command: ['node', 'scripts/bootstrap-db.js']
     environment: &db-env
       DB_HOST: db
-      DB_PORT: "1433"
+      DB_PORT: '1433'
       DB_NAME: A11yPilot
       DB_USER: sa
       DB_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in the root .env file}
-      DB_ENCRYPT: "false"
-      DB_TRUST_CERT: "true"
+      DB_ENCRYPT: 'false'
+      DB_TRUST_CERT: 'true'
     depends_on:
       db:
         condition: service_healthy
-    restart: "no"
+    restart: 'no'
     networks:
       - internal
 
@@ -44,15 +48,15 @@ services:
     environment:
       <<: *db-env
       HOST: 0.0.0.0
-      PORT: "3001"
+      PORT: '3001'
       NODE_ENV: development
       FRONTEND_ORIGIN: http://localhost:5173
-      DEV_SHOW_RESET_LINK: "true"
+      DEV_SHOW_RESET_LINK: 'true'
     depends_on:
       db-init:
         condition: service_completed_successfully
     ports:
-      - "127.0.0.1:3001:3001"
+      - '127.0.0.1:3001:3001'
     restart: unless-stopped
     networks:
       - internal
@@ -66,7 +70,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "127.0.0.1:5173:5173"
+      - '127.0.0.1:5173:5173'
     networks:
       - internal
 

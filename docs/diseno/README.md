@@ -21,12 +21,12 @@ El documento contiene:
 
 ### Colores de marca
 
-| Color | Código | Uso propuesto |
-| --- | --- | --- |
-| Turquesa | `#43C6C8` | Acciones y acentos |
-| Azul marino | `#0B1F3A` | Navegación y contraste |
-| Azul profundo | `#0E243C` | Texto y contornos |
-| Blanco | `#FFFFFF` | Fondos y superficies |
+| Color         | Código    | Uso propuesto          |
+| ------------- | --------- | ---------------------- |
+| Turquesa      | `#43C6C8` | Acciones y acentos     |
+| Azul marino   | `#0B1F3A` | Navegación y contraste |
+| Azul profundo | `#0E243C` | Texto y contornos      |
+| Blanco        | `#FFFFFF` | Fondos y superficies   |
 
 > **Importante:** los ejemplos del manual representan decisiones y propuestas visuales. Las menciones a Playwright y axe-core ilustran la evolución prevista del sistema; la primera entrega de A11yPilot utiliza análisis simulados. El manual no constituye evidencia de que todas sus pantallas estén implementadas exactamente como aparecen.
 

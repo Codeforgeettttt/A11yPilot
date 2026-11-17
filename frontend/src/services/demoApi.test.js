@@ -17,7 +17,10 @@ function fakeStorage() {
 
 /** Crea un proyecto con un sitio y devuelve el sitio. */
 async function createSite(url = 'https://example.com/') {
-  const project = await demoApi('/projects', { method: 'POST', body: { name: 'Proyecto de prueba' } });
+  const project = await demoApi('/projects', {
+    method: 'POST',
+    body: { name: 'Proyecto de prueba' },
+  });
   return demoApi(`/projects/${project.id}/sites`, {
     method: 'POST',
     body: { name: 'Sitio', url, authorizationConfirmed: true },
@@ -39,7 +42,10 @@ describe('modo de prueba: análisis por fases', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-11-16T10:00:00Z'));
     const site = await createSite();
-    const { id } = await demoApi('/analyses', { method: 'POST', body: { siteId: site.id, authorizationConfirmed: true } });
+    const { id } = await demoApi('/analyses', {
+      method: 'POST',
+      body: { siteId: site.id, authorizationConfirmed: true },
+    });
 
     expect((await demoApi(`/analyses/${id}/status`)).status).toBe('En cola');
 
@@ -50,26 +56,38 @@ describe('modo de prueba: análisis por fases', () => {
     const final = await demoApi(`/analyses/${id}/status`);
     expect(final.status).toBe('Completado');
     expect(final.findingCount).toBe(4);
-    expect(final.events.map((event) => event.state)).toEqual(['En cola', 'Ejecutándose', 'Completado']);
+    expect(final.events.map((event) => event.state)).toEqual([
+      'En cola',
+      'Ejecutándose',
+      'Completado',
+    ]);
   });
 
   it('exige confirmar la autorización para analizar', async () => {
     const site = await createSite();
-    await expect(demoApi('/analyses', { method: 'POST', body: { siteId: site.id } })).rejects.toThrow(/autorización/);
+    await expect(
+      demoApi('/analyses', { method: 'POST', body: { siteId: site.id } }),
+    ).rejects.toThrow(/autorización/);
   });
 });
 
 describe('modo de prueba: editar sitios', () => {
   it('permite cambiar solo el nombre sin volver a confirmar', async () => {
     const site = await createSite();
-    const edited = await demoApi(`/sites/${site.id}`, { method: 'PATCH', body: { name: 'Nombre nuevo', url: site.url } });
+    const edited = await demoApi(`/sites/${site.id}`, {
+      method: 'PATCH',
+      body: { name: 'Nombre nuevo', url: site.url },
+    });
     expect(edited.name).toBe('Nombre nuevo');
   });
 
   it('exige confirmar la autorización si cambia la URL', async () => {
     const site = await createSite();
     await expect(
-      demoApi(`/sites/${site.id}`, { method: 'PATCH', body: { name: 'Sitio', url: 'https://example.org/' } }),
+      demoApi(`/sites/${site.id}`, {
+        method: 'PATCH',
+        body: { name: 'Sitio', url: 'https://example.org/' },
+      }),
     ).rejects.toThrow(/autorización/);
     const edited = await demoApi(`/sites/${site.id}`, {
       method: 'PATCH',
@@ -81,7 +99,10 @@ describe('modo de prueba: editar sitios', () => {
   it('rechaza direcciones que no son http ni https', async () => {
     const site = await createSite();
     await expect(
-      demoApi(`/sites/${site.id}`, { method: 'PATCH', body: { name: 'Sitio', url: 'ftp://x.org', authorizationConfirmed: true } }),
+      demoApi(`/sites/${site.id}`, {
+        method: 'PATCH',
+        body: { name: 'Sitio', url: 'ftp://x.org', authorizationConfirmed: true },
+      }),
     ).rejects.toThrow(/HTTP o HTTPS/);
   });
 });

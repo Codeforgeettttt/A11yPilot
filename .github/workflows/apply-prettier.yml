@@ -1,0 +1,37 @@
+name: Apply Prettier formatting
+
+on:
+  push:
+    branches: [prettier]
+    paths:
+      - '.github/workflows/apply-prettier.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Format repository
+        run: |
+          npm run format
+          npm run format
+      - name: Verify formatting before committing
+        run: npm run format:check
+      - name: Commit formatting changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -u
+          if ! git diff --cached --quiet; then
+            git commit -m "style: apply Prettier formatting"
+            git push origin HEAD:prettier
+          fi

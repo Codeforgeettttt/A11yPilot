@@ -12,6 +12,8 @@ export const sequelize =
         host: env.db.host,
         port: env.db.port,
         logging: false,
-        dialectOptions: { options: { encrypt: env.db.encrypt, trustServerCertificate: env.db.trustCert } },
+        dialectOptions: {
+          options: { encrypt: env.db.encrypt, trustServerCertificate: env.db.trustCert },
+        },
         pool: { max: 5, min: 0, acquire: 15000, idle: 10000 },
       });

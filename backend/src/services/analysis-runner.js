@@ -27,7 +27,12 @@ async function runAnalysis(analysisId, url) {
   // El estado y su evento se guardan juntos (transacción) para que nadie vea uno sin el otro.
   await sequelize.transaction(async (transaction) => {
     await analysis.update({ status: 'Ejecutándose', startedAt: new Date() }, { transaction });
-    await addEvent(analysisId, 'Ejecutándose', 'Abriendo la página y revisándola con axe-core', transaction);
+    await addEvent(
+      analysisId,
+      'Ejecutándose',
+      'Abriendo la página y revisándola con axe-core',
+      transaction,
+    );
   });
   try {
     const result = await scanPage(url);
@@ -39,7 +44,12 @@ async function runAnalysis(analysisId, url) {
         { transaction },
       );
       await analysis.update({ status: 'Completado', finishedAt: new Date() }, { transaction });
-      await addEvent(analysisId, 'Completado', `${findings.length} hallazgos guardados`, transaction);
+      await addEvent(
+        analysisId,
+        'Completado',
+        `${findings.length} hallazgos guardados`,
+        transaction,
+      );
     });
   } catch (error) {
     // En la consola del servidor queda el error técnico; al usuario le mostramos uno claro.
@@ -59,7 +69,13 @@ export async function startRealAnalysis(site, userId) {
   // Un análisis a la vez por usuario, para que nadie sature el servidor.
   const running = await Analysis.count({
     where: { status: { [Op.in]: IN_PROGRESS } },
-    include: [{ model: Site, required: true, include: [{ model: Project, where: { userId }, required: true }] }],
+    include: [
+      {
+        model: Site,
+        required: true,
+        include: [{ model: Project, where: { userId }, required: true }],
+      },
+    ],
   });
   if (running > 0) throw bad('Ya tienes un análisis en curso. Espera a que termine.', 409);
 
