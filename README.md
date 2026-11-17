@@ -1,315 +1,224 @@
 <div align="center">
 
-<img src="frontend/public/assets/logos/a11ypilot-logo.webp" alt="Logotipo oficial de A11yPilot" width="160" />
+<img src="frontend/public/assets/logos/a11ypilot-logo.webp" alt="Logotipo A11yPilot" width="150" />
 
 # A11yPilot
 
 ### Plataforma de evaluación y seguimiento de accesibilidad web
 
-**Ingeniería Web II · Entrega 1 · MVP 0.6.2**
+**Ingeniería Web II · Universidad Manuela Beltrán · Ingeniería de Software**
 
-![Frontend](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-0B1F3A?style=for-the-badge&logo=react)
-![Backend](https://img.shields.io/badge/API-Node.js%20%2B%20Express-0B1F3A?style=for-the-badge&logo=nodedotjs)
-![Base de datos](https://img.shields.io/badge/Base%20de%20datos-SQL%20Server-0B1F3A?style=for-the-badge)
-![Accesibilidad](https://img.shields.io/badge/Objetivo-WCAG%202.2%20AA-43C6C8?style=for-the-badge)
+![React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%205-0B1F3A?style=flat-square)
+![Node](https://img.shields.io/badge/API-Node.js%20%2B%20Express-0B1F3A?style=flat-square)
+![SQL Server](https://img.shields.io/badge/BD-SQL%20Server%202022%20Express-0B1F3A?style=flat-square)
+![Docker](https://img.shields.io/badge/Entorno-Docker%20Compose-43C6C8?style=flat-square)
+![Scanner](https://img.shields.io/badge/Evaluación-Playwright%20%2B%20axe--core-43C6C8?style=flat-square)
 
-**Universidad Manuela Beltrán · Ingeniería de Software**
-
-[Repositorio](https://github.com/Codeforgeettttt/A11yPilot) · [Documentación API](docs/api/openapi.yaml) · [Registro de evidencias](docs/evidencias/README.md) · [Sistema de diseño](docs/diseno/README.md) · [Control de versiones](docs/control-versiones/README.md) · [Historial de cambios](CHANGELOG.md)
+[Instalación](docs/manuales/INSTALACION.md) · [Manual de usuario](docs/manuales/USUARIO.md) · [Arquitectura Docker](docs/arquitectura/DESPLIEGUE_DOCKER.md) · [Pruebas](docs/pruebas/PLAN_PRUEBAS.md) · [Historial](CHANGELOG.md)
 
 </div>
 
----
-
 > [!IMPORTANT]
-> **Estado actual:** MVP académico en desarrollo. En modo completo se ha incorporado el análisis real con Playwright + axe-core sobre sitios públicos autorizados; el modo de prueba conserva los hallazgos **simulados**. El proyecto no certifica conformidad WCAG ni está preparado para despliegue público.
+> **Estado del repositorio (16 de noviembre de 2026):** la rama `main` contiene el frontend, la API, SQL Server con Docker Compose y el motor de análisis automatizado con Playwright + axe-core. Hay pruebas de CI aprobadas, pero **la ejecución integral de SQL Server y escaneos reales en Docker aún requiere evidencia manual**. **No existe una release v1.0.0 publicada** y el proyecto **no certifica conformidad WCAG**. Es un despliegue de desarrollo **local**, no un servicio público de producción.
 
-## 1. Descripción general
+## 1. ¿Qué es A11yPilot?
 
-**A11yPilot** es una aplicación web para organizar la revisión y el seguimiento de accesibilidad en sitios web. Permite gestionar proyectos, registrar sitios autorizados, consultar hallazgos de ejemplo, registrar su seguimiento y generar informes. La primera versión incorpora una interfaz React con una API Express y persistencia local en Microsoft SQL Server.
+A11yPilot permite registrar proyectos y sitios web autorizados, ejecutar evaluaciones automatizadas de accesibilidad cuando se utiliza la API real, revisar hallazgos, actualizar sus estados, consultar el historial y descargar informes PDF. Su objetivo académico es demostrar una solución web integrada, accesible y organizada para acompañar la mejora continua de sitios.
 
-La aplicación ofrece dos modos: **prueba**, que funciona sin backend ni base de datos, y **completo**, con cuentas de usuario, API REST y datos guardados en SQL Server. Ambos incluyen la exportación PDF de resultados de demostración.
+**Problema que aborda:** los equipos necesitan centralizar hallazgos de accesibilidad y dar seguimiento a sus correcciones sin depender de documentos aislados.
 
-## 2. Problema, necesidad y justificación
+**Objetivo general:** desarrollar una plataforma web para registrar, evaluar y dar seguimiento a problemas de accesibilidad mediante una interfaz accesible y una arquitectura con API y persistencia.
 
-En proyectos de desarrollo web, los problemas de accesibilidad pueden detectarse tarde o quedar registrados en capturas y documentos separados. Esto dificulta organizar correcciones, asignarles seguimiento y comprobar qué se ha revisado. A ello se suma que los resultados técnicos de las herramientas de evaluación no siempre son fáciles de interpretar.
+### Alcance funcional
 
-**Pregunta orientadora:** ¿Cómo organizar en una plataforma web la consulta y el seguimiento de hallazgos de accesibilidad para apoyar el proceso de mejora de sitios autorizados?
+| Área | Implementación en el repositorio |
+| --- | --- |
+| Cuentas | Registro, inicio/cierre de sesión, perfil y recuperación de contraseña en modo completo |
+| Proyectos y sitios | CRUD de proyectos, registro/edición de sitios con declaración de autorización |
+| Dashboard | Resumen de proyectos, análisis y hallazgos |
+| Análisis real | Playwright + Chromium + axe-core en backend sobre URLs públicas autorizadas |
+| Seguimiento | Filtros, estados y observaciones de hallazgos, eventos e historial |
+| Informes | Exportación PDF en modo completo; PDF de ejemplo en modo demo |
+| Accesibilidad | Alto contraste, tamaño de texto, espaciado, movimiento reducido y soporte de teclado |
+| Modo demo | Datos **simulados** en el navegador, sin backend ni SQL Server |
+| Contenedores | Dockerfiles, Compose, inicialización de base de datos y volumen SQL persistente |
 
-A11yPilot permite aplicar fundamentos de Ingeniería Web II: HTML semántico, estilos responsivos, componentes interactivos, comunicación con APIs, persistencia y pruebas funcionales.
+> Los resultados automáticos son **ayudas para identificar problemas**, no una auditoría exhaustiva ni una certificación WCAG 2.2 AA. Las verificaciones manuales siguen siendo necesarias.
 
-## 3. Objetivos
+## 2. Cómo ejecutarlo con Docker — modo completo
 
-### Objetivo general
+**Requisitos:** Docker Desktop con motor Linux y Docker Compose V2. Reserva memoria suficiente para SQL Server y Chromium (consulta el [manual de instalación](docs/manuales/INSTALACION.md)). Si ya estás ejecutando A11yPilot con PM2, detén esos procesos antes de usar los mismos puertos.
 
-Desarrollar una aplicación web que permita gestionar proyectos y sitios, presentar resultados de accesibilidad y realizar seguimiento a sus hallazgos, mediante una interfaz accesible y una arquitectura preparada para integrar análisis automatizados en fases posteriores.
-
-### Objetivos específicos
-
-1. Diseñar una interfaz responsive que respete la identidad visual del proyecto.
-2. Implementar módulos de proyectos, sitios, análisis, hallazgos e informes.
-3. Incorporar interactividad mediante formularios, filtros, navegación y cambios de estado.
-4. Estructurar una API REST en Node.js y Express, conectada a SQL Server mediante Sequelize.
-5. Generar informes PDF de demostración y distinguirlos claramente de resultados reales.
-6. Documentar las pruebas de funcionamiento, accesibilidad y visualización en distintos tamaños de pantalla.
-
-## 4. Alcance de la primera entrega
-
-| Incluido                                                                | Próximas fases                                      |
-| :---------------------------------------------------------------------- | :-------------------------------------------------- |
-| Dashboard, proyectos, sitios, análisis, hallazgos, historial y reportes | Mejoras de cobertura de análisis                    |
-| Registro e inicio de sesión con persistencia en modo completo           | Administración avanzada de roles                    |
-| Simulador de hallazgos y seguimiento                                    | Comparación automática de revisiones reales         |
-| API REST, SQL Server y cola simple de análisis                          | Aislamiento reforzado y escalamiento del navegador  |
-| PDF de análisis y modo de prueba simulado                               | Auditoría integral y comparaciones entre revisiones |
-| Alto contraste, texto, espaciado y reducción de movimiento              | Auditoría integral WCAG y despliegue público        |
-| Pruebas básicas y documentación                                         | Migraciones versionadas del esquema                 |
-
-**Usuarios destinatarios:** estudiantes de software, desarrolladores, equipos de calidad y responsables de sitios web que necesitan organizar hallazgos.
-
-## 5. Funcionalidades
-
-| Módulo             | Descripción                                                                              |
-| :----------------- | :--------------------------------------------------------------------------------------- |
-| **Cuentas**        | Registro, acceso, cierre de sesión, perfil y recuperación de contraseña en modo completo |
-| **Dashboard**      | Indicadores, resumen y actividad de proyectos                                            |
-| **Proyectos**      | Creación y administración de proyectos                                                   |
-| **Sitios**         | Registro de URLs con confirmación de autorización                                        |
-| **Nuevo análisis** | Análisis real en modo completo y resultados simulados en modo de prueba                  |
-| **Hallazgos**      | Búsqueda, filtros, clasificación y seguimiento                                           |
-| **Historial**      | Consulta de análisis anteriores registrados                                              |
-| **Reportes**       | PDF con resultados explícitamente demostrativos                                          |
-| **Accesibilidad**  | Panel de contraste alto y preferencias de lectura                                        |
-
-**Flujo de uso:** entrar → crear proyecto → registrar sitio → confirmar autorización → ejecutar análisis (real en modo completo o simulado en modo de prueba) → revisar hallazgos → actualizar seguimiento → descargar PDF.
-
-## 6. Accesibilidad y diseño de interfaz
-
-Se utiliza la identidad visual de A11yPilot: azul marino **#0B1F3A**, azul profundo **#0E243C** y turquesa **#43C6C8**. El [logotipo oficial](frontend/public/assets/logos/) está incluido como recurso del frontend. Las fuentes elegidas para la identidad son Intro Rust, Archivo Black y Nunito, con alternativas cuando sus archivos originales no están disponibles.
-
-La interfaz contempla alto contraste, ajustes de tamaño de texto, espaciado, movimiento reducido y almacenamiento de preferencias en el navegador. También se han incorporado etiquetas, estructura semántica y controles de navegación mediante teclado.
-
-> [!NOTE]
-> Estas medidas son parte del desarrollo, **no una declaración de cumplimiento WCAG 2.2 AA**. Faltan pruebas sistemáticas de contraste, zoom, teclado y lectores de pantalla.
-
-## 7. Arquitectura y datos
-
-```mermaid
-flowchart TD
-    U[Usuario] --> F[React y Vite]
-    F -->|Modo prueba| L[localStorage]
-    F -->|Modo completo HTTP JSON| A[API Express]
-    A --> S[Servicios y validaciones]
-    S --> O[Sequelize y Tedious]
-    O --> D[(SQL Server)]
-    S --> M[Simulador de hallazgos]
-    F --> J[jsPDF en modo prueba]
-    A --> P[PDFKit en modo completo]
-```
-
-### Entidades principales
-
-| Tabla            | Propósito                               |
-| :--------------- | :-------------------------------------- |
-| `Users`          | Cuentas de usuario                      |
-| `Sessions`       | Sesiones activas                        |
-| `PasswordResets` | Solicitudes de restablecimiento         |
-| `Projects`       | Proyectos vinculados a sus propietarios |
-| `Sites`          | Sitios asociados a proyectos            |
-| `Analyses`       | Análisis reales o de demostración       |
-| `Findings`       | Hallazgos asociados a los análisis      |
-| `FindingUpdates` | Registro de seguimiento                 |
-| `AnalysisEvents` | Eventos de ejecución                    |
-
-La inicialización local se realiza mediante `sequelize.sync()` sin `force` ni `alter`. No equivale a migraciones de producción.
-
-## 8. Tecnologías
-
-| Capa              | Tecnologías                  | Función                              |
-| :---------------- | :--------------------------- | :----------------------------------- |
-| Web               | HTML5, CSS3, JavaScript      | Estructura, estilos e interactividad |
-| Frontend          | React 18, Vite 5, Lucide     | Componentes y desarrollo             |
-| API               | Node.js, Express 4           | Rutas y lógica de negocio            |
-| Base de datos     | SQL Server Express           | Persistencia local                   |
-| Acceso a datos    | Sequelize 6, Tedious         | Modelos y consultas                  |
-| Informes          | jsPDF, PDFKit                | Exportación PDF en ambos modos       |
-| Seguridad inicial | Helmet, CORS, rate limit     | Controles de desarrollo              |
-| Pruebas           | Node Test, Supertest, Vitest | Comprobaciones automatizadas         |
-| Documentación     | Markdown, OpenAPI            | Guías y contrato API                 |
-| Versionamiento    | Git, GitHub                  | Gestión de avances                   |
-
-## 9. Organización del repositorio
-
-```text
-A11yPilot/
-├── .github/workflows/      # Integración continua
-├── frontend/
-│   ├── public/assets/logos/
-│   ├── src/
-│   │   ├── accessibility/
-│   │   ├── components/
-│   │   ├── services/
-│   │   ├── App.jsx
-│   │   ├── Auth.jsx
-│   │   ├── Root.jsx
-│   │   ├── main.jsx
-│   │   └── styles.css
-│   ├── index.html
-│   └── package.json
-├── backend/
-│   ├── scripts/
-│   ├── src/
-│   │   ├── config/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   ├── app.js
-│   │   └── server.js
-│   ├── tests/
-│   ├── .env.example
-│   └── package.json
-├── docs/
-│   ├── api/
-│   ├── arquitectura/
-│   └── evidencias/
-├── .gitignore
-├── package.json
-└── README.md
-```
-
-## 10. Instalación y ejecución
-
-**Requisitos:** Node.js 20 o superior, npm y Windows PowerShell. Para el modo completo se requiere SQL Server Express con autenticación SQL, base de datos `A11yPilot` y conectividad TCP.
-
-### Instalación de dependencias
+En PowerShell:
 
 ```powershell
 git clone https://github.com/Codeforgeettttt/A11yPilot.git
 cd A11yPilot
-npm.cmd run install:all
-```
-
-### Modo de prueba — sin SQL Server
-
-```powershell
-npm.cmd run dev:demo
-```
-
-Abrir **http://localhost:5173** y elegir el acceso de prueba. Los datos se guardan en `localStorage` y los reportes PDF se generan en el navegador. **Este acceso no crea una cuenta real ni guarda datos en la base de datos.**
-
-### Modo completo — con SQL Server
-
-Crear la base de datos `A11yPilot` en SQL Server y configurar un usuario de aplicación con permisos apropiados. Después:
-
-```powershell
-Copy-Item backend\.env.example backend\.env
-notepad backend\.env
-```
-
-Editar `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y `DB_PASSWORD` según la instancia local. Nunca publicar el archivo `.env`.
-
-```powershell
-npm.cmd run db:setup
-npm.cmd run dev
-```
-
-| Dirección local                           | Función                       |
-| :---------------------------------------- | :---------------------------- |
-| http://localhost:5173                     | Aplicación web                |
-| http://127.0.0.1:3001/api/health          | Estado de la API              |
-| http://127.0.0.1:3001/api/health/database | Estado de API y base de datos |
-
-La instancia `SQLEXPRESS` puede usar puertos dinámicos; confirmar el puerto TCP en la configuración local.
-
-### Comandos útiles
-
-| Comando                | Descripción                        |
-| :--------------------- | :--------------------------------- |
-| `npm.cmd run dev:demo` | Frontend sin backend               |
-| `npm.cmd run dev`      | Frontend y backend                 |
-| `npm.cmd run db:setup` | Preparación de tablas              |
-| `npm.cmd run db:seed`  | Datos de demostración configurados |
-| `npm.cmd run build`    | Compilar frontend                  |
-| `npm.cmd run test`     | Ejecutar pruebas                   |
-
-## 11. Seguridad y limitaciones
-
-En el modo completo, las cuentas utilizan hash de contraseña con `scrypt` y sesiones revocables en SQL Server con cookies `HttpOnly`. Las operaciones sobre recursos se asocian al usuario autenticado. Hay controles básicos de validación, cabeceras y límites de solicitudes.
-
-**Este entorno se diseñó para ejecución local:** faltan revisión integral de seguridad, controles CSRF adicionales según despliegue, HTTPS de producción, migraciones versionadas y un motor de análisis aislado con protección SSRF. No se debe exponer la API directamente a Internet con la configuración de desarrollo. La rama actual incluye un control de URL y proxy para el escáner, pero necesita validación de seguridad adicional. Los parámetros `DB_ENCRYPT=false`, `DB_TRUST_CERT=true` y `DEV_SHOW_RESET_LINK=true` son únicamente de laboratorio.
-
-## 12. Estado de avance, pruebas y evidencias
-
-| Elemento                                  | Estado                                                           |
-| :---------------------------------------- | :--------------------------------------------------------------- |
-| Código fuente en GitHub                   | Publicado                                                        |
-| Frontend y backend                        | Implementados en el repositorio                                  |
-| Conexión a SQL Server                     | Probada localmente durante el desarrollo                         |
-| Registro y acceso                         | Probados manualmente en entorno local                            |
-| Reportes PDF y panel de accesibilidad     | Incluidos en el código                                           |
-| Pruebas automatizadas                     | Incluidas; resultados pendientes de registrar                    |
-| Capturas responsive                       | Pendientes de documentar                                         |
-| Pruebas manuales con lectores de pantalla | Pendientes                                                       |
-| Análisis reales de sitios                 | Implementados en código; pendiente validación integral en Docker |
-| Certificación de conformidad WCAG         | No disponible                                                    |
-
-Las capturas reales y resultados se documentarán en **[docs/evidencias](docs/evidencias/README.md)**. Se requieren vistas de escritorio, móvil y tableta, interacciones principales, alto contraste y un PDF generado. No incluir credenciales ni datos privados en esas capturas.
-
-Para realizar las comprobaciones disponibles:
-
-```powershell
-npm.cmd run build
-npm.cmd run test
-```
-
-## 13. Siguientes fases
-
-1. **Cierre de Entrega 1:** registrar pruebas, ajustar responsive y revisar accesibilidad.
-2. **Motor real:** validar integralmente Playwright y axe-core con SQL Server y contenedores.
-3. **Seguridad del análisis:** validación contra SSRF, aislamiento del navegador y límites de ejecución.
-4. **Seguimiento avanzado:** comparar revisiones y mejorar informes.
-5. **Evolución del sistema:** migraciones versionadas, roles, despliegue y pruebas de producción.
-
----
-
-<div align="center">
-
-**A11yPilot · Universidad Manuela Beltrán · Ingeniería Web II**
-
-_El proyecto se desarrolla por fases. El modo completo incorpora análisis automatizados; el modo de prueba utiliza resultados simulados. Ninguna modalidad certifica conformidad WCAG._
-
-</div>
-
-## Preparación Docker, calidad y manuales (rama `Docker`)
-
-En esta rama se encuentran los archivos para construir los contenedores, ejecutar SQL Server con Compose y usar el modo de prueba independiente. **La preparación no constituye una publicación de `v1.0.0`**.
-
-- [Instalación con Docker](docs/manuales/INSTALACION.md)
-- [Manual de usuario](docs/manuales/USUARIO.md)
-- [Arquitectura de contenedores](docs/arquitectura/DESPLIEGUE_DOCKER.md)
-- [Matriz de pruebas y evidencias](docs/pruebas/PLAN_PRUEBAS.md)
-- [Preparación de la versión v1.0.0](docs/entrega/RELEASE_1.0.0.md)
-- [Verificaciones de GitHub Actions](docs/despliegue/PRUEBAS_CI.md)
-
-```powershell
-# Desde la raíz del repositorio, en la rama Docker
 Copy-Item .env.docker.example .env
 notepad .env
-# Configura una contraseña privada MSSQL_SA_PASSWORD
+```
+
+En `.env`, reemplaza `MSSQL_SA_PASSWORD` con una contraseña **nueva, privada y fuerte**. Nunca subas `.env` a GitHub.
+
+```powershell
 docker compose config --quiet
 docker compose up --build -d
 docker compose ps -a
 ```
 
-Abre http://localhost:5173 para el modo completo. Para el modo demo sin SQL Server:
+| Dirección | Descripción |
+| --- | --- |
+| http://localhost:5173 | Aplicación completa |
+| http://localhost:3001/api/health | Salud de la API |
+| http://localhost:3001/api/health/database | Salud de API y base de datos |
+
+El servicio `db-init` **debe terminar con código 0** tras preparar la base; no es un fallo que quede detenido después. El servicio `db` utiliza **SQL Server 2022 Express** (imagen declarada en `docker-compose.yml`) y un volumen Docker persistente `sqlserver_data`. El puerto SQL 1433 no se expone al equipo.
+
+**Ver errores / apagar sin borrar datos:**
+
+```powershell
+docker compose logs --tail=150 db db-init backend frontend
+docker compose down
+```
+
+> [!CAUTION]
+> `docker compose down -v` **puede eliminar permanentemente** los datos del volumen. No lo uses para detener el proyecto de manera habitual. El SQL Server del contenedor **no importa automáticamente** los datos de tu SQL Server Express de Windows.
+
+## 3. Modo demo sin base de datos
 
 ```powershell
 docker compose -f compose.demo.yaml up --build -d
 ```
 
-Abre http://localhost:5174.
+Abre **http://localhost:5174** y utiliza el acceso de prueba. Este modo no ejecuta escaneos reales ni crea cuentas en SQL Server: los datos de ejemplo se guardan en el navegador.
 
-**Estado de comprobaciones:** compilación, pruebas unitarias y construcción de imágenes comprobadas mediante GitHub Actions. La prueba integral de SQL Server y del escáner real dentro de Compose sigue pendiente. El repositorio conserva diferencias de estilo Prettier preexistentes sin reformatear el código del equipo. Consulta [el registro de pruebas](docs/pruebas/PLAN_PRUEBAS.md) para el detalle.
+Para detenerlo:
 
-**Nota de vigencia:** los apartados históricos de la Entrega 1 describen la versión demostrativa 0.6.2; este apartado registra las funcionalidades posteriores y los cambios en preparación de la rama `Docker`. No se ha publicado una versión 1.0.0.
+```powershell
+docker compose -f compose.demo.yaml down
+```
+
+## 4. Ejecución sin Docker (desarrollo)
+
+**Requisitos:** Node.js compatible, npm y, para el modo completo, una instancia SQL Server configurada y accesible.
+
+```powershell
+npm.cmd run install:all
+npm.cmd run dev:demo  # solamente frontend; resultados simulados
+```
+
+Para usar el backend local, prepara `backend/.env` a partir de `backend/.env.example`, configura las credenciales de tu SQL Server y ejecuta `npm.cmd run db:setup` (solo en una base destinada al proyecto) y `npm.cmd run dev`.
+
+El backend utiliza Playwright; fuera de Docker debes instalar Chromium y sus dependencias de acuerdo con el manual de Playwright. No ejecutes simultáneamente una instancia PM2 y otra de desarrollo en los mismos puertos.
+
+## 5. Cómo usar la plataforma
+
+1. Accede o registra una cuenta (modo completo).
+2. Crea un proyecto y registra un sitio web que tengas permiso de revisar.
+3. Selecciona **Nuevo análisis**. En el modo completo puedes iniciar la evaluación real; en modo demo se generan ejemplos simulados.
+4. Consulta el progreso, el historial y los hallazgos.
+5. Actualiza estados, registra observaciones y descarga un informe.
+
+El escáner se basa en Chromium y axe-core, y utiliza validaciones de URL y un proxy restrictivo. **No debe considerarse seguro para exponerse como servicio público sin una revisión adicional de SSRF, aislamiento, límites y autenticación.** No evalúes sitios sin autorización.
+
+## 6. Arquitectura
+
+```mermaid
+flowchart TB
+    U[Usuario] --> F[Frontend React + Vite]
+    F -->|Modo demo| L[(Almacenamiento del navegador)]
+    F -->|/api| A[Backend Express]
+    A --> O[Sequelize / Tedious]
+    O --> D[(SQL Server 2022 Express)]
+    D --- V[(Volumen Docker)]
+    A --> S[Escáner Playwright + Chromium + axe-core]
+    S --> W[Web pública autorizada]
+    A --> P[PDFKit]
+    F --> J[jsPDF en modo demo]
+```
+
+**Servicios Compose:** `frontend`, `backend`, `db-init`, `db`; una red interna y volumen `sqlserver_data`. El escáner forma parte del backend, no es un quinto contenedor independiente. Consulta [arquitectura detallada](docs/arquitectura/DESPLIEGUE_DOCKER.md).
+
+**Modelos principales:** `Users`, `Sessions`, `PasswordResets`, `Projects`, `Sites`, `Analyses`, `Findings`, `FindingUpdates` y `AnalysisEvents`. El proyecto usa Sequelize; la preparación de tablas todavía no reemplaza un sistema de migraciones versionadas para producción.
+
+## 7. Tecnologías y estructura
+
+| Capa | Tecnologías |
+| --- | --- |
+| Interfaz | HTML5, CSS3, JavaScript, React 18, Vite 5, Lucide |
+| Servidor | Node.js, Express, Helmet, CORS, rate limiting |
+| Acceso a datos | Sequelize 6, Tedious, Microsoft SQL Server |
+| Análisis | Playwright, Chromium, @axe-core/playwright |
+| PDF | PDFKit (API) y jsPDF (demo) |
+| Calidad | Node Test, Supertest, Vitest, ESLint, Prettier, GitHub Actions |
+| Despliegue local | Docker, Docker Compose |
+
+```text
+A11yPilot/
+├── frontend/             # Interfaz, componentes, páginas y modo demo
+├── backend/              # API, modelos, motor de análisis y pruebas
+├── docs/
+│   ├── api/              # Contrato OpenAPI
+│   ├── arquitectura/     # Decisiones y Docker
+│   ├── manuales/         # Instalación y usuario
+│   ├── pruebas/          # Matriz de verificaciones
+│   ├── evidencias/       # Capturas y resultados
+│   ├── diseno/           # Identidad visual y manual PDF
+│   ├── control-versiones/
+│   └── entrega/          # Lista de aprobación de versión
+├── .github/workflows/    # CI de Node y Docker
+├── docker-compose.yml    # Aplicación completa con SQL Server
+├── compose.demo.yaml     # Modo demo sin backend
+├── .env.docker.example   # Ejemplo de secretos privados
+├── CHANGELOG.md
+└── README.md
+```
+
+## 8. Pruebas, estado y limitaciones
+
+Pruebas ejecutables:
+
+```powershell
+npm.cmd run build
+npm.cmd run test
+npm.cmd run lint
+```
+
+Las ejecuciones recientes de **GitHub Actions** incluyen verificaciones aprobadas de código y flujos de construcción. Puedes revisar los resultados y los commits exactos en [Actions](https://github.com/Codeforgeettttt/A11yPilot/actions). Los CI aprobados **no sustituyen** las pruebas integrales en un PC con Docker y SQL Server.
+
+| Verificación | Estado |
+| --- | --- |
+| Código del frontend, API, Docker y análisis real | Incluido en `main` |
+| Pruebas automatizadas y construcción de imágenes | Evidencia disponible en GitHub Actions |
+| Levantamiento completo de SQL Server y persistencia en Compose | **Prueba manual pendiente de documentar** |
+| Escaneo real, seguimiento y PDF de principio a fin | **Prueba integral pendiente** |
+| Teclado, lectores de pantalla y diferentes tamaños de pantalla | **Revisión manual pendiente** |
+| Conformidad certificada WCAG o despliegue público | **No alcanzados** |
+
+**Seguridad:** `.env` y las contraseñas no deben publicarse; `DB_TRUST_CERT` y `DEV_SHOW_RESET_LINK` son opciones de laboratorio. Antes de ofrecer el servicio en Internet hacen falta HTTPS, aislamiento del navegador, protección de secretos, pruebas de seguridad y endurecimiento adicional.
+
+## 9. Documentación y seguimiento
+
+- [Manual de instalación](docs/manuales/INSTALACION.md)
+- [Manual de usuario](docs/manuales/USUARIO.md)
+- [Arquitectura Docker](docs/arquitectura/DESPLIEGUE_DOCKER.md)
+- [Decisiones técnicas](docs/arquitectura/DECISIONES.md)
+- [Referencia de API](docs/api/openapi.yaml)
+- [Plan y registro de pruebas](docs/pruebas/PLAN_PRUEBAS.md)
+- [Evidencias del proyecto](docs/evidencias/README.md)
+- [Manual de identidad visual](docs/diseno/README.md)
+- [Control de versiones](docs/control-versiones/README.md)
+- [CHANGELOG](CHANGELOG.md)
+- [Preparación de release 1.0.0](docs/entrega/RELEASE_1.0.0.md)
+
+**Control de versiones:** rama principal `main`, desarrollo registrado en commits y CI. Las versiones declaradas en los paquetes siguen en `0.6.2` (raíz/frontend) y `0.6.0` (backend). **No se afirma la publicación de v1.0.0 mientras no exista una release aprobada.**
+
+---
+
+<div align="center">
+
+**A11yPilot · Ingeniería Web II · Universidad Manuela Beltrán**
+
+*La evaluación automatizada orienta la revisión: no reemplaza una auditoría humana de accesibilidad.*
+
+</div>
