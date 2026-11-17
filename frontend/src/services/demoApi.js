@@ -305,13 +305,11 @@ export async function demoApi(path, { method = 'GET', body = {} } = {}) {
     return saveAnd(demoStatus(db, analysis));
   }
   if (path === '/analyses' && method === 'GET')
-    return [...db.analyses]
-      .reverse()
-      .map((a) => ({
-        ...a,
-        Site: getSite(db, a.siteId),
-        findingCount: db.findings.filter((f) => f.analysisId === a.id).length,
-      }));
+    return [...db.analyses].reverse().map((a) => ({
+      ...a,
+      Site: getSite(db, a.siteId),
+      findingCount: db.findings.filter((f) => f.analysisId === a.id).length,
+    }));
   if (chunks[0] === 'analyses' && chunks[1]) {
     const a = db.analyses.find((a) => a.id === Number(chunks[1]));
     if (!a) error('Análisis no encontrado.');
@@ -322,16 +320,14 @@ export async function demoApi(path, { method = 'GET', body = {} } = {}) {
     };
   }
   if (path === '/findings' && method === 'GET')
-    return [...db.findings]
-      .reverse()
-      .map((f) => ({
-        ...f,
-        Analysis: {
-          id: f.analysisId,
-          siteId: db.analyses.find((a) => a.id === f.analysisId)?.siteId,
-          Site: getSite(db, db.analyses.find((a) => a.id === f.analysisId)?.siteId),
-        },
-      }));
+    return [...db.findings].reverse().map((f) => ({
+      ...f,
+      Analysis: {
+        id: f.analysisId,
+        siteId: db.analyses.find((a) => a.id === f.analysisId)?.siteId,
+        Site: getSite(db, db.analyses.find((a) => a.id === f.analysisId)?.siteId),
+      },
+    }));
   if (chunks[0] === 'findings' && chunks[2] === 'status' && method === 'PATCH') {
     const finding = db.findings.find((f) => f.id === Number(chunks[1]));
     if (!finding) error('Hallazgo no encontrado.');

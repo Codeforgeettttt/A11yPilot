@@ -246,14 +246,12 @@ router.post(
     if (!site.authorizationConfirmed || req.body.authorizationConfirmed !== true)
       throw bad('Debes confirmar que tienes autorización para evaluar el sitio.');
     const analysis = await createDemoAnalysis(site.id);
-    res
-      .status(201)
-      .json({
-        id: analysis.id,
-        status: analysis.status,
-        demo: true,
-        message: 'Se guardaron datos de demostración. No se ha visitado el sitio.',
-      });
+    res.status(201).json({
+      id: analysis.id,
+      status: analysis.status,
+      demo: true,
+      message: 'Se guardaron datos de demostración. No se ha visitado el sitio.',
+    });
   }),
 );
 router.get(

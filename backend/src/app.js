@@ -35,9 +35,7 @@ app.use((_req, res) => res.status(404).json({ error: { message: 'Ruta no encontr
 app.use((error, _req, res, _next) => {
   const status = Number.isInteger(error.status) ? error.status : 500;
   if (status === 500) console.error('[API]', error.message);
-  res
-    .status(status)
-    .json({
-      error: { message: status === 500 ? 'No fue posible completar la solicitud.' : error.message },
-    });
+  res.status(status).json({
+    error: { message: status === 500 ? 'No fue posible completar la solicitud.' : error.message },
+  });
 });
