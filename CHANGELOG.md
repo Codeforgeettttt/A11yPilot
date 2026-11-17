@@ -17,6 +17,8 @@ Este documento resume los avances **verificables en GitHub** y distingue las fun
 
 **Pendiente:** comprobar SQL Server y el escáner real dentro de Compose; revisar resultados de CI del último commit y vulnerabilidades de dependencias; definir licencia; aprobar Pull Request y publicación.
 
+**Actualización documental (16/11/2026):** el README, manual de instalación, plan de pruebas y checklist de release se alinearon con el contenido real de `main`. Docker, Playwright y axe-core aparecen en el código; la integración real de extremo a extremo todavía no se ha dado por validada.
+
 El histórico anterior describe los estados de las entregas previas y no debe interpretarse como el estado más reciente del desarrollo.
 
 ## [En desarrollo] — mejoras posteriores al MVP · 10/11/2026
@@ -35,7 +37,7 @@ El histórico anterior describe los estados de las entregas previas y no debe in
 
 _Son tareas previstas, no funcionalidades terminadas._
 
-- Integrar el análisis automatizado real mediante Playwright y axe-core.
+- Validar y endurecer la integración existente de Playwright y axe-core mediante pruebas reales de extremo a extremo.
 - Reforzar el aislamiento del motor, la protección contra SSRF y los límites de ejecución.
 - Revisar la navegación con teclado, el contraste, la visualización responsive y lectores de pantalla.
 - Mejorar los mensajes de validación, la presentación de reportes y la experiencia de uso.
