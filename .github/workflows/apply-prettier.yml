@@ -5,6 +5,7 @@ on:
     branches: [prettier]
     paths:
       - '.github/workflows/apply-prettier.yml'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -20,7 +21,11 @@ jobs:
         with:
           node-version: '22'
       - name: Format repository
-        run: npm run format
+        run: |
+          npm run format
+          npm run format
+      - name: Verify formatting before committing
+        run: npm run format:check
       - name: Commit formatting changes
         run: |
           git config user.name "github-actions[bot]"
@@ -30,5 +35,3 @@ jobs:
             git commit -m "style: apply Prettier formatting"
             git push origin HEAD:prettier
           fi
-      - name: Verify formatting
-        run: npm run format:check
