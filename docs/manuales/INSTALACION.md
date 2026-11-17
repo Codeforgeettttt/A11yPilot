@@ -1,6 +1,6 @@
 # Manual de instalación y puesta en marcha — A11yPilot
 
-**Rama de preparación:** `Docker` · **Versión de trabajo:** 0.6.2 · **Estado:** pendiente de pruebas integrales; no es una guía de despliegue público.
+**Rama principal actual:** `main` · **Versión declarada en paquetes:** 0.6.2 (raíz y frontend) / 0.6.0 (backend) · **Estado:** contiene Docker y escáner real, aún pendiente de verificación integral; no es una guía de despliegue público.
 
 ## 1. Antes de empezar
 
@@ -13,16 +13,16 @@ Si quieres utilizar los comandos de calidad fuera de Docker, instala Node.js 22 
 En PowerShell:
 
 ```powershell
-git clone --branch Docker https://github.com/Codeforgeettttt/A11yPilot.git
+git clone https://github.com/Codeforgeettttt/A11yPilot.git
 cd A11yPilot
 ```
 
-Si ya existe un clon sin cambios locales por guardar:
+Si ya existe un clon sin cambios locales por guardar y quieres actualizarlo desde la rama principal:
 
 ```powershell
 git fetch origin
-git switch Docker
-git pull --ff-only origin Docker
+git switch main
+git pull --ff-only origin main
 ```
 
 ## 3. Arrancar el modo completo (SQL Server + Express + React)
