@@ -44,7 +44,10 @@ export default function Profile({ user, onUserUpdate, onLogout }) {
     event.preventDefault();
     save(async () => {
       if (next !== confirm) throw new Error('Las contraseñas no coinciden.');
-      await api('/auth/change-password', { method: 'POST', body: { currentPassword: current, newPassword: next } });
+      await api('/auth/change-password', {
+        method: 'POST',
+        body: { currentPassword: current, newPassword: next },
+      });
       setCurrent('');
       setNext('');
       setConfirm('');
@@ -80,7 +83,13 @@ export default function Profile({ user, onUserUpdate, onLogout }) {
             maxLength={120}
           />
           <label htmlFor="profile-email">Correo registrado</label>
-          <input id="profile-email" type="email" value={user.email} disabled aria-describedby="fixed-email" />
+          <input
+            id="profile-email"
+            type="email"
+            value={user.email}
+            disabled
+            aria-describedby="fixed-email"
+          />
           <small id="fixed-email">En esta fase el correo no puede cambiarse.</small>
           <button className="btn primary" disabled={saving}>
             Guardar cambios
@@ -89,7 +98,10 @@ export default function Profile({ user, onUserUpdate, onLogout }) {
       </section>
 
       <section className="card">
-        <SectionTitle title="Seguridad" description="Actualiza tu contraseña. Debe tener al menos 12 caracteres." />
+        <SectionTitle
+          title="Seguridad"
+          description="Actualiza tu contraseña. Debe tener al menos 12 caracteres."
+        />
         <form className="form-stack" onSubmit={changePassword}>
           <label htmlFor="profile-current">Contraseña actual</label>
           <input

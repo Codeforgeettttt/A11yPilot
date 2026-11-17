@@ -13,7 +13,11 @@ export async function submitAndRefresh(action, refresh, onSuccess, onError, succ
     await refresh();
     if (successMessage) onSuccess(successMessage);
   } catch (error) {
-    onError('Los cambios se guardaron, pero no se pudo actualizar la vista: ' + (error?.message || 'Error de conexión') + '. Intenta recargar.');
+    onError(
+      'Los cambios se guardaron, pero no se pudo actualizar la vista: ' +
+        (error?.message || 'Error de conexión') +
+        '. Intenta recargar.',
+    );
   }
   return true;
 }

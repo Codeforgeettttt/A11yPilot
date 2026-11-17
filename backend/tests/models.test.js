@@ -4,7 +4,10 @@ import { Project } from '../src/models/index.js';
 
 // validate() revisa las reglas del modelo sin conectarse a la base de datos.
 test('un proyecto no se puede guardar sin dueño', async () => {
-  await assert.rejects(Project.build({ name: 'Proyecto huérfano' }).validate(), /userId cannot be null/);
+  await assert.rejects(
+    Project.build({ name: 'Proyecto huérfano' }).validate(),
+    /userId cannot be null/,
+  );
 });
 
 test('un proyecto con dueño es válido', async () => {

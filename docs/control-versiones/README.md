@@ -12,17 +12,17 @@ Este documento explica cómo se registran, verifican y organizan los cambios del
 
 ## 1. Estado actual y estrategia
 
-| Elemento | Aplicación en A11yPilot |
-| --- | --- |
-| Sistema de versionado | Git |
-| Repositorio remoto | GitHub público |
-| Rama principal | `main` |
-| Convención para nuevos commits | Conventional Commits |
-| Versionado de la aplicación | `MAJOR.MINOR.PATCH` (propuesta para siguientes entregas) |
-| Registro explicativo de cambios | [CHANGELOG.md](../../CHANGELOG.md) |
-| Documentación y evidencias | `docs/` |
-| Integración continua | [Node.js CI](../../.github/workflows/node.js.yml) |
-| Publicación de versión final | Propuesta: etiqueta `vX.Y.Z` y GitHub Release al cerrar cada entrega |
+| Elemento                        | Aplicación en A11yPilot                                              |
+| ------------------------------- | -------------------------------------------------------------------- |
+| Sistema de versionado           | Git                                                                  |
+| Repositorio remoto              | GitHub público                                                       |
+| Rama principal                  | `main`                                                               |
+| Convención para nuevos commits  | Conventional Commits                                                 |
+| Versionado de la aplicación     | `MAJOR.MINOR.PATCH` (propuesta para siguientes entregas)             |
+| Registro explicativo de cambios | [CHANGELOG.md](../../CHANGELOG.md)                                   |
+| Documentación y evidencias      | `docs/`                                                              |
+| Integración continua            | [Node.js CI](../../.github/workflows/node.js.yml)                    |
+| Publicación de versión final    | Propuesta: etiqueta `vX.Y.Z` y GitHub Release al cerrar cada entrega |
 
 Actualmente el historial del repositorio existe y contiene commits reales. La guía de ramas y etiquetado siguiente es una **política propuesta para el trabajo futuro**, no una afirmación de que ya se hayan creado dichas ramas o etiquetas.
 
@@ -30,20 +30,20 @@ Actualmente el historial del repositorio existe y contiene commits reales. La gu
 
 Los siguientes hitos se obtuvieron del historial público de `main` y corresponden a los cambios que quedaron registrados:
 
-| Fecha | Commit | Cambio documentado |
-| --- | --- | --- |
-| 03/11/2026 | [`ac4c9c9`](https://github.com/Codeforgeettttt/A11yPilot/commit/ac4c9c9b68) | Creación inicial del repositorio |
+| Fecha      | Commit                                                                      | Cambio documentado                                              |
+| ---------- | --------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| 03/11/2026 | [`ac4c9c9`](https://github.com/Codeforgeettttt/A11yPilot/commit/ac4c9c9b68) | Creación inicial del repositorio                                |
 | 10/11/2026 | [`26fc3ce`](https://github.com/Codeforgeettttt/A11yPilot/commit/26fc3ce81e) | Publicación del MVP inicial (frontend, backend y documentación) |
-| 10/11/2026 | [`807bc93`](https://github.com/Codeforgeettttt/A11yPilot/commit/807bc93b99) | Incorporación del workflow Node.js CI |
-| 10/11/2026 | [`833fed3`](https://github.com/Codeforgeettttt/A11yPilot/commit/833fed32af) | Objetivo, alcance y requisitos de la primera entrega |
-| 10/11/2026 | [`a437972`](https://github.com/Codeforgeettttt/A11yPilot/commit/a4379723bc) | Registro de pruebas y evidencias |
-| 10/11/2026 | [`96e4b35`](https://github.com/Codeforgeettttt/A11yPilot/commit/96e4b357a4) | Ampliación del README académico y técnico |
-| 10/11/2026 | [`2062ce7`](https://github.com/Codeforgeettttt/A11yPilot/commit/2062ce7138) | Corrección de instalación de dependencias en GitHub Actions |
-| 10/11/2026 | [`fd06ced`](https://github.com/Codeforgeettttt/A11yPilot/commit/fd06cedc50) | Actualización del registro de evidencias |
-| 10/11/2026 | [`c070005`](https://github.com/Codeforgeettttt/A11yPilot/commit/c070005bb0) | Ajustes de imágenes en la documentación |
-| 10/11/2026 | [`cd4ee73`](https://github.com/Codeforgeettttt/A11yPilot/commit/cd4ee73387) | Creación del apartado de identidad visual |
-| 10/11/2026 | [`8c84113`](https://github.com/Codeforgeettttt/A11yPilot/commit/8c84113a8a) | Carga del documento original de diseño |
-| 10/11/2026 | [`f883603`](https://github.com/Codeforgeettttt/A11yPilot/commit/f883603215) | Enlace del PDF desde la documentación |
+| 10/11/2026 | [`807bc93`](https://github.com/Codeforgeettttt/A11yPilot/commit/807bc93b99) | Incorporación del workflow Node.js CI                           |
+| 10/11/2026 | [`833fed3`](https://github.com/Codeforgeettttt/A11yPilot/commit/833fed32af) | Objetivo, alcance y requisitos de la primera entrega            |
+| 10/11/2026 | [`a437972`](https://github.com/Codeforgeettttt/A11yPilot/commit/a4379723bc) | Registro de pruebas y evidencias                                |
+| 10/11/2026 | [`96e4b35`](https://github.com/Codeforgeettttt/A11yPilot/commit/96e4b357a4) | Ampliación del README académico y técnico                       |
+| 10/11/2026 | [`2062ce7`](https://github.com/Codeforgeettttt/A11yPilot/commit/2062ce7138) | Corrección de instalación de dependencias en GitHub Actions     |
+| 10/11/2026 | [`fd06ced`](https://github.com/Codeforgeettttt/A11yPilot/commit/fd06cedc50) | Actualización del registro de evidencias                        |
+| 10/11/2026 | [`c070005`](https://github.com/Codeforgeettttt/A11yPilot/commit/c070005bb0) | Ajustes de imágenes en la documentación                         |
+| 10/11/2026 | [`cd4ee73`](https://github.com/Codeforgeettttt/A11yPilot/commit/cd4ee73387) | Creación del apartado de identidad visual                       |
+| 10/11/2026 | [`8c84113`](https://github.com/Codeforgeettttt/A11yPilot/commit/8c84113a8a) | Carga del documento original de diseño                          |
+| 10/11/2026 | [`f883603`](https://github.com/Codeforgeettttt/A11yPilot/commit/f883603215) | Enlace del PDF desde la documentación                           |
 
 El historial completo, incluidos cambios intermedios, se consulta en **[Commits de main](https://github.com/Codeforgeettttt/A11yPilot/commits/main/)**.
 
@@ -55,16 +55,16 @@ Formato recomendado:
 tipo(alcance): descripción breve
 ```
 
-| Tipo | Se utiliza para | Ejemplo |
-| --- | --- | --- |
-| `feat` | Nueva funcionalidad | `feat(proyectos): añadir filtros` |
-| `fix` | Corrección de fallos | `fix(auth): corregir validación de origen` |
-| `docs` | Documentación | `docs: agregar evidencias responsive` |
-| `test` | Pruebas | `test(api): verificar permisos de proyectos` |
-| `refactor` | Mejora interna sin alterar comportamiento | `refactor(frontend): separar componentes` |
-| `style` | Ajustes visuales o formato | `style(ui): mejorar espaciado móvil` |
-| `ci` | Integración continua | `ci: ejecutar build y test` |
-| `chore` | Mantenimiento | `chore: actualizar dependencias` |
+| Tipo       | Se utiliza para                           | Ejemplo                                      |
+| ---------- | ----------------------------------------- | -------------------------------------------- |
+| `feat`     | Nueva funcionalidad                       | `feat(proyectos): añadir filtros`            |
+| `fix`      | Corrección de fallos                      | `fix(auth): corregir validación de origen`   |
+| `docs`     | Documentación                             | `docs: agregar evidencias responsive`        |
+| `test`     | Pruebas                                   | `test(api): verificar permisos de proyectos` |
+| `refactor` | Mejora interna sin alterar comportamiento | `refactor(frontend): separar componentes`    |
+| `style`    | Ajustes visuales o formato                | `style(ui): mejorar espaciado móvil`         |
+| `ci`       | Integración continua                      | `ci: ejecutar build y test`                  |
+| `chore`    | Mantenimiento                             | `chore: actualizar dependencias`             |
 
 Reglas: redactar mensajes específicos, mantener un cambio lógico por commit, no añadir contraseñas ni archivos `.env`, y comprobar que se está usando la rama correcta.
 

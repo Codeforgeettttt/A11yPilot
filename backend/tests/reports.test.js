@@ -19,9 +19,21 @@ const analysis = (demo) => ({
   demo,
   status: 'Completado',
   createdAt: new Date(),
-  Site: { name: 'CityLights', url: 'https://www.w3.org/WAI/demos/bad/before/home.html', Project: { name: 'Portal' } },
+  Site: {
+    name: 'CityLights',
+    url: 'https://www.w3.org/WAI/demos/bad/before/home.html',
+    Project: { name: 'Portal' },
+  },
   Findings: [
-    { title: 'Imagen sin texto alternativo', impact: 'Crítico', rule: 'image-alt', wcag: '1.1.1', selector: 'img.logo', status: 'Pendiente', recommendation: 'Añadir alt.' },
+    {
+      title: 'Imagen sin texto alternativo',
+      impact: 'Crítico',
+      rule: 'image-alt',
+      wcag: '1.1.1',
+      selector: 'img.logo',
+      status: 'Pendiente',
+      recommendation: 'Añadir alt.',
+    },
   ],
 });
 

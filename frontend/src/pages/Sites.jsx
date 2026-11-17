@@ -96,7 +96,11 @@ export default function Sites({ data, run }) {
       <section className="card">
         <SectionTitle
           title={editing ? `Editar sitio «${editing.name}»` : 'Registrar sitio'}
-          description={editing ? 'Cambia el nombre o la dirección del sitio.' : 'Registrar una URL no ejecuta ningún análisis.'}
+          description={
+            editing
+              ? 'Cambia el nombre o la dirección del sitio.'
+              : 'Registrar una URL no ejecuta ningún análisis.'
+          }
         />
         <form className="form-stack" onSubmit={submit} noValidate>
           <label htmlFor="site-project">Proyecto</label>
@@ -115,7 +119,9 @@ export default function Sites({ data, run }) {
               </option>
             ))}
           </select>
-          {editing && <small id="site-project-help">El proyecto de un sitio no se puede cambiar.</small>}
+          {editing && (
+            <small id="site-project-help">El proyecto de un sitio no se puede cambiar.</small>
+          )}
 
           <label htmlFor="site-name">Nombre del sitio</label>
           <input
@@ -138,11 +144,17 @@ export default function Sites({ data, run }) {
             aria-invalid={!!error}
             aria-describedby={error ? 'site-help site-form-error' : 'site-help'}
           />
-          <small id="site-help">Usa http:// o https://. Solo se pueden analizar direcciones públicas.</small>
+          <small id="site-help">
+            Usa http:// o https://. Solo se pueden analizar direcciones públicas.
+          </small>
 
           {needsAuthorization && (
             <label className="checkline">
-              <input type="checkbox" checked={authorized} onChange={(e) => setAuthorized(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={authorized}
+                onChange={(e) => setAuthorized(e.target.checked)}
+              />
               <span>
                 {editing
                   ? 'Confirmo que cuento con autorización para evaluar la nueva dirección.'
@@ -170,7 +182,10 @@ export default function Sites({ data, run }) {
       </section>
 
       <section className="card">
-        <SectionTitle title={`Sitios registrados (${data.sites.length})`} description="Asociados a los proyectos guardados." />
+        <SectionTitle
+          title={`Sitios registrados (${data.sites.length})`}
+          description="Asociados a los proyectos guardados."
+        />
         {data.sites.length === 0 ? (
           <Empty>Agrega un proyecto y registra su primer sitio.</Empty>
         ) : (

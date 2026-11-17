@@ -33,7 +33,7 @@ El histórico anterior describe los estados de las entregas previas y no debe in
 
 ## [Sin publicar] — próximas mejoras
 
-*Son tareas previstas, no funcionalidades terminadas.*
+_Son tareas previstas, no funcionalidades terminadas._
 
 - Integrar el análisis automatizado real mediante Playwright y axe-core.
 - Reforzar el aislamiento del motor, la protección contra SSRF y los límites de ejecución.
@@ -56,15 +56,15 @@ El histórico anterior describe los estados de las entregas previas y no debe in
 
 ### Evidencia de desarrollo en Git
 
-| Fecha | Cambio destacado | Referencia |
-| --- | --- | --- |
-| 03/11/2026 | Creación del repositorio | [`ac4c9c9`](https://github.com/Codeforgeettttt/A11yPilot/commit/ac4c9c9b68) |
-| 10/11/2026 | Incorporación del MVP | [`26fc3ce`](https://github.com/Codeforgeettttt/A11yPilot/commit/26fc3ce81e) |
-| 10/11/2026 | Configuración inicial del CI | [`807bc93`](https://github.com/Codeforgeettttt/A11yPilot/commit/807bc93b99) |
-| 10/11/2026 | Ampliación del README técnico | [`96e4b35`](https://github.com/Codeforgeettttt/A11yPilot/commit/96e4b357a4) |
+| Fecha      | Cambio destacado                                     | Referencia                                                                  |
+| ---------- | ---------------------------------------------------- | --------------------------------------------------------------------------- |
+| 03/11/2026 | Creación del repositorio                             | [`ac4c9c9`](https://github.com/Codeforgeettttt/A11yPilot/commit/ac4c9c9b68) |
+| 10/11/2026 | Incorporación del MVP                                | [`26fc3ce`](https://github.com/Codeforgeettttt/A11yPilot/commit/26fc3ce81e) |
+| 10/11/2026 | Configuración inicial del CI                         | [`807bc93`](https://github.com/Codeforgeettttt/A11yPilot/commit/807bc93b99) |
+| 10/11/2026 | Ampliación del README técnico                        | [`96e4b35`](https://github.com/Codeforgeettttt/A11yPilot/commit/96e4b357a4) |
 | 10/11/2026 | Corrección de CI (dependencias del frontend/backend) | [`2062ce7`](https://github.com/Codeforgeettttt/A11yPilot/commit/2062ce7138) |
-| 10/11/2026 | Incorporación de capturas y registro de evidencias | [`fd06ced`](https://github.com/Codeforgeettttt/A11yPilot/commit/fd06cedc50) |
-| 10/11/2026 | Documentación de identidad visual y manual PDF | [`f883603`](https://github.com/Codeforgeettttt/A11yPilot/commit/f883603215) |
+| 10/11/2026 | Incorporación de capturas y registro de evidencias   | [`fd06ced`](https://github.com/Codeforgeettttt/A11yPilot/commit/fd06cedc50) |
+| 10/11/2026 | Documentación de identidad visual y manual PDF       | [`f883603`](https://github.com/Codeforgeettttt/A11yPilot/commit/f883603215) |
 
 ### Verificación
 

@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MAX_NODES_PER_RULE, violationsToFindings, wcagCriteria } from '../src/services/findings-mapper.js';
+import {
+  MAX_NODES_PER_RULE,
+  violationsToFindings,
+  wcagCriteria,
+} from '../src/services/findings-mapper.js';
 
 // Ejemplo de violación con el mismo formato que devuelve axe.
 const imageAlt = {
@@ -30,7 +34,10 @@ test('convierte una violación en un hallazgo con los campos de la base de datos
 });
 
 test('limita cuántos elementos se guardan por regla', () => {
-  const many = { ...imageAlt, nodes: Array.from({ length: 30 }, (_, i) => ({ target: [`img:nth-child(${i})`] })) };
+  const many = {
+    ...imageAlt,
+    nodes: Array.from({ length: 30 }, (_, i) => ({ target: [`img:nth-child(${i})`] })),
+  };
   assert.equal(violationsToFindings([many]).length, MAX_NODES_PER_RULE);
 });
 

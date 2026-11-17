@@ -10,7 +10,11 @@ import { X } from 'lucide-react';
  */
 export default function Sidebar({ items, page, open, demo, onClose, onSelect }) {
   return (
-    <aside id="primary-sidebar" className={`sidebar ${open ? 'open' : ''}`} aria-label="Menú lateral">
+    <aside
+      id="primary-sidebar"
+      className={`sidebar ${open ? 'open' : ''}`}
+      aria-label="Menú lateral"
+    >
       <div className="brand">
         <img src="/assets/logos/a11ypilot-logo.webp" alt="" width="52" height="52" />
         <span>
@@ -43,14 +47,15 @@ export default function Sidebar({ items, page, open, demo, onClose, onSelect }) 
       </nav>
 
       <div className="sidebar-bottom">
-                <span className="demo-label">
+        <span className="demo-label">
           <span className="dot" /> {demo ? 'Modo de prueba' : 'Modo completo'}
         </span>
         <p>
           {demo
             ? 'Los datos se guardan solo en este navegador y los análisis son simulados.'
             : 'Análisis reales con axe-core. Tus datos se guardan en SQL Server.'}
-        </p> </div>
+        </p>{' '}
+      </div>
     </aside>
   );
 }

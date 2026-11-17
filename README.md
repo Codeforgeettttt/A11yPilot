@@ -3,6 +3,7 @@
 <img src="frontend/public/assets/logos/a11ypilot-logo.webp" alt="Logotipo oficial de A11yPilot" width="160" />
 
 # A11yPilot
+
 ### Plataforma de evaluación y seguimiento de accesibilidad web
 
 **Ingeniería Web II · Entrega 1 · MVP 0.6.2**
@@ -54,31 +55,31 @@ Desarrollar una aplicación web que permita gestionar proyectos y sitios, presen
 
 ## 4. Alcance de la primera entrega
 
-| Incluido | Próximas fases |
-| :--- | :--- |
-| Dashboard, proyectos, sitios, análisis, hallazgos, historial y reportes | Mejoras de cobertura de análisis |
-| Registro e inicio de sesión con persistencia en modo completo | Administración avanzada de roles |
-| Simulador de hallazgos y seguimiento | Comparación automática de revisiones reales |
-| API REST, SQL Server y cola simple de análisis | Aislamiento reforzado y escalamiento del navegador |
-| PDF de análisis y modo de prueba simulado | Auditoría integral y comparaciones entre revisiones |
-| Alto contraste, texto, espaciado y reducción de movimiento | Auditoría integral WCAG y despliegue público |
-| Pruebas básicas y documentación | Migraciones versionadas del esquema |
+| Incluido                                                                | Próximas fases                                      |
+| :---------------------------------------------------------------------- | :-------------------------------------------------- |
+| Dashboard, proyectos, sitios, análisis, hallazgos, historial y reportes | Mejoras de cobertura de análisis                    |
+| Registro e inicio de sesión con persistencia en modo completo           | Administración avanzada de roles                    |
+| Simulador de hallazgos y seguimiento                                    | Comparación automática de revisiones reales         |
+| API REST, SQL Server y cola simple de análisis                          | Aislamiento reforzado y escalamiento del navegador  |
+| PDF de análisis y modo de prueba simulado                               | Auditoría integral y comparaciones entre revisiones |
+| Alto contraste, texto, espaciado y reducción de movimiento              | Auditoría integral WCAG y despliegue público        |
+| Pruebas básicas y documentación                                         | Migraciones versionadas del esquema                 |
 
 **Usuarios destinatarios:** estudiantes de software, desarrolladores, equipos de calidad y responsables de sitios web que necesitan organizar hallazgos.
 
 ## 5. Funcionalidades
 
-| Módulo | Descripción |
-| :--- | :--- |
-| **Cuentas** | Registro, acceso, cierre de sesión, perfil y recuperación de contraseña en modo completo |
-| **Dashboard** | Indicadores, resumen y actividad de proyectos |
-| **Proyectos** | Creación y administración de proyectos |
-| **Sitios** | Registro de URLs con confirmación de autorización |
-| **Nuevo análisis** | Análisis real en modo completo y resultados simulados en modo de prueba |
-| **Hallazgos** | Búsqueda, filtros, clasificación y seguimiento |
-| **Historial** | Consulta de análisis anteriores registrados |
-| **Reportes** | PDF con resultados explícitamente demostrativos |
-| **Accesibilidad** | Panel de contraste alto y preferencias de lectura |
+| Módulo             | Descripción                                                                              |
+| :----------------- | :--------------------------------------------------------------------------------------- |
+| **Cuentas**        | Registro, acceso, cierre de sesión, perfil y recuperación de contraseña en modo completo |
+| **Dashboard**      | Indicadores, resumen y actividad de proyectos                                            |
+| **Proyectos**      | Creación y administración de proyectos                                                   |
+| **Sitios**         | Registro de URLs con confirmación de autorización                                        |
+| **Nuevo análisis** | Análisis real en modo completo y resultados simulados en modo de prueba                  |
+| **Hallazgos**      | Búsqueda, filtros, clasificación y seguimiento                                           |
+| **Historial**      | Consulta de análisis anteriores registrados                                              |
+| **Reportes**       | PDF con resultados explícitamente demostrativos                                          |
+| **Accesibilidad**  | Panel de contraste alto y preferencias de lectura                                        |
 
 **Flujo de uso:** entrar → crear proyecto → registrar sitio → confirmar autorización → ejecutar análisis (real en modo completo o simulado en modo de prueba) → revisar hallazgos → actualizar seguimiento → descargar PDF.
 
@@ -108,34 +109,34 @@ flowchart TD
 
 ### Entidades principales
 
-| Tabla | Propósito |
-| :--- | :--- |
-| `Users` | Cuentas de usuario |
-| `Sessions` | Sesiones activas |
-| `PasswordResets` | Solicitudes de restablecimiento |
-| `Projects` | Proyectos vinculados a sus propietarios |
-| `Sites` | Sitios asociados a proyectos |
-| `Analyses` | Análisis reales o de demostración |
-| `Findings` | Hallazgos asociados a los análisis |
-| `FindingUpdates` | Registro de seguimiento |
-| `AnalysisEvents` | Eventos de ejecución |
+| Tabla            | Propósito                               |
+| :--------------- | :-------------------------------------- |
+| `Users`          | Cuentas de usuario                      |
+| `Sessions`       | Sesiones activas                        |
+| `PasswordResets` | Solicitudes de restablecimiento         |
+| `Projects`       | Proyectos vinculados a sus propietarios |
+| `Sites`          | Sitios asociados a proyectos            |
+| `Analyses`       | Análisis reales o de demostración       |
+| `Findings`       | Hallazgos asociados a los análisis      |
+| `FindingUpdates` | Registro de seguimiento                 |
+| `AnalysisEvents` | Eventos de ejecución                    |
 
 La inicialización local se realiza mediante `sequelize.sync()` sin `force` ni `alter`. No equivale a migraciones de producción.
 
 ## 8. Tecnologías
 
-| Capa | Tecnologías | Función |
-| :--- | :--- | :--- |
-| Web | HTML5, CSS3, JavaScript | Estructura, estilos e interactividad |
-| Frontend | React 18, Vite 5, Lucide | Componentes y desarrollo |
-| API | Node.js, Express 4 | Rutas y lógica de negocio |
-| Base de datos | SQL Server Express | Persistencia local |
-| Acceso a datos | Sequelize 6, Tedious | Modelos y consultas |
-| Informes | jsPDF, PDFKit | Exportación PDF en ambos modos |
-| Seguridad inicial | Helmet, CORS, rate limit | Controles de desarrollo |
-| Pruebas | Node Test, Supertest, Vitest | Comprobaciones automatizadas |
-| Documentación | Markdown, OpenAPI | Guías y contrato API |
-| Versionamiento | Git, GitHub | Gestión de avances |
+| Capa              | Tecnologías                  | Función                              |
+| :---------------- | :--------------------------- | :----------------------------------- |
+| Web               | HTML5, CSS3, JavaScript      | Estructura, estilos e interactividad |
+| Frontend          | React 18, Vite 5, Lucide     | Componentes y desarrollo             |
+| API               | Node.js, Express 4           | Rutas y lógica de negocio            |
+| Base de datos     | SQL Server Express           | Persistencia local                   |
+| Acceso a datos    | Sequelize 6, Tedious         | Modelos y consultas                  |
+| Informes          | jsPDF, PDFKit                | Exportación PDF en ambos modos       |
+| Seguridad inicial | Helmet, CORS, rate limit     | Controles de desarrollo              |
+| Pruebas           | Node Test, Supertest, Vitest | Comprobaciones automatizadas         |
+| Documentación     | Markdown, OpenAPI            | Guías y contrato API                 |
+| Versionamiento    | Git, GitHub                  | Gestión de avances                   |
 
 ## 9. Organización del repositorio
 
@@ -213,24 +214,24 @@ npm.cmd run db:setup
 npm.cmd run dev
 ```
 
-| Dirección local | Función |
-| :--- | :--- |
-| http://localhost:5173 | Aplicación web |
-| http://127.0.0.1:3001/api/health | Estado de la API |
+| Dirección local                           | Función                       |
+| :---------------------------------------- | :---------------------------- |
+| http://localhost:5173                     | Aplicación web                |
+| http://127.0.0.1:3001/api/health          | Estado de la API              |
 | http://127.0.0.1:3001/api/health/database | Estado de API y base de datos |
 
 La instancia `SQLEXPRESS` puede usar puertos dinámicos; confirmar el puerto TCP en la configuración local.
 
 ### Comandos útiles
 
-| Comando | Descripción |
-| :--- | :--- |
-| `npm.cmd run dev:demo` | Frontend sin backend |
-| `npm.cmd run dev` | Frontend y backend |
-| `npm.cmd run db:setup` | Preparación de tablas |
-| `npm.cmd run db:seed` | Datos de demostración configurados |
-| `npm.cmd run build` | Compilar frontend |
-| `npm.cmd run test` | Ejecutar pruebas |
+| Comando                | Descripción                        |
+| :--------------------- | :--------------------------------- |
+| `npm.cmd run dev:demo` | Frontend sin backend               |
+| `npm.cmd run dev`      | Frontend y backend                 |
+| `npm.cmd run db:setup` | Preparación de tablas              |
+| `npm.cmd run db:seed`  | Datos de demostración configurados |
+| `npm.cmd run build`    | Compilar frontend                  |
+| `npm.cmd run test`     | Ejecutar pruebas                   |
 
 ## 11. Seguridad y limitaciones
 
@@ -240,18 +241,18 @@ En el modo completo, las cuentas utilizan hash de contraseña con `scrypt` y ses
 
 ## 12. Estado de avance, pruebas y evidencias
 
-| Elemento | Estado |
-| :--- | :--- |
-| Código fuente en GitHub | Publicado |
-| Frontend y backend | Implementados en el repositorio |
-| Conexión a SQL Server | Probada localmente durante el desarrollo |
-| Registro y acceso | Probados manualmente en entorno local |
-| Reportes PDF y panel de accesibilidad | Incluidos en el código |
-| Pruebas automatizadas | Incluidas; resultados pendientes de registrar |
-| Capturas responsive | Pendientes de documentar |
-| Pruebas manuales con lectores de pantalla | Pendientes |
-| Análisis reales de sitios | Implementados en código; pendiente validación integral en Docker |
-| Certificación de conformidad WCAG | No disponible |
+| Elemento                                  | Estado                                                           |
+| :---------------------------------------- | :--------------------------------------------------------------- |
+| Código fuente en GitHub                   | Publicado                                                        |
+| Frontend y backend                        | Implementados en el repositorio                                  |
+| Conexión a SQL Server                     | Probada localmente durante el desarrollo                         |
+| Registro y acceso                         | Probados manualmente en entorno local                            |
+| Reportes PDF y panel de accesibilidad     | Incluidos en el código                                           |
+| Pruebas automatizadas                     | Incluidas; resultados pendientes de registrar                    |
+| Capturas responsive                       | Pendientes de documentar                                         |
+| Pruebas manuales con lectores de pantalla | Pendientes                                                       |
+| Análisis reales de sitios                 | Implementados en código; pendiente validación integral en Docker |
+| Certificación de conformidad WCAG         | No disponible                                                    |
 
 Las capturas reales y resultados se documentarán en **[docs/evidencias](docs/evidencias/README.md)**. Se requieren vistas de escritorio, móvil y tableta, interacciones principales, alto contraste y un PDF generado. No incluir credenciales ni datos privados en esas capturas.
 
@@ -276,10 +277,9 @@ npm.cmd run test
 
 **A11yPilot · Universidad Manuela Beltrán · Ingeniería Web II**
 
-*El proyecto se desarrolla por fases. El modo completo incorpora análisis automatizados; el modo de prueba utiliza resultados simulados. Ninguna modalidad certifica conformidad WCAG.*
+_El proyecto se desarrolla por fases. El modo completo incorpora análisis automatizados; el modo de prueba utiliza resultados simulados. Ninguna modalidad certifica conformidad WCAG._
 
 </div>
-
 
 ## Preparación Docker, calidad y manuales (rama `Docker`)
 

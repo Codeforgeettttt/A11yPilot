@@ -10,41 +10,41 @@ paths:
     post:
       summary: Crear cuenta y sesión
       responses:
-        '201': {description: Cuenta creada}
+        '201': { description: Cuenta creada }
   /auth/login:
     post:
       summary: Iniciar sesión
       responses:
-        '200': {description: Sesión iniciada}
+        '200': { description: Sesión iniciada }
   /auth/me:
     get:
       summary: Perfil del usuario
       responses:
-        '200': {description: Perfil propio}
+        '200': { description: Perfil propio }
     patch:
       summary: Actualizar nombre de perfil
       responses:
-        '200': {description: Actualizado}
+        '200': { description: Actualizado }
   /auth/logout:
     post:
       summary: Cerrar sesión
       responses:
-        '204': {description: Sesión cerrada}
+        '204': { description: Sesión cerrada }
   /auth/change-password:
     post:
       summary: Cambiar contraseña
       responses:
-        '200': {description: Actualizada}
+        '200': { description: Actualizada }
   /auth/forgot-password:
     post:
       summary: Solicitar recuperación
       responses:
-        '200': {description: Respuesta genérica}
+        '200': { description: Respuesta genérica }
   /auth/reset-password:
     post:
       summary: Restablecer contraseña
       responses:
-        '200': {description: Actualizada}
+        '200': { description: Actualizada }
   /health:
     get:
       summary: Estado del servicio
@@ -169,7 +169,8 @@ paths:
                 siteId: { type: integer }
                 authorizationConfirmed: { type: boolean, enum: [true] }
       responses:
-        '202': { description: 'Análisis aceptado en estado En cola; consultar /analyses/{id}/status' }
+        '202':
+          { description: 'Análisis aceptado en estado En cola; consultar /analyses/{id}/status' }
         '400': { description: Falta confirmar la autorización }
         '404': { description: El sitio no existe o no pertenece al usuario }
         '409': { description: El usuario ya tiene un análisis en curso }

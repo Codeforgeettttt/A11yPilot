@@ -10,11 +10,16 @@ export class AnalysisError extends Error {
 
 // Fragmentos de los errores de Chromium/Playwright y el mensaje que mostramos para cada uno.
 const KNOWN_ERRORS = [
-  [/Timeout|ERR_TIMED_OUT/i, 'La página tardó demasiado en cargar (más de 30 segundos). Inténtalo más tarde.'],
+  [
+    /Timeout|ERR_TIMED_OUT/i,
+    'La página tardó demasiado en cargar (más de 30 segundos). Inténtalo más tarde.',
+  ],
   [/ERR_NAME_NOT_RESOLVED/i, 'No se encontró el sitio. Revisa que la dirección esté bien escrita.'],
   [/ERR_CERT_|SSL_PROTOCOL_ERROR/i, 'El certificado de seguridad (HTTPS) del sitio no es válido.'],
-  [/ERR_CONNECTION_REFUSED|ERR_CONNECTION_RESET|ERR_CONNECTION_CLOSED|ERR_EMPTY_RESPONSE|ERR_TUNNEL_CONNECTION_FAILED|ERR_ADDRESS_UNREACHABLE/i,
-    'No se pudo conectar con el sitio. Puede estar caído o rechazar las conexiones.'],
+  [
+    /ERR_CONNECTION_REFUSED|ERR_CONNECTION_RESET|ERR_CONNECTION_CLOSED|ERR_EMPTY_RESPONSE|ERR_TUNNEL_CONNECTION_FAILED|ERR_ADDRESS_UNREACHABLE/i,
+    'No se pudo conectar con el sitio. Puede estar caído o rechazar las conexiones.',
+  ],
   [/ERR_TOO_MANY_REDIRECTS/i, 'La página redirige demasiadas veces y no termina de cargar.'],
 ];
 
@@ -31,10 +36,15 @@ export function friendlyError(error) {
 
 /** Lanza un error claro si la página respondió con un código HTTP de error (404, 500…). */
 export function assertPageLoaded(status) {
-  if (status === 404) throw new AnalysisError('La página no existe (error 404). Revisa la dirección.');
+  if (status === 404)
+    throw new AnalysisError('La página no existe (error 404). Revisa la dirección.');
   if (status === 401 || status === 403) {
     throw new AnalysisError(`El sitio no permite el acceso a esta página (error ${status}).`);
   }
-  if (status >= 500) throw new AnalysisError(`El sitio tiene un problema interno (error ${status}). Inténtalo más tarde.`);
-  if (status >= 400) throw new AnalysisError(`La página respondió con un error (código ${status}).`);
+  if (status >= 500)
+    throw new AnalysisError(
+      `El sitio tiene un problema interno (error ${status}). Inténtalo más tarde.`,
+    );
+  if (status >= 400)
+    throw new AnalysisError(`La página respondió con un error (código ${status}).`);
 }

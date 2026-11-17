@@ -31,7 +31,9 @@ export async function scanPage(url, { timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
     browser = await chromium.launch({
       proxy: { server: `http://127.0.0.1:${proxy.address().port}`, bypass: '<-loopback>' },
     });
-    const context = await browser.newContext({ userAgent: 'A11yPilot/1.0 (evaluación de accesibilidad autorizada)' });
+    const context = await browser.newContext({
+      userAgent: 'A11yPilot/1.0 (evaluación de accesibilidad autorizada)',
+    });
     const page = await context.newPage();
     page.setDefaultTimeout(timeoutMs);
 
@@ -44,7 +46,9 @@ export async function scanPage(url, { timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
       throw new UrlNotAllowedError('La página redirige a una dirección privada o local.');
     }
 
-    const results = await new AxeBuilder({ page, axeSource: AXE_SOURCE }).withTags(WCAG_TAGS).analyze();
+    const results = await new AxeBuilder({ page, axeSource: AXE_SOURCE })
+      .withTags(WCAG_TAGS)
+      .analyze();
 
     return {
       requestedUrl: url,

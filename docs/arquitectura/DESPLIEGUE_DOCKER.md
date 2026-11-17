@@ -2,14 +2,14 @@
 
 ## Requisitos y componentes
 
-| Componente | Tecnología | Función |
-| --- | --- | --- |
-| `frontend` | React + Vite | Interfaz web y proxy HTTP de `/api` |
-| `backend` | Node.js + Express | Cuentas, proyectos, análisis y reportes |
+| Componente           | Tecnología                       | Función                                      |
+| -------------------- | -------------------------------- | -------------------------------------------- |
+| `frontend`           | React + Vite                     | Interfaz web y proxy HTTP de `/api`          |
+| `backend`            | Node.js + Express                | Cuentas, proyectos, análisis y reportes      |
 | Escáner en `backend` | Playwright + Chromium + axe-core | Evaluación real de URLs públicas autorizadas |
-| `db-init` | Node.js + Sequelize | Crea la base y prepara tablas si faltan |
-| `db` | SQL Server 2022 Express | Persistencia de datos |
-| `sqlserver_data` | Volumen Docker | Conserva la información entre reinicios |
+| `db-init`            | Node.js + Sequelize              | Crea la base y prepara tablas si faltan      |
+| `db`                 | SQL Server 2022 Express          | Persistencia de datos                        |
+| `sqlserver_data`     | Volumen Docker                   | Conserva la información entre reinicios      |
 
 Los servicios operan en la red `internal` de Compose. La base no publica el puerto 1433, y el frontend y la API se publican solo en la interfaz de loopback del equipo.
 

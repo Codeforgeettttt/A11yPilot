@@ -47,7 +47,8 @@ export default function Projects({ data, run }) {
     const confirmed = window.confirm(
       `¿Eliminar «${project.name}»? También se eliminarán sus sitios y análisis asociados.`,
     );
-    if (confirmed) run(() => api(`/projects/${project.id}`, { method: 'DELETE' }), 'Proyecto eliminado.');
+    if (confirmed)
+      run(() => api(`/projects/${project.id}`, { method: 'DELETE' }), 'Proyecto eliminado.');
   }
 
   return (
@@ -91,7 +92,10 @@ export default function Projects({ data, run }) {
       </section>
 
       <section className="card">
-        <SectionTitle title={`Proyectos (${shown.length})`} description="Selecciona editar o elimina con confirmación." />
+        <SectionTitle
+          title={`Proyectos (${shown.length})`}
+          description="Selecciona editar o elimina con confirmación."
+        />
         <label htmlFor="project-search">Buscar proyectos</label>
         <input
           id="project-search"

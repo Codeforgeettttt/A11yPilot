@@ -15,10 +15,17 @@ export function sendPdf(res, analysis) {
 
   // Cabecera
   doc.fontSize(22).fillColor('#0B1F3A').text('A11yPilot');
-  doc.fontSize(13).fillColor('#087A80').text(demo ? 'Informe de demostración' : 'Informe de accesibilidad');
+  doc
+    .fontSize(13)
+    .fillColor('#087A80')
+    .text(demo ? 'Informe de demostración' : 'Informe de accesibilidad');
   doc.moveDown(0.5).fontSize(10);
   if (demo) {
-    doc.fillColor('#922626').text('NO CORRESPONDE A UNA EVALUACIÓN REAL. NO CERTIFICA CONFORMIDAD WCAG.', { underline: true });
+    doc
+      .fillColor('#922626')
+      .text('NO CORRESPONDE A UNA EVALUACIÓN REAL. NO CERTIFICA CONFORMIDAD WCAG.', {
+        underline: true,
+      });
   } else {
     doc
       .fillColor('#162C40')
@@ -42,12 +49,21 @@ export function sendPdf(res, analysis) {
   doc.fontSize(15).text(`${demo ? 'Hallazgos simulados' : 'Hallazgos'} (${findings.length})`);
   doc.moveDown(0.4);
   if (findings.length === 0) {
-    doc.fontSize(10).text(demo ? 'No hay hallazgos de ejemplo.' : 'axe-core no encontró problemas automáticos en esta página.');
+    doc
+      .fontSize(10)
+      .text(
+        demo
+          ? 'No hay hallazgos de ejemplo.'
+          : 'axe-core no encontró problemas automáticos en esta página.',
+      );
   }
   for (const finding of findings) {
     if (doc.y > 680) doc.addPage();
     doc.fontSize(11).fillColor('#0B1F3A').text(`${finding.title} · ${finding.impact}`);
-    doc.fontSize(9).fillColor('#162C40').text(`Regla: ${finding.rule} · ${finding.wcag || 'Sin criterio'}`);
+    doc
+      .fontSize(9)
+      .fillColor('#162C40')
+      .text(`Regla: ${finding.rule} · ${finding.wcag || 'Sin criterio'}`);
     if (finding.selector) doc.text(`Elemento afectado: ${finding.selector}`);
     doc.text(`Estado: ${finding.status}`);
     doc.text(`Cómo corregirlo: ${finding.recommendation}`);

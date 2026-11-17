@@ -13,7 +13,7 @@ try {
   const result = await scanPage(url);
   console.log(`Página: ${result.title} (${result.finalUrl}) · HTTP ${result.status}`);
   console.log(`Problemas encontrados: ${result.violations.length}`);
-    console.log(`Hallazgos que se guardarían: ${violationsToFindings(result.violations).length}`);
+  console.log(`Hallazgos que se guardarían: ${violationsToFindings(result.violations).length}`);
   for (const v of result.violations) {
     console.log(`- [${v.impact}] ${v.id}: ${v.help} (${v.nodes.length} elemento(s))`);
   }

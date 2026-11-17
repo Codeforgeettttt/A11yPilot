@@ -22,7 +22,9 @@ async function newUser(email, name = 'Usuario de prueba') {
 async function projectWithSite(agent, url = 'https://example.com') {
   const project = (await agent.post('/api/projects').send({ name: 'Proyecto de prueba' })).body;
   const site = (
-    await agent.post(`/api/projects/${project.id}/sites`).send({ name: 'Sitio', url, authorizationConfirmed: true })
+    await agent
+      .post(`/api/projects/${project.id}/sites`)
+      .send({ name: 'Sitio', url, authorizationConfirmed: true })
   ).body;
   return { project, site };
 }
@@ -42,9 +44,13 @@ test('registro, sesión, cierre de sesión e inicio de sesión', async () => {
   assert.equal((await agent.post('/api/auth/logout')).status, 204);
   assert.equal((await agent.get('/api/auth/me')).status, 401);
 
-  const wrong = await agent.post('/api/auth/login').send({ email: 'ana@a11ypilot.test', password: 'otra-clave-incorrecta' });
+  const wrong = await agent
+    .post('/api/auth/login')
+    .send({ email: 'ana@a11ypilot.test', password: 'otra-clave-incorrecta' });
   assert.equal(wrong.status, 401);
-  const login = await agent.post('/api/auth/login').send({ email: 'ana@a11ypilot.test', password: PASSWORD });
+  const login = await agent
+    .post('/api/auth/login')
+    .send({ email: 'ana@a11ypilot.test', password: PASSWORD });
   assert.equal(login.status, 200);
   assert.equal((await agent.get('/api/auth/me')).status, 200);
 });
@@ -61,21 +67,38 @@ test('CRUD de proyectos y sitios con validaciones', async () => {
   const agent = await newUser('crud@a11ypilot.test');
 
   assert.equal((await agent.post('/api/projects').send({ name: 'ab' })).status, 400);
-  const project = await agent.post('/api/projects').send({ name: 'Portal', description: 'Sitio principal' });
+  const project = await agent
+    .post('/api/projects')
+    .send({ name: 'Portal', description: 'Sitio principal' });
   assert.equal(project.status, 201);
-  const renamed = await agent.patch(`/api/projects/${project.body.id}`).send({ name: 'Portal renovado' });
+  const renamed = await agent
+    .patch(`/api/projects/${project.body.id}`)
+    .send({ name: 'Portal renovado' });
   assert.equal(renamed.body.name, 'Portal renovado');
 
   const sitesUrl = `/api/projects/${project.body.id}/sites`;
-  assert.equal((await agent.post(sitesUrl).send({ name: 'Sitio', url: 'https://example.com' })).status, 400, 'sin autorización');
   assert.equal(
-    (await agent.post(sitesUrl).send({ name: 'Sitio', url: 'ftp://x.com', authorizationConfirmed: true })).status,
+    (await agent.post(sitesUrl).send({ name: 'Sitio', url: 'https://example.com' })).status,
+    400,
+    'sin autorización',
+  );
+  assert.equal(
+    (
+      await agent
+        .post(sitesUrl)
+        .send({ name: 'Sitio', url: 'ftp://x.com', authorizationConfirmed: true })
+    ).status,
     400,
   );
-  const site = await agent.post(sitesUrl).send({ name: 'Sitio', url: 'https://example.com', authorizationConfirmed: true });
+  const site = await agent
+    .post(sitesUrl)
+    .send({ name: 'Sitio', url: 'https://example.com', authorizationConfirmed: true });
   assert.equal(site.status, 201);
 
-  assert.equal((await agent.patch(`/api/sites/${site.body.id}`).send({ url: 'https://example.org' })).status, 400);
+  assert.equal(
+    (await agent.patch(`/api/sites/${site.body.id}`).send({ url: 'https://example.org' })).status,
+    400,
+  );
   const edited = await agent
     .patch(`/api/sites/${site.body.id}`)
     .send({ url: 'https://example.org', authorizationConfirmed: true });
@@ -90,7 +113,9 @@ test('un usuario no puede ver ni modificar los datos de otro', async () => {
   const owner = await newUser('duena@a11ypilot.test');
   const intruder = await newUser('intruso@a11ypilot.test');
   const { project, site } = await projectWithSite(owner);
-  const analysis = (await owner.post('/api/analyses/demo').send({ siteId: site.id, authorizationConfirmed: true })).body;
+  const analysis = (
+    await owner.post('/api/analyses/demo').send({ siteId: site.id, authorizationConfirmed: true })
+  ).body;
   const [finding] = (await owner.get('/api/findings')).body;
 
   // El intruso no ve nada en sus listas…
@@ -105,10 +130,16 @@ test('un usuario no puede ver ni modificar los datos de otro', async () => {
     ['DELETE proyecto', intruder.delete(`/api/projects/${project.id}`)],
     ['PATCH sitio', intruder.patch(`/api/sites/${site.id}`).send({ name: 'Hackeado' })],
     ['DELETE sitio', intruder.delete(`/api/sites/${site.id}`)],
-    ['POST análisis', intruder.post('/api/analyses').send({ siteId: site.id, authorizationConfirmed: true })],
+    [
+      'POST análisis',
+      intruder.post('/api/analyses').send({ siteId: site.id, authorizationConfirmed: true }),
+    ],
     ['GET análisis', intruder.get(`/api/analyses/${analysis.id}`)],
     ['GET estado', intruder.get(`/api/analyses/${analysis.id}/status`)],
-    ['PATCH hallazgo', intruder.patch(`/api/findings/${finding.id}/status`).send({ status: 'Verificado' })],
+    [
+      'PATCH hallazgo',
+      intruder.patch(`/api/findings/${finding.id}/status`).send({ status: 'Verificado' }),
+    ],
     ['GET informe', intruder.get(`/api/reports/${analysis.id}`)],
   ];
   for (const [label, pending] of attempts) {
@@ -125,19 +156,27 @@ test('seguimiento de hallazgos: cambiar estado y guardar observaciones', async (
   await agent.post('/api/analyses/demo').send({ siteId: site.id, authorizationConfirmed: true });
   const [finding] = (await agent.get('/api/findings')).body;
 
-  assert.equal((await agent.patch(`/api/findings/${finding.id}/status`).send({ status: 'Inventado' })).status, 400);
+  assert.equal(
+    (await agent.patch(`/api/findings/${finding.id}/status`).send({ status: 'Inventado' })).status,
+    400,
+  );
   const updated = await agent
     .patch(`/api/findings/${finding.id}/status`)
     .send({ status: 'En revisión', note: 'Revisado' });
   assert.equal(updated.body.status, 'En revisión');
   const [update] = (await agent.get(`/api/findings/${finding.id}/updates`)).body;
-  assert.deepEqual([update.previousStatus, update.newStatus, update.note], ['Pendiente', 'En revisión', 'Revisado']);
+  assert.deepEqual(
+    [update.previousStatus, update.newStatus, update.note],
+    ['Pendiente', 'En revisión', 'Revisado'],
+  );
 });
 
 test('un análisis real de una dirección privada termina "Fallido" con un mensaje claro', async () => {
   const agent = await newUser('ssrf@a11ypilot.test');
   const { site } = await projectWithSite(agent, 'http://127.0.0.1:3001/api/health');
-  const started = await agent.post('/api/analyses').send({ siteId: site.id, authorizationConfirmed: true });
+  const started = await agent
+    .post('/api/analyses')
+    .send({ siteId: site.id, authorizationConfirmed: true });
   assert.equal(started.status, 202);
 
   let status;

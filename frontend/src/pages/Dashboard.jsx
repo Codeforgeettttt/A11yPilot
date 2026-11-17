@@ -19,7 +19,7 @@ export default function Dashboard({ data, go }) {
 
   return (
     <>
-          <GettingStarted data={data} go={go} />
+      <GettingStarted data={data} go={go} />
       <div className="stat-grid">
         {cards.map(([name, value, Icon]) => (
           <div className="stat" key={name}>
@@ -35,7 +35,10 @@ export default function Dashboard({ data, go }) {
 
       <div className="two-col">
         <section className="card">
-          <SectionTitle title="Comienza una evaluación" description="Registra un sitio y analiza su accesibilidad." />
+          <SectionTitle
+            title="Comienza una evaluación"
+            description="Registra un sitio y analiza su accesibilidad."
+          />
           <div className="illustration" aria-hidden="true">
             <span className="window-dots">● ● ●</span>
             <div className="illustration-line" />
@@ -59,10 +62,13 @@ export default function Dashboard({ data, go }) {
                   <div>
                     <strong>{analysis.Site?.name || analysis.Site?.url || 'Sitio'}</strong>
                     <p>
-                      {formatDate(analysis.createdAt)} · {analysis.demo ? 'Demostración' : 'Análisis'}
+                      {formatDate(analysis.createdAt)} ·{' '}
+                      {analysis.demo ? 'Demostración' : 'Análisis'}
                     </p>
                   </div>
-                  <StateTag kind={analysis.status === 'Completado' ? 'success' : 'info'}>{analysis.status}</StateTag>
+                  <StateTag kind={analysis.status === 'Completado' ? 'success' : 'info'}>
+                    {analysis.status}
+                  </StateTag>
                 </div>
               ))}
             </div>
@@ -74,7 +80,10 @@ export default function Dashboard({ data, go }) {
       </div>
 
       <section className="card">
-        <SectionTitle title="Distribución por impacto" description="Datos de los hallazgos guardados." />
+        <SectionTitle
+          title="Distribución por impacto"
+          description="Datos de los hallazgos guardados."
+        />
         <div className="impact-grid">
           {IMPACTS.map((impact) => (
             <div className="impact-count" key={impact}>
