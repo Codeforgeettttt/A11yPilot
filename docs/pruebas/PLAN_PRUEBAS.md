@@ -1,10 +1,12 @@
 # Plan y registro de verificación — A11yPilot
 
-**Rama:** `Docker` · **Fecha de preparación:** 16/11/2026 · **Release:** v1.0.0 **no publicada**.
+**Rama documentada:** `main` · **Fecha de actualización:** 16/11/2026 · **Release:** v1.0.0 **no publicada**.
 
 Este registro distingue las evidencias automáticas disponibles de las verificaciones manuales aún pendientes. No se deben marcar pruebas como aprobadas sin evidencia.
 
 ## Evidencia automática disponible
+
+La rama principal incorpora actualmente los flujos Node y Docker. Consulta también las [ejecuciones más recientes](https://github.com/Codeforgeettttt/A11yPilot/actions); las siguientes son evidencias históricas concretas y no se deben extrapolar a futuros commits.
 
 | Caso                                        | Resultado observado                                                        | Evidencia                                                                                                       |
 | ------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
