@@ -1,6 +1,6 @@
 # Preparación de entrega v1.0.0 — A11yPilot
 
-**Estado: candidata, NO publicada.** La versión de los `package.json` continúa siendo 0.6.2 en raíz/frontend y 0.6.0 en backend. No se crea etiqueta Git `v1.0.0` ni una Release de GitHub en esta preparación.
+**Estado: preparación documentada en `main`, NO publicada.** La versión de los `package.json` continúa siendo 0.6.2 en raíz/frontend y 0.6.0 en backend. No se crea etiqueta Git `v1.0.0` ni una Release de GitHub en esta preparación. Docker y el escáner ya están presentes en `main`, pero eso no demuestra funcionamiento integral.
 
 ## Alcance documentado
 
@@ -19,7 +19,7 @@
 - [ ] Elegir licencia, titular de derechos y añadir `LICENSE` con aprobación del equipo.
 - [ ] Confirmar alcance y versión final con todos los integrantes.
 - [ ] Actualizar versiones de los paquetes y CHANGELOG con los resultados efectivos.
-- [ ] Crear Pull Request `Docker` → `main`; obtener revisión y fusionar tras aprobar.
+- [ ] Comprobar que la integración de la fase Docker en `main` conserva todas las funcionalidades y revisar el diff/los commits antes de aprobar un lanzamiento.
 - [ ] Solo entonces crear etiqueta `v1.0.0` y Release desde el commit aprobado.
 
 ## Material para evaluación
